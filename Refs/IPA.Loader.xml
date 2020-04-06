@@ -2312,6 +2312,12 @@
             </summary>
             <value>a collection of all disabled plugins as <see cref="T:IPA.Loader.PluginMetadata"/></value>
         </member>
+        <member name="P:IPA.Loader.PluginManager.IgnoredPlugins">
+            <summary>
+            Gets a read-only dictionary of an ignored plugin to the reason it was ignored, as an <see cref="T:IPA.Loader.IgnoreReason"/>.
+            </summary>
+            <value>a dictionary of <see cref="T:IPA.Loader.PluginMetadata"/> to <see cref="T:IPA.Loader.IgnoreReason"/> of ignored plugins</value>
+        </member>
         <member name="P:IPA.Loader.PluginManager.Plugins">
             <summary>
             An <see cref="T:System.Collections.Generic.IEnumerable`1"/> of old IPA plugins.
