@@ -4,6 +4,9 @@
 """Main.dll?virt
 """HMLib.dll?virt
 """HMUI.dll?virt
+"""IPA.Loader.
+""""dll
+""""xml?optional
 """Unity
 """".TextMeshPro.
 """""dll
