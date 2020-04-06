@@ -1,0 +1,43 @@
+::from ./bsinstalldir.txt
+"Beat Saber_Data/
+""::resolveInHere Managed/
+"""Main.dll?virt
+"""HMLib.dll?virt
+"""HMUI.dll?virt
+"""Unity
+"""".TextMeshPro.
+"""""dll
+"""""xml?optional
+""""Engine.
+"""""dll
+"""""xml?optional
+"""""UnityWebRequestModule.
+""""""dll
+""""""xml?optional
+"""""CoreModule.
+""""""dll
+""""""xml?optional
+"""""Text
+""""""CoreModule.
+"""""""dll
+"""""""xml?optional
+""""""RenderingModule.
+"""""""dll
+"""""""xml?optional
+"""""UI
+"""""".
+"""""""dll
+"""""""xml?optional
+""""""Module.
+"""""""dll
+"""""""xml?optional
+"::resolveInHere Libs/
+""__empty?optional
+"::resolveInHere Plugins/
+""BS
+"""ML.
+""""dll
+""""xml?optional
+"""_Utils.
+""""dll
+""""xml?optional

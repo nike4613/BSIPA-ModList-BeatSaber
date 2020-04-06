@@ -3,7 +3,17 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29926.136
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BSIPA-ModList-BeatSaber", "BSIPA-ModList-BeatSaber\BSIPA-ModList-BeatSaber.csproj", "{5D530F8F-2CFB-47AC-AEE4-2B158F027C28}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ModList", "ModList\ModList.csproj", "{5D530F8F-2CFB-47AC-AEE4-2B158F027C28}"
+	ProjectSection(ProjectDependencies) = postProject
+		{5F33B310-DC8D-4C0D-877E-BAC3908DE10F} = {5F33B310-DC8D-4C0D-877E-BAC3908DE10F}
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "BuildTools", "BuildTools", "{C4CB63DC-B64D-4939-B22B-0E8EA191429A}"
+	ProjectSection(SolutionItems) = preProject
+		Refs\refs.txt = Refs\refs.txt
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CollectDependencies", "BuildTools\CollectDependencies\CollectDependencies.csproj", "{5F33B310-DC8D-4C0D-877E-BAC3908DE10F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,9 +25,16 @@ Global
 		{5D530F8F-2CFB-47AC-AEE4-2B158F027C28}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5D530F8F-2CFB-47AC-AEE4-2B158F027C28}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5D530F8F-2CFB-47AC-AEE4-2B158F027C28}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5F33B310-DC8D-4C0D-877E-BAC3908DE10F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5F33B310-DC8D-4C0D-877E-BAC3908DE10F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5F33B310-DC8D-4C0D-877E-BAC3908DE10F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5F33B310-DC8D-4C0D-877E-BAC3908DE10F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{5F33B310-DC8D-4C0D-877E-BAC3908DE10F} = {C4CB63DC-B64D-4939-B22B-0E8EA191429A}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {24D9B62C-61D7-45B7-A12B-355F2935536E}
