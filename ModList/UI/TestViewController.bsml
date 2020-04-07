@@ -1,9 +1,12 @@
-﻿<vertical child-control-height='false'>
-  <horizontal bg='panel-top' pad-left='10' pad-right='10' horizontal-fit='PreferredSize'>
-    <text text='Example' align='Center' font-size='10'></text>
-  </horizontal>
-  <horizontal bg='round-rect-panel' pad='8'>
-    <text id='some-text' text='Looks at this fancy text.'></text>
-  </horizontal>
-  <button text='Test Button'></button>
-</vertical>
+﻿<bg background='round-rect-panel'>
+  <vertical>
+    <custom-list data='values'>
+      <horizontal>
+        <text text='~sval1'/>
+        <text text='~sval2'/>
+        <text text='~sval3'/>
+        <text text='~ival'/>
+      </horizontal>
+    </custom-list>
+  </vertical>
+</bg>
