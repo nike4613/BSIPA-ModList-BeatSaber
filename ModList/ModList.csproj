@@ -125,10 +125,9 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="manifest.json" />
-  </ItemGroup>
-  <ItemGroup>
+    <Manifest Include="manifest.json" />
     <EmbeddedResource Include="description.md" />
+    <EmbeddedResource Include="UI\TestViewController.bsml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="CompileConstants.tt">
@@ -140,10 +139,13 @@
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="UI\TestViewController.bsml" />
-  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" GeneratePathProperty="true">
+      <Version>12.0.3</Version>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+  </ItemGroup>
   <!-- Optionally make the import portable across VS versions -->
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">16.0</VisualStudioVersion>
@@ -160,15 +162,26 @@
     <AfterTransform>CustomPostTransform</AfterTransform>
   </PropertyGroup>
   <ItemGroup>
+    <T4ReferencePath Include="$(PkgNewtonsoft_Json)\lib\netstandard2.0\" />
     <T4ParameterValues Include="SolutionDir">
       <Value>$(SolutionDir)</Value>
+      <Visible>false</Visible>
+    </T4ParameterValues>
+    <T4ParameterValues Include="ManifestPath">
+      <Value>@(Manifest)</Value>
       <Visible>false</Visible>
     </T4ParameterValues>
   </ItemGroup>
   <Target Name="CustomPostTransform">
     <ItemGroup>
-      <Compile Remove="CompileConstants.cs" /> <!-- prevent duplicates -->
+      <Compile Remove="CompileConstants.cs" />
+      <!-- prevent duplicates -->
       <Compile Include="@(GeneratedFiles)" />
+    </ItemGroup>
+  </Target>
+  <Target Name="PreBuild" BeforeTargets="PreBuildEvent">
+    <ItemGroup>
+      <EmbeddedResource Include="@(Manifest)" />
     </ItemGroup>
   </Target>
 </Project>

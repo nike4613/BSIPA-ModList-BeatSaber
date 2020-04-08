@@ -27,7 +27,7 @@ namespace IPA.ModList.BeatSaber
         [OnEnable]
         public void OnEnable()
         {
-            Logger.log.Debug("Enabled");
+            Logger.log.Debug($"{CompileConstants.Manifest.Name} Enabled");
             HMMainThreadDispatcher.instance.StartCoroutine(PresentTest());
         }
 

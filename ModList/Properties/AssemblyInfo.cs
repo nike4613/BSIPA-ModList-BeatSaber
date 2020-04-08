@@ -1,16 +1,17 @@
-﻿using System.Reflection;
+﻿using IPA.ModList.BeatSaber;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("BSIPA-ModList-BeatSaber")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyTitle(CompileConstants.AssemblyName)]
+[assembly: AssemblyDescription(CompileConstants.Manifest.Name)]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("BSIPA-ModList-BeatSaber")]
-[assembly: AssemblyCopyright("Copyright ©  2020")]
+[assembly: AssemblyProduct(CompileConstants.AssemblyName)]
+[assembly: AssemblyCopyright(CompileConstants.CopyrightString)]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -32,5 +33,5 @@ using System.Runtime.InteropServices;
 // You can specify all the values or you can default the Build and Revision Numbers
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("1.0.0.0")]
-[assembly: AssemblyFileVersion("1.0.0.0")]
+[assembly: AssemblyVersion(CompileConstants.Version)]
+[assembly: AssemblyFileVersion(CompileConstants.Version)]
