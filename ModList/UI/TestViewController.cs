@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace IPA.ModList.BeatSaber.UI
 {
-    [HotReload(PathMap = new[] { "C:", CompileConstants.SolutionDirectory })]
+    [HotReload(PathMap = new[] { "C:\\", CompileConstants.SolutionDirectory })]
     internal class TestViewController : BSMLAutomaticViewController
     {
         [UIValue("values")]

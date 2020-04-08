@@ -5,9 +5,10 @@
 <#@ import namespace="System.Text" #>
 <#@ import namespace="System.Collections.Generic" #>
 <#@ output extension=".cs" #>
+<#@ parameter type="System.String" name="SolutionDir" #>
 
 <#
-    var solutionDir = new FileInfo(Host.TemplateFile).Directory.Parent.FullName;
+    var solutionDir = SolutionDir ?? "$(SolutionDir)";
 #>
 
 namespace IPA.ModList.BeatSaber

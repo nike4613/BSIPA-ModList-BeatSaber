@@ -133,6 +133,7 @@
   <ItemGroup>
     <Content Include="CompileConstants.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
+      <OutputFilePath>$(IntermediateOutputPath)</OutputFilePath>
       <LastGenOutput>CompileConstants.cs</LastGenOutput>
     </Content>
   </ItemGroup>
@@ -143,4 +144,31 @@
     <EmbeddedResource Include="UI\TestViewController.bsml" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- Optionally make the import portable across VS versions -->
+  <PropertyGroup>
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">16.0</VisualStudioVersion>
+    <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
+    <TextTemplateTarget>$(VSToolsPath)\TextTemplating\Microsoft.TextTemplating.targets</TextTemplateTarget>
+    <HasTextTemplating>false</HasTextTemplating>
+    <HasTextTemplating Condition="Exists('$(TextTemplateTarget)')">true</HasTextTemplating>
+  </PropertyGroup>
+  <!-- For the T4 templates -->
+  <Import Project="$(TextTemplateTarget)" Condition="'$(HasTextTemplating)' == 'true'" />
+  <PropertyGroup>
+    <TransformOnBuild>true</TransformOnBuild>
+    <TransformOutOfDateOnly>false</TransformOutOfDateOnly>
+    <AfterTransform>CustomPostTransform</AfterTransform>
+  </PropertyGroup>
+  <ItemGroup>
+    <T4ParameterValues Include="SolutionDir">
+      <Value>$(SolutionDir)</Value>
+      <Visible>false</Visible>
+    </T4ParameterValues>
+  </ItemGroup>
+  <Target Name="CustomPostTransform">
+    <ItemGroup>
+      <Compile Remove="CompileConstants.cs" /> <!-- prevent duplicates -->
+      <Compile Include="@(GeneratedFiles)" />
+    </ItemGroup>
+  </Target>
 </Project>
