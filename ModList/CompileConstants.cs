@@ -7,7 +7,12 @@ namespace IPA.ModList.BeatSaber
     internal static class CompileConstants
     {
         public const string AssemblyName = "IPA.ModList.BeatSaber";
-        public const string SolutionDirectory = "$(SolutionDir)";
+        public const string SolutionDirectory = 
+        #if DEBUG
+            "$(SolutionDir)";
+        #else
+            "";
+        #endif
         public const string CopyrightDate = "2020";
         public const string CopyrightString = "Copyright © " + Author + " " + CopyrightDate;
 
@@ -16,7 +21,7 @@ namespace IPA.ModList.BeatSaber
 
         public const int BuildYear = 2020;
         public const int BuildMonth = 4;
-        public const int BuildDay = 8;
+        public const int BuildDay = 9;
 
         public static DateTime BuildDate => new DateTime(BuildYear, BuildMonth, BuildDay);
 

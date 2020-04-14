@@ -1,6 +1,8 @@
 ﻿using BeatSaberMarkupLanguage;
+using BeatSaberMarkupLanguage.MenuButtons;
 using BS_Utils.Utilities;
 using HMUI;
+using IPA.Loader;
 using IPA.Logging;
 using IPA.ModList.BeatSaber.UI;
 using IPA.Utilities;
@@ -18,34 +20,37 @@ namespace IPA.ModList.BeatSaber
     [Plugin(RuntimeOptions.DynamicInit)]
     internal class ModListPlugin
     {
+        private readonly MenuButton menuBtn;
+
         [Init]
         public ModListPlugin(IPALogger logger)
         {
             Logger.log = logger;
+            menuBtn = new MenuButton(CompileConstants.Manifest.Name, PresentModList);
         }
 
         [OnEnable]
         public void OnEnable()
         {
             Logger.log.Debug($"{CompileConstants.Manifest.Name} Enabled");
-            HMMainThreadDispatcher.instance.StartCoroutine(PresentTest());
+            MenuButtons.instance.RegisterButton(menuBtn);
         }
 
         [OnDisable]
         public void OnDisable()
         {
+            MenuButtons.instance.UnregisterButton(menuBtn);
             Logger.log.Debug("Disabled");
         }
 
-        private IEnumerator PresentTest()
+        private UI.ModListFlowCoordinator flowCoord;
+
+        private void PresentModList()
         {
-            Logger.log.Debug("Waiting for main flow coordinator");
-            yield return new WaitUntil(() => Resources.FindObjectsOfTypeAll<MainFlowCoordinator>().Any());
-            Logger.log.Debug("Main flow coordinator found");
-            yield return new WaitForSeconds(2);
-            var testViewController = BeatSaberUI.CreateViewController<TestViewController>();
-            Resources.FindObjectsOfTypeAll<MainFlowCoordinator>().First()
-                .InvokeMethod<object, FlowCoordinator>("PresentViewController", new object[] { testViewController, null, false });
+            if (flowCoord == null)
+                flowCoord = BeatSaberUI.CreateFlowCoordinator<ModListFlowCoordinator>();
+            flowCoord.ParentFlowCoordinator = BeatSaberUI.MainFlowCoordinator;
+            BeatSaberUI.MainFlowCoordinator.PresentFlowCoordinator(flowCoord);
         }
     }
 

@@ -2000,6 +2000,18 @@
             </summary>
             <value>the updater ID of the plugin</value>
         </member>
+        <member name="P:IPA.Loader.PluginMetadata.Author">
+            <summary>
+            The name of the author that wrote this plugin.
+            </summary>
+            <value>the name of the plugin's author</value>
+        </member>
+        <member name="P:IPA.Loader.PluginMetadata.Description">
+            <summary>
+            The description of this plugin.
+            </summary>
+            <value>the description of the plugin</value>
+        </member>
         <member name="P:IPA.Loader.PluginMetadata.Version">
             <summary>
             The version of the plugin.
@@ -2023,6 +2035,30 @@
             A list of files (that aren't <see cref="P:IPA.Loader.PluginMetadata.File"/>) that are associated with this plugin.
             </summary>
             <value>a list of associated files</value>
+        </member>
+        <member name="P:IPA.Loader.PluginMetadata.IconName">
+            <summary>
+            The name of the resource in the plugin assembly containing the plugin's icon.
+            </summary>
+            <value>the name of the plugin's icon</value>
+        </member>
+        <member name="P:IPA.Loader.PluginMetadata.PluginHomeLink">
+            <summary>
+            A link to this plugin's home page, if any.
+            </summary>
+            <value>the <see cref="T:System.Uri"/> of the plugin's home page</value>
+        </member>
+        <member name="P:IPA.Loader.PluginMetadata.PluginSourceLink">
+            <summary>
+            A link to this plugin's source code, if avaliable.
+            </summary>
+            <value>the <see cref="T:System.Uri"/> of the plugin's source code</value>
+        </member>
+        <member name="P:IPA.Loader.PluginMetadata.DonateLink">
+            <summary>
+            A link to a donate page for the author of this plugin, if avaliable.
+            </summary>
+            <value>the <see cref="T:System.Uri"/> of the author's donate page</value>
         </member>
         <member name="P:IPA.Loader.PluginMetadata.IsBare">
             <summary>

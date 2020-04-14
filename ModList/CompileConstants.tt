@@ -30,7 +30,12 @@ namespace IPA.ModList.BeatSaber
     internal static class CompileConstants
     {
         public const string AssemblyName = "IPA.ModList.BeatSaber";
-        public const string SolutionDirectory = "<#= solutionDir.Replace("\\", "\\\\") #>";
+        public const string SolutionDirectory = 
+        #if DEBUG
+            "<#= solutionDir.Replace("\\", "\\\\") #>";
+        #else
+            "";
+        #endif
         public const string CopyrightDate = "<#= copyrightString #>";
         public const string CopyrightString = "Copyright © " + Author + " " + CopyrightDate;
 

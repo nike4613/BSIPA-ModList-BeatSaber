@@ -35,7 +35,9 @@
 """""""dll
 """""""xml?optional
 "::resolveInHere Libs/
-""__empty?optional
+""SemVer.
+"""dll
+"""xml?optional
 "::resolveInHere Plugins/
 ""BS
 """ML.

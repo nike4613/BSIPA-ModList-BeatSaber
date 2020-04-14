@@ -63,6 +63,11 @@
       <HintPath>..\Refs\Main.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="SemVer, Version=1.2.2.0, Culture=neutral, PublicKeyToken=a89bb7dc6f7a145c, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Refs\SemVer.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -120,14 +125,16 @@
     </Compile>
     <Compile Include="ModListPlugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="UI\TestViewController.cs">
-      <DependentUpon>TestViewController.bsml</DependentUpon>
+    <Compile Include="UI\ModListFlowCoordinator.cs" />
+    <Compile Include="UI\ModListViewController.cs">
+      <DependentUpon>ModListViewController.bsml</DependentUpon>
     </Compile>
+    <Compile Include="Helpers.cs" />
   </ItemGroup>
   <ItemGroup>
     <Manifest Include="manifest.json" />
     <EmbeddedResource Include="description.md" />
-    <EmbeddedResource Include="UI\TestViewController.bsml" />
+    <EmbeddedResource Include="UI\ModListViewController.bsml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="CompileConstants.tt">
@@ -135,6 +142,9 @@
       <OutputFilePath>$(IntermediateOutputPath)</OutputFilePath>
       <LastGenOutput>CompileConstants.cs</LastGenOutput>
     </Content>
+    <EmbeddedResource Include="Resources\icon.png" />
+    <EmbeddedResource Include="Resources\mod_ipa.png" />
+    <EmbeddedResource Include="Resources\mod_bsipa.png" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
