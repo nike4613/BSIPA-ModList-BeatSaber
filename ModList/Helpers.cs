@@ -48,8 +48,7 @@ namespace IPA.ModList.BeatSaber
             if (plugin.IconName != null)
                 icon = ReadImageFromAssembly(plugin.Assembly, plugin.IconName);
 
-            return icon ?? (plugin.IsBare ? BareManifestIcon 
-                                          : DefaultPluginIcon);
+            return icon ?? DefaultPluginIcon;
         }
     }
 }

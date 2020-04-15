@@ -8,17 +8,37 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Diagnostics.CodeAnalysis;
 using UnityEngine;
 
 namespace IPA.ModList.BeatSaber.UI
 {
+    internal enum PluginState
+    {
+        Enabled,
+        Disabled,
+        Ignored
+    }
+    internal struct PluginStruct
+    {
+        public PluginMetadata Plugin { get; }
+        public PluginState State { get; }
+        public PluginStruct(PluginMetadata meta, PluginState state)
+        {
+            Plugin = meta;
+            State = state;
+        }
+    }
+
     [HotReload(PathMap = new[] { "C:\\", CompileConstants.SolutionDirectory })]
     internal class ModListViewController : BSMLAutomaticViewController, INotifiableHost
     {
         private List<CustomListTableData.CustomCellInfo> ListValues { get; } = new List<CustomListTableData.CustomCellInfo>();
 
+#pragma warning disable CS0649 // Field never assigned
         [UIComponent("list")]
         internal CustomListTableData customListTableData;
+#pragma warning restore CS0649 // Field never assigned
 
         private List<PluginMetadata> PluginList { get; } = new List<PluginMetadata>();
 
@@ -29,6 +49,7 @@ namespace IPA.ModList.BeatSaber.UI
             Logger.log.Debug("Test VC activated");
 
             customListTableData.data = ListValues;
+            ReloadViewList();
         }
 
         [UIAction("#post-parse")]
