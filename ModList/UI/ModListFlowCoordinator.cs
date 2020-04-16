@@ -35,12 +35,25 @@ namespace IPA.ModList.BeatSaber.UI
                     SetViewControllersToNavigationController(naviController, listController);
                     ProvideInitialViewControllers(listController);
                 }
+
+                listController.DidSelectPlugin += HandleSelectPlugin;
             }
             catch (Exception e)
             {
                 Logger.log.Error("Error activating TestFlowCoordinator");
                 Logger.log.Error(e);
             }
+        }
+
+        protected override void DidDeactivate(DeactivationType deactivationType)
+        {
+            listController.DidSelectPlugin -= HandleSelectPlugin;
+            base.DidDeactivate(deactivationType);
+        }
+
+        private void HandleSelectPlugin(PluginInformation obj)
+        {
+            Logger.log.Info($"Mod list selected plugin {obj.Plugin} ({obj.State})");
         }
 
         protected override void BackButtonWasPressed(ViewController topViewController)

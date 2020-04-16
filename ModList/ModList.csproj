@@ -124,6 +124,7 @@
       <DependentUpon>CompileConstants.tt</DependentUpon>
     </Compile>
     <Compile Include="ModListPlugin.cs" />
+    <Compile Include="PluginInformation.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="UI\ModListFlowCoordinator.cs" />
     <Compile Include="UI\ModListViewController.cs">
@@ -142,6 +143,9 @@
       <OutputFilePath>$(IntermediateOutputPath)</OutputFilePath>
       <LastGenOutput>CompileConstants.cs</LastGenOutput>
     </Content>
+    <EmbeddedResource Include="Resources\o.png" />
+    <EmbeddedResource Include="Resources\x.png" />
+    <EmbeddedResource Include="Resources\library.png" />
     <EmbeddedResource Include="Resources\icon.png" />
     <EmbeddedResource Include="Resources\mod_ipa.png" />
     <EmbeddedResource Include="Resources\mod_bsipa.png" />

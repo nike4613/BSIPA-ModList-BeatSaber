@@ -10,25 +10,10 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Diagnostics.CodeAnalysis;
 using UnityEngine;
+using HMUI;
 
 namespace IPA.ModList.BeatSaber.UI
 {
-    internal enum PluginState
-    {
-        Enabled,
-        Disabled,
-        Ignored
-    }
-    internal struct PluginStruct
-    {
-        public PluginMetadata Plugin { get; }
-        public PluginState State { get; }
-        public PluginStruct(PluginMetadata meta, PluginState state)
-        {
-            Plugin = meta;
-            State = state;
-        }
-    }
 
     [HotReload(PathMap = new[] { "C:\\", CompileConstants.SolutionDirectory })]
     internal class ModListViewController : BSMLAutomaticViewController, INotifiableHost
@@ -40,7 +25,7 @@ namespace IPA.ModList.BeatSaber.UI
         internal CustomListTableData customListTableData;
 #pragma warning restore CS0649 // Field never assigned
 
-        private List<PluginMetadata> PluginList { get; } = new List<PluginMetadata>();
+        private List<PluginInformation> PluginList { get; } = new List<PluginInformation>();
 
         protected override void DidActivate(bool firstActivation, ActivationType type)
         {
@@ -52,37 +37,58 @@ namespace IPA.ModList.BeatSaber.UI
             ReloadViewList();
         }
 
+        public event Action<PluginInformation> DidSelectPlugin;
+
         [UIAction("#post-parse")]
-        internal void SetupList()
+        [SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "BSML calls this")]
+        private void SetupList()
         {
             (transform as RectTransform).sizeDelta = new Vector2(70, 0);
             (transform as RectTransform).anchorMin = new Vector2(0.5f, 0);
             (transform as RectTransform).anchorMax = new Vector2(0.5f, 1);
 
             ReloadPluginList();
-            ReloadViewList();
+        }
+
+        [UIAction("list-select")]
+        [SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "BSML calls this")]
+        private void OnListSelect(TableView table, int index)
+        {
+            if (index < 0 || index >= PluginList.Count)
+            {
+                ReloadViewList();
+                return;
+            }
+
+            DidSelectPlugin?.Invoke(PluginList[index]);
         }
 
         private void ReloadPluginList()
         {
             PluginList.Clear();
             PluginList.AddRange(
-                        PluginManager.EnabledPlugins .Where(m => !m.IsBare)
-                .Concat(PluginManager.DisabledPlugins.Where(m => !m.IsBare))
-                .Concat(PluginManager.EnabledPlugins .Where(m =>  m.IsBare))
-                .Concat(PluginManager.DisabledPlugins.Where(m =>  m.IsBare))
-                .Concat(PluginManager.IgnoredPlugins.Keys));
+                        PluginManager.EnabledPlugins .Where(m => !m.IsBare).AsInfos(PluginState.Enabled)
+                .Concat(PluginManager.DisabledPlugins.Where(m => !m.IsBare).AsInfos(PluginState.Disabled))
+                .Concat(PluginManager.EnabledPlugins .Where(m =>  m.IsBare).AsInfos(PluginState.Enabled))
+                .Concat(PluginManager.DisabledPlugins.Where(m =>  m.IsBare).AsInfos(PluginState.Disabled))
+                .Concat(PluginManager.IgnoredPlugins.Keys.AsInfos(PluginState.Ignored)));
+            ReloadViewList();
         }
 
         private void ReloadViewList()
         {
             ListValues.Clear();
             ListValues.AddRange(
-                PluginList.Select(m => 
+                PluginList.Select(p => 
                     new CustomListTableData.CustomCellInfo(
-                        m.Name,
-                        $"{m.Author} <size=80%>{m.Version}</size>", 
-                        Helpers.ReadPluginIcon(m))));
+                        p.Plugin.Name,
+                        $"{p.Plugin.Author} <size=80%>{p.Plugin.Version}</size>", 
+                        Helpers.ReadPluginIcon(p),
+                        Enumerable.Empty<Sprite>()
+                            .MaybeAppend(p.Plugin.IsBare, Helpers.LibrarySprite)
+                            .MaybeAppend(p.State == PluginState.Disabled, Helpers.XSprite)
+                            .MaybeAppend(p.State == PluginState.Enabled 
+                                      && p.Plugin.RuntimeOptions == RuntimeOptions.DynamicInit, Helpers.OSprite))));
 
             customListTableData?.tableView?.ReloadData();
         }
