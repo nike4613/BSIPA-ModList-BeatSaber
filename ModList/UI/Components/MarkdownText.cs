@@ -48,7 +48,7 @@ namespace IPA.ModList.BeatSaber.UI.Components
 
         private void Render()
         {
-            var root = Markdown.Convert(Text, new UnityRenderer(), Pipeline);
+            var root = Markdown.Convert(Text, new UnityRenderer(), Pipeline) as MonoBehaviour;
         }
 
         private void Clear()
