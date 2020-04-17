@@ -13,6 +13,7 @@ namespace IPA.ModList.BeatSaber.UI
         public FlowCoordinator ParentFlowCoordinator { get; set; }
         private NavigationController naviController;
         private ModListViewController listController;
+        private ModInfoViewController infoController;
 
         public void Awake()
         {
@@ -20,6 +21,7 @@ namespace IPA.ModList.BeatSaber.UI
             {
                 naviController = BeatSaberUI.CreateViewController<NavigationController>();
                 listController = BeatSaberUI.CreateViewController<ModListViewController>();
+                infoController = BeatSaberUI.CreateViewController<ModInfoViewController>();
             }
         }
 
@@ -33,7 +35,7 @@ namespace IPA.ModList.BeatSaber.UI
                     title = CompileConstants.Manifest.Name;
 
                     SetViewControllersToNavigationController(naviController, listController);
-                    ProvideInitialViewControllers(listController);
+                    ProvideInitialViewControllers(mainViewController: naviController);
                 }
 
                 listController.DidSelectPlugin += HandleSelectPlugin;
@@ -51,9 +53,13 @@ namespace IPA.ModList.BeatSaber.UI
             base.DidDeactivate(deactivationType);
         }
 
-        private void HandleSelectPlugin(PluginInformation obj)
+        private void HandleSelectPlugin(PluginInformation plugin)
         {
-            Logger.log.Info($"Mod list selected plugin {obj.Plugin} ({obj.State})");
+            Logger.log.Info($"Mod list selected plugin {plugin.Plugin} ({plugin.State})");
+
+            infoController.SetPlugin(plugin);
+            if (!infoController.Activated)
+                PushViewControllerToNavigationController(naviController, infoController);
         }
 
         protected override void BackButtonWasPressed(ViewController topViewController)

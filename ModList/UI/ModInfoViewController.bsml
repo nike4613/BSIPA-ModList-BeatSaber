@@ -1,0 +1,50 @@
+﻿<bg xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
+    xsi:schemaLocation='https://monkeymanboy.github.io/BSML-Docs/ https://raw.githubusercontent.com/monkeymanboy/BSML-Docs/gh-pages/BSMLSchema.xsd'
+    size-delta-x='0' size-delta-y='0'
+    anchor-min-x='0' anchor-max-x='1'
+    anchor-min-y='0' anchor-max-y='1'>
+  <bg anchor-min-x='0' anchor-min-y='.7'
+      anchor-max-x='1' anchor-max-y='1'>
+    <raw-image id='icon-img' 
+               anchor-min-x='0' anchor-min-y='.5'
+               anchor-max-x='0' anchor-max-y='.5'
+               pivot-x='0' pivot-y='.5'
+               size-delta-x='19' size-delta-y='19'/>
+    <bg anchor-min-x='0' anchor-min-y='.5' id='mod-info'
+        anchor-max-x='1' anchor-max-y='.5'
+        size-delta-x='-21' size-delta-y='19'
+        pivot-x='1' pivot-y='.5'>
+      <bg anchor-min-x='0' anchor-min-y='1' id='mod-name'
+          anchor-max-x='1' anchor-max-y='1'
+          anchor-pos-x='0' anchor-pos-y='0'
+          pivot-x='.5' pivot-y='1'
+          size-delta-x='0' size-delta-y='14'>
+        <text text='~name' font-size='8' overflow-mode='Ellipsis' font-align='BottomLeft'
+              anchor-min-x='0' anchor-min-y='0' rich-text='false'
+              anchor-max-x='1' anchor-max-y='1'
+              anchor-pos-x='0' anchor-pos-y='0'
+              size-delta-x='0' size-delta-y='0'
+              pivot-x='0' pivot-y='0'/>
+      </bg>
+      <horizontal id='mod-version-author' horizontal-fit='PreferredSize' child-align='MiddleLeft'
+          anchor-min-x='0' anchor-min-y='0'
+          anchor-max-x='1' anchor-max-y='0'
+          anchor-pos-x='0' anchor-pos-y='0' spacing='2'
+          pivot-x='0' pivot-y='-.1'
+          size-delta-x='0' size-delta-y='0'>
+        <text text='~author' font-size='5.25' overflow-mode='Ellipsis' font-align='CaplineLeft' rich-text='false' />
+        <text text='~version' font-size='4.25' overflow-mode='Masking' font-align='CaplineLeft' rich-text='false' />
+      </horizontal>
+    </bg>
+  </bg>
+  <bg bg='round-rect-panel'
+      anchor-min-x='0' anchor-min-y='.1'
+      anchor-max-x='1' anchor-max-y='.7'
+      size-delta-x='1' size-delta-y='1'>
+    <text text='~description' overflow-mode='Masking' word-wrapping='true' 
+          anchor-min-x='0' anchor-min-y='0' rich-text='false'
+          anchor-max-x='1' anchor-max-y='1'
+          anchor-pos-x='0' anchor-pos-y='0'
+          size-delta-x='-5' size-delta-y='-5' />
+  </bg>
+</bg>

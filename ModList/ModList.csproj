@@ -126,6 +126,9 @@
     <Compile Include="ModListPlugin.cs" />
     <Compile Include="PluginInformation.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="UI\ModInfoViewController.cs">
+      <DependentUpon>ModInfoViewController.bsml</DependentUpon>
+    </Compile>
     <Compile Include="UI\ModListFlowCoordinator.cs" />
     <Compile Include="UI\ModListViewController.cs">
       <DependentUpon>ModListViewController.bsml</DependentUpon>
@@ -136,6 +139,7 @@
     <Manifest Include="manifest.json" />
     <EmbeddedResource Include="description.md" />
     <EmbeddedResource Include="UI\ModListViewController.bsml" />
+    <EmbeddedResource Include="UI\ModInfoViewController.bsml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="CompileConstants.tt">

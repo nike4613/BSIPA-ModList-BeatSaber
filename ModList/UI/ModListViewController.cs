@@ -14,9 +14,8 @@ using HMUI;
 
 namespace IPA.ModList.BeatSaber.UI
 {
-
     [HotReload(PathMap = new[] { "C:\\", CompileConstants.SolutionDirectory })]
-    internal class ModListViewController : BSMLAutomaticViewController, INotifiableHost
+    internal class ModListViewController : BSMLAutomaticViewController
     {
         private List<CustomListTableData.CustomCellInfo> ListValues { get; } = new List<CustomListTableData.CustomCellInfo>();
 
@@ -41,7 +40,7 @@ namespace IPA.ModList.BeatSaber.UI
 
         [UIAction("#post-parse")]
         [SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "BSML calls this")]
-        private void SetupList()
+        private void Setup()
         {
             (transform as RectTransform).sizeDelta = new Vector2(70, 0);
             (transform as RectTransform).anchorMin = new Vector2(0.5f, 0);
