@@ -26,14 +26,17 @@
               size-delta-x='0' size-delta-y='0'
               pivot-x='0' pivot-y='0'/>
       </bg>
-      <horizontal id='mod-version-author' horizontal-fit='PreferredSize' child-align='MiddleLeft'
-          anchor-min-x='0' anchor-min-y='0'
-          anchor-max-x='1' anchor-max-y='0'
-          anchor-pos-x='0' anchor-pos-y='0' spacing='2'
-          pivot-x='0' pivot-y='-.1'
-          size-delta-x='0' size-delta-y='0'>
-        <text text='~author' font-size='5.25' overflow-mode='Ellipsis' font-align='CaplineLeft' rich-text='false' />
-        <text text='~version' font-size='4.25' overflow-mode='Masking' font-align='CaplineLeft' rich-text='false' />
+      <horizontal id='mod-version-author' horizontal-fit='PreferredSize' child-align='MiddleLeft' spacing='2'
+                  child-control-width='true' child-expand-width='false' pref-width='50' pref-height='10'
+                  anchor-min-x='0' anchor-min-y='0'
+                  anchor-max-x='1' anchor-max-y='0'
+                  anchor-pos-x='0' anchor-pos-y='0'
+                  pivot-x='0' pivot-y='0'
+                  size-delta-x='0' size-delta-y='0'>
+        <text text='~author' font-size='5.25' overflow-mode='Ellipsis' font-align='CaplineLeft' rich-text='false' word-wrapping='false' />
+        <horizontal horizontal-fit='MinSize' child-control-width='true' child-expand-width='false' min-width='10' pad='0'>
+          <text text='~version' font-size='4.25' overflow-mode='Ellipsis' font-align='CaplineLeft' rich-text='false' word-wrapping='false' />
+        </horizontal>
       </horizontal>
     </bg>
   </bg>
