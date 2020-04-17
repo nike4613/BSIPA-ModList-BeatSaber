@@ -85,9 +85,9 @@ namespace IPA.ModList.BeatSaber.UI
                         $"{p.Plugin.Author} <size=80%>{p.Plugin.Version}</size>", 
                         Helpers.ReadPluginIcon(p),
                         Enumerable.Empty<Sprite>()
-                            .MaybeAppend(p.Plugin.IsBare, Helpers.LibrarySprite)
-                            .MaybeAppend(p.State == PluginState.Disabled, Helpers.XSprite)
-                            .MaybeAppend(p.State == PluginState.Enabled 
+                            .AppendIf(p.Plugin.IsBare, Helpers.LibrarySprite)
+                            .AppendIf(p.State == PluginState.Disabled, Helpers.XSprite)
+                            .AppendIf(p.State == PluginState.Enabled 
                                       && p.Plugin.RuntimeOptions == RuntimeOptions.DynamicInit, Helpers.OSprite))));
 
             customListTableData?.tableView?.ReloadData();

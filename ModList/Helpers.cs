@@ -75,7 +75,7 @@ namespace IPA.ModList.BeatSaber
             return icon ?? DefaultPluginIcon;
         }
 
-        public static IEnumerable<T> MaybeAppend<T>(this IEnumerable<T> enumerable, bool append, T item)
+        public static IEnumerable<T> AppendIf<T>(this IEnumerable<T> enumerable, bool append, T item)
             => append ? enumerable.Append(item) : enumerable;
     }
 }
