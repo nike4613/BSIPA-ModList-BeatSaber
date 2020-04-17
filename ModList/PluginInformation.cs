@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using UnityEngine;
 
 namespace IPA.ModList.BeatSaber
 {
@@ -17,10 +18,15 @@ namespace IPA.ModList.BeatSaber
     {
         public PluginMetadata Plugin { get; }
         public PluginState State { get; }
+
+        private Texture2D icon;
+        public Texture2D Icon => icon ??= Helpers.ReadPluginIcon(Plugin);
+
         public PluginInformation(PluginMetadata meta, PluginState state)
         {
             Plugin = meta;
             State = state;
+            icon = null;
         }
     }
     internal static class PluginInformationExtensions

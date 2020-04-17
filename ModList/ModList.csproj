@@ -143,6 +143,7 @@
       <OutputFilePath>$(IntermediateOutputPath)</OutputFilePath>
       <LastGenOutput>CompileConstants.cs</LastGenOutput>
     </Content>
+    <EmbeddedResource Include="Resources\!.png" />
     <EmbeddedResource Include="Resources\o.png" />
     <EmbeddedResource Include="Resources\x.png" />
     <EmbeddedResource Include="Resources\library.png" />

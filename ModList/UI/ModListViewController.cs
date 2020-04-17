@@ -63,32 +63,35 @@ namespace IPA.ModList.BeatSaber.UI
             DidSelectPlugin?.Invoke(PluginList[index]);
         }
 
+        // TODO: async preload this and cache?
         private void ReloadPluginList()
         {
             PluginList.Clear();
             PluginList.AddRange(
                         PluginManager.EnabledPlugins .Where(m => !m.IsBare).AsInfos(PluginState.Enabled)
                 .Concat(PluginManager.DisabledPlugins.Where(m => !m.IsBare).AsInfos(PluginState.Disabled))
+                .Concat(PluginManager.IgnoredPlugins.Keys.AsInfos(PluginState.Ignored)) // ignored plugins should go *before* bare manifests
                 .Concat(PluginManager.EnabledPlugins .Where(m =>  m.IsBare).AsInfos(PluginState.Enabled))
-                .Concat(PluginManager.DisabledPlugins.Where(m =>  m.IsBare).AsInfos(PluginState.Disabled))
-                .Concat(PluginManager.IgnoredPlugins.Keys.AsInfos(PluginState.Ignored)));
+                .Concat(PluginManager.DisabledPlugins.Where(m =>  m.IsBare).AsInfos(PluginState.Disabled)));
             ReloadViewList();
         }
 
+        // TODO: async preload and cache icons?
         private void ReloadViewList()
         {
             ListValues.Clear();
             ListValues.AddRange(
-                PluginList.Select(p => 
+                PluginList.Select(p =>
                     new CustomListTableData.CustomCellInfo(
                         p.Plugin.Name,
-                        $"{p.Plugin.Author} <size=80%>{p.Plugin.Version}</size>", 
-                        Helpers.ReadPluginIcon(p),
+                        $"{p.Plugin.Author} <size=80%>{p.Plugin.Version}</size>",
+                        p.Icon,
                         Enumerable.Empty<Sprite>()
                             .AppendIf(p.Plugin.IsBare, Helpers.LibrarySprite)
                             .AppendIf(p.State == PluginState.Disabled, Helpers.XSprite)
-                            .AppendIf(p.State == PluginState.Enabled 
-                                      && p.Plugin.RuntimeOptions == RuntimeOptions.DynamicInit, Helpers.OSprite))));
+                            .AppendIf(p.State == PluginState.Enabled
+                                      && p.Plugin.RuntimeOptions == RuntimeOptions.DynamicInit, Helpers.OSprite)
+                            .AppendIf(p.State == PluginState.Ignored, Helpers.WarnSprite))));
 
             customListTableData?.tableView?.ReloadData();
         }

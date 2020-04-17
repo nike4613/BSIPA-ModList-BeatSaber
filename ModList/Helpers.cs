@@ -37,6 +37,9 @@ namespace IPA.ModList.BeatSaber
         private static Sprite oSprite = null;
         public static Sprite OSprite
             => oSprite ??= ReadImageFromSelf(ResourcePrefix + "o.png").AsSprite();
+        private static Sprite warnSprite = null;
+        public static Sprite WarnSprite
+            => warnSprite ??= ReadImageFromSelf(ResourcePrefix + "!.png").AsSprite();
 
         public static Texture2D ReadImageFromSelf(string name)
             => ReadImageFromAssembly(typeof(Helpers).Assembly, name);
