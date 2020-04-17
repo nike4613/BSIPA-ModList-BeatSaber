@@ -17,6 +17,9 @@
 """""UnityWebRequestModule.
 """"""dll
 """"""xml?optional
+"""""AssetBundleModule.
+""""""dll
+""""""xml?optional
 """""CoreModule.
 """"""dll
 """"""xml?optional

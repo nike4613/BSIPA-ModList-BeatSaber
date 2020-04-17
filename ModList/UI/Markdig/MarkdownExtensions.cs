@@ -1,0 +1,69 @@
+﻿using Markdig;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using IPALogger = IPA.Logging.Logger;
+
+namespace IPA.ModList.BeatSaber.UI.Markdig
+{
+    internal static class MarkdownExtensions
+    {
+        public static MarkdownPipelineBuilder WithDebugWriter(this MarkdownPipelineBuilder pipeline, TextWriter writer)
+        {
+            pipeline.DebugLog = writer;
+            return pipeline;
+        }
+
+        public static MarkdownPipelineBuilder WithLogger(this MarkdownPipelineBuilder pipeline, IPALogger logger, IPALogger.Level level = IPALogger.Level.Debug)
+            => pipeline.WithDebugWriter(new LoggerTextWriter(logger, level));
+
+        private sealed class LoggerTextWriter : TextWriter
+        {
+            private readonly IPALogger logger;
+            private readonly IPALogger.Level level;
+
+            public LoggerTextWriter(IPALogger logger, IPALogger.Level level)
+            {
+                this.logger = logger;
+                this.level = level;
+            }
+
+            public override Encoding Encoding => Encoding.Default;
+
+            private readonly StringBuilder builder = new StringBuilder();
+
+            public override void Write(char value)
+            {
+                if ((value == '\n' || value == '\r') && builder.Length > 0)
+                {
+                    Flush();
+                }
+                else
+                {
+                    builder.Append(value);
+                }
+            }
+
+            public override void Write(string value)
+                => builder.Append(value);
+
+            public override void WriteLine()
+                => Flush();
+
+            public override void WriteLine(string value)
+            {
+                builder.Append(value);
+                Flush();
+            }
+
+            public override void Flush()
+            {
+                logger.Log(level, builder.ToString());
+                builder.Clear();
+            }
+        }
+    }
+}
