@@ -167,29 +167,24 @@ namespace IPA.ModList.BeatSaber.UI.Markdig
             => builder.Append(lb.IsHard ? "\n" : " ");
 
         private static EmphasisFlags GetEmphasisFlags(EmphasisInline em)
-        {
-            switch (em.DelimiterChar)
+            => em.DelimiterChar switch
             {
-                case '*':
-                case '_':
-                    return em.DelimiterCount switch
-                    {
-                        1 => EmphasisFlags.Italic,
-                        2 => EmphasisFlags.Bold,
-                        var i when i > 2 => EmphasisFlags.Italic | EmphasisFlags.Bold,
-                        _ => EmphasisFlags.None
-                    };
-                case '~':
-                    return em.DelimiterCount switch
-                    {
-                        1 => EmphasisFlags.Underline,
-                        2 => EmphasisFlags.Strike,
-                        var i when i > 2 => EmphasisFlags.Underline | EmphasisFlags.Strike,
-                        _ => EmphasisFlags.None
-                    };
-            }
-            return EmphasisFlags.None;
-        }
+                '~' => em.DelimiterCount switch
+                {
+                    1 => EmphasisFlags.Underline,
+                    2 => EmphasisFlags.Strike,
+                    var i when i > 2 => EmphasisFlags.Underline | EmphasisFlags.Strike,
+                    _ => EmphasisFlags.None
+                },
+                var c when c == '*' || c == '_' => em.DelimiterCount switch
+                {
+                    1 => EmphasisFlags.Italic,
+                    2 => EmphasisFlags.Bold,
+                    var i when i > 2 => EmphasisFlags.Italic | EmphasisFlags.Bold,
+                    _ => EmphasisFlags.None
+                },
+                _ => EmphasisFlags.None
+            };
 
         private void RenderEmphasisToText(EmphasisInline em, StringBuilder builder)
         {
