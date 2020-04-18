@@ -126,6 +126,7 @@ namespace IPA.ModList.BeatSaber.UI.Markdig
             Logger.md.Debug($"Inline rendered to '{text}'");
 
             var tmp = Helpers.CreateText(text, Vector2.zero, new Vector2(60f, 10f));
+            tmp.enableWordWrapping = true;
             return tmp.rectTransform;
         }
 

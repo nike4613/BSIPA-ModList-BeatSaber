@@ -45,6 +45,7 @@ namespace IPA.ModList.BeatSaber.UI.Components
         public static MarkdownPipeline Pipeline 
             => pipeline ??= new MarkdownPipelineBuilder()
                     .UseAutoLinks().UseListExtras().DisableHtml().UsePreciseSourceLocation()
+                    // the renderer treats the Subscript `~` as underline
                     .UseEmphasisExtras(EmphasisExtraOptions.Strikethrough | EmphasisExtraOptions.Subscript)
                     .WithLogger(Logger.md)
                     .Build();
