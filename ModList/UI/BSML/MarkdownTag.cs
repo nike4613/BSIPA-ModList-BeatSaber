@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace IPA.ModList.BeatSaber.UI.BSML
 {
@@ -43,6 +44,11 @@ namespace IPA.ModList.BeatSaber.UI.BSML
 
             md.RectTransform.anchorMin = new Vector2(0.5f, 0.5f);
             md.RectTransform.anchorMax = new Vector2(0.5f, 0.5f);
+
+            var layout = go.AddComponent<VerticalLayoutGroup>();
+            layout.childControlHeight = true;
+            layout.childForceExpandHeight = false;
+            layout.childAlignment = TextAnchor.UpperCenter;
 
             return go;
         }
