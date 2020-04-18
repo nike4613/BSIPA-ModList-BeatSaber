@@ -141,6 +141,10 @@ namespace IPA.ModList.BeatSaber.UI.Markdig
                 case EmphasisInline em:
                     RenderEmphasisToText(em, builder);
                     return;
+                case LineBreakInline lb:
+                    RenderLineBreakInlineToText(lb, builder);
+                    return;
+
                 case ContainerInline container:
                     RenderContainerInlineToText(container, builder);
                     return;
@@ -158,6 +162,9 @@ namespace IPA.ModList.BeatSaber.UI.Markdig
 
         private void RenderLiteralToText(LiteralInline lit, StringBuilder builder)
             => builder.Append("<noparse>").Append(lit.Content.ToString()).Append("</noparse>");
+
+        private void RenderLineBreakInlineToText(LineBreakInline lb, StringBuilder builder)
+            => builder.Append(lb.IsHard ? "\n" : " ");
 
         private static EmphasisFlags GetEmphasisFlags(EmphasisInline em)
         {
