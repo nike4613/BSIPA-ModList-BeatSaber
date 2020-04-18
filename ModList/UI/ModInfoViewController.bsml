@@ -49,8 +49,8 @@
           anchor-max-x='1' anchor-max-y='1'
           anchor-pos-x='0' anchor-pos-y='0'
           size-delta-x='-5' size-delta-y='-5' />-->
-    <markdown text='~description'
-              anchor-min-x='0' anchor-min-y='0' rich-text='false'
+    <markdown text='__*hello*__ _**there**_ ~~strikethrough~~ ~underline~ ~~~strikeunderline~~~'
+              anchor-min-x='0' anchor-min-y='0'
               anchor-max-x='1' anchor-max-y='1'
               anchor-pos-x='0' anchor-pos-y='0'
               size-delta-x='-5' size-delta-y='-5' />

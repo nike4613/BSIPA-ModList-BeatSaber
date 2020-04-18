@@ -8,6 +8,7 @@ using Markdig;
 using Markdig.Renderers;
 using Markdig.Syntax;
 using IPA.ModList.BeatSaber.UI.Markdig;
+using Markdig.Extensions.EmphasisExtras;
 
 namespace IPA.ModList.BeatSaber.UI.Components
 {
@@ -44,13 +45,14 @@ namespace IPA.ModList.BeatSaber.UI.Components
         public static MarkdownPipeline Pipeline 
             => pipeline ??= new MarkdownPipelineBuilder()
                     .UseAutoLinks().UseListExtras().DisableHtml().UsePreciseSourceLocation()
+                    .UseEmphasisExtras(EmphasisExtraOptions.Strikethrough | EmphasisExtraOptions.Subscript)
                     .WithLogger(Logger.md)
                     .Build();
 
         private void Render()
         {
             var root = Markdown.Convert(Text, new UnityRenderer(), Pipeline) as RectTransform;
-            root.SetParent(RectTransform);
+            root.SetParent(RectTransform, false);
         }
 
         private static void ClearObject(Transform target)

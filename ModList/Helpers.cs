@@ -5,6 +5,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using TMPro;
 using UnityEngine;
 using BSMLUtils = BeatSaberMarkupLanguage.Utilities;
 
@@ -76,6 +77,27 @@ namespace IPA.ModList.BeatSaber
                 icon = ReadImageFromAssembly(plugin.Assembly, plugin.IconName);
 
             return icon ?? DefaultPluginIcon;
+        }
+
+        public static TextMeshProUGUI CreateText(/*RectTransform parent, */string text, Vector2 anchoredPosition, Vector2 sizeDelta)
+        {
+            var gameObj = new GameObject("CustomUIText");
+            gameObj.SetActive(false);
+
+            var textMesh = gameObj.AddComponent<TextMeshProUGUI>();
+            textMesh.font = GameObject.Instantiate(Resources.FindObjectsOfTypeAll<TMP_FontAsset>().First(t => t.name == "Teko-Medium SDF No Glow"));
+            //textMesh.rectTransform.SetParent(parent, false);
+            textMesh.text = text;
+            textMesh.fontSize = 4;
+            textMesh.color = Color.white;
+
+            textMesh.rectTransform.anchorMin = new Vector2(0.5f, 0.5f);
+            textMesh.rectTransform.anchorMax = new Vector2(0.5f, 0.5f);
+            textMesh.rectTransform.sizeDelta = sizeDelta;
+            textMesh.rectTransform.anchoredPosition = anchoredPosition;
+
+            gameObj.SetActive(true);
+            return textMesh;
         }
 
         public static IEnumerable<T> AppendIf<T>(this IEnumerable<T> enumerable, bool append, T item)
