@@ -81,7 +81,7 @@ namespace IPA.ModList.BeatSaber
 
         public static TextMeshProUGUI CreateText(/*RectTransform parent, */string text, Vector2 anchoredPosition, Vector2 sizeDelta)
         {
-            var gameObj = new GameObject("CustomUIText");
+            var gameObj = new GameObject("TextElement");
             gameObj.SetActive(false);
 
             var textMesh = gameObj.AddComponent<TextMeshProUGUI>();

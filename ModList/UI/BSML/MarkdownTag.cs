@@ -39,17 +39,24 @@ namespace IPA.ModList.BeatSaber.UI.BSML
         public override GameObject CreateObject(Transform parent)
         {
             var go = new GameObject("BSMLMarkdown");
+            go.SetActive(false);
+
             var md = go.AddComponent<MarkdownText>();
             md.RectTransform.SetParent(parent, false);
 
             md.RectTransform.anchorMin = new Vector2(0.5f, 0.5f);
             md.RectTransform.anchorMax = new Vector2(0.5f, 0.5f);
 
+            var fitter = go.AddComponent<ContentSizeFitter>();
+            fitter.verticalFit = ContentSizeFitter.FitMode.PreferredSize;
+            fitter.horizontalFit = ContentSizeFitter.FitMode.Unconstrained;
+
             var layout = go.AddComponent<VerticalLayoutGroup>();
             layout.childControlHeight = true;
             layout.childForceExpandHeight = false;
             layout.childAlignment = TextAnchor.UpperCenter;
 
+            go.SetActive(true);
             return go;
         }
     }

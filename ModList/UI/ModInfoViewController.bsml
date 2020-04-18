@@ -49,16 +49,14 @@
           anchor-max-x='1' anchor-max-y='1'
           anchor-pos-x='0' anchor-pos-y='0'
           size-delta-x='-5' size-delta-y='-5' />-->
-    <markdown vertical-fit='PreferredSize'
-              child-control-width='true' child-control-height='true'
-              child-expand-width='true' child-expand-height='false'
+    <markdown 
               anchor-min-x='0' anchor-min-y='0'
-              anchor-max-x='1' anchor-max-y='1'
-              anchor-pos-x='0' anchor-pos-y='0'
-              size-delta-x='-5' size-delta-y='-5'>
+              anchor-max-x='1' anchor-max-y='0'
+              anchor-pos-x='0' anchor-pos-y='6'
+              size-delta-x='-5' size-delta-y='0'>
 __*hello*__ _**there**_ ~~strikethrough~~ ~underline~ ~~~strikeunderline~~~ this should wrap
-      
-this is a new paragraph,  
+
+this is a new paragraph,
 and this is appended to the last
 
 And, here is yet *another* paragraph
