@@ -13,13 +13,15 @@ namespace IPA.ModList.BeatSaber.UI.BSML
     {
         public override Dictionary<string, string[]> Props { get; } = new Dictionary<string, string[]>
         {
-            { "text", new[] { "text", "value" } }
+            { "text", new[] { "text", "value" } },
+            { "childText", new[] { "_children" } }
         };
 
         public override Dictionary<string, Action<MarkdownText, string>> Setters { get; } 
             = new Dictionary<string, Action<MarkdownText, string>>
             {
-                { "text", (md, text) => md.Text = text }
+                { "text", (md, text) => md.Text = text },
+                { "childText", (md, text) => md.Text = text }
             };
     }
 }

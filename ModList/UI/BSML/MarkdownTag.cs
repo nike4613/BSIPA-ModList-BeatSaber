@@ -33,6 +33,8 @@ namespace IPA.ModList.BeatSaber.UI.BSML
 
         public override string[] Aliases { get; } = new[] { "markdown", "md" };
 
+        public override bool AddChildren => false;
+
         public override GameObject CreateObject(Transform parent)
         {
             var go = new GameObject("BSMLMarkdown");
