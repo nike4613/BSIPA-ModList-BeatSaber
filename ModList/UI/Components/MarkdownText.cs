@@ -35,6 +35,7 @@ namespace IPA.ModList.BeatSaber.UI.Components
             {
                 Clear();
                 Render();
+                IsDirty = false;
             }
         }
 
@@ -52,20 +53,21 @@ namespace IPA.ModList.BeatSaber.UI.Components
             root.SetParent(RectTransform);
         }
 
+        private static void ClearObject(Transform target)
+        {
+            foreach (Transform child in target)
+            {
+                ClearObject(child);
+                Logger.md.Debug($"Destroying {child.name}");
+                child.SetParent(null);
+                Destroy(child.gameObject);
+            }
+        }
+
         private void Clear()
         {
             gameObject.SetActive(false);
-            static void Clear(Transform target)
-            {
-                foreach (Transform child in target)
-                {
-                    Clear(child);
-                    Logger.md.Debug($"Destroying {child.name}");
-                    child.SetParent(null);
-                    Destroy(child.gameObject);
-                }
-            }
-            Clear(transform);
+            ClearObject(transform);
             gameObject.SetActive(true);
         }
     }
