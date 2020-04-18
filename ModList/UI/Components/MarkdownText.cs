@@ -40,6 +40,9 @@ namespace IPA.ModList.BeatSaber.UI.Components
             }
         }
 
+        internal void OnDestroy()
+            => Clear();
+
         private static MarkdownPipeline pipeline = null;
             
         public static MarkdownPipeline Pipeline 
@@ -54,6 +57,9 @@ namespace IPA.ModList.BeatSaber.UI.Components
         {
             var root = Markdown.Convert(Text, new UnityRenderer(), Pipeline) as RectTransform;
             root.SetParent(RectTransform, false);
+            root.anchorMin = new Vector2(0, 1);
+            root.anchorMax = Vector2.one;
+            root.anchoredPosition = Vector2.zero;
         }
 
         private static void ClearObject(Transform target)

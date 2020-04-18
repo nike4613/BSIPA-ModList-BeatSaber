@@ -49,15 +49,28 @@
           anchor-max-x='1' anchor-max-y='1'
           anchor-pos-x='0' anchor-pos-y='0'
           size-delta-x='-5' size-delta-y='-5' />-->
-    <markdown 
+    <markdown vertical-fit='PreferredSize'
+              child-control-width='true' child-control-height='true'
+              child-expand-width='true' child-expand-height='false'
               anchor-min-x='0' anchor-min-y='0'
               anchor-max-x='1' anchor-max-y='1'
               anchor-pos-x='0' anchor-pos-y='0'
               size-delta-x='-5' size-delta-y='-5'>
 __*hello*__ _**there**_ ~~strikethrough~~ ~underline~ ~~~strikeunderline~~~ this should wrap
       
-this is a new paragraph,
+this is a new paragraph,  
 and this is appended to the last
+
+And, here is yet *another* paragraph
+except this time we're using multiple types of ~inlines~ in it.
+
+Lets see what happens when we go over the bounds of the bg we're in!
+
+*Uh oh!* Everything is being squished together!
+
+How many paragraphs can I add?
+
+Seems like the answer is "not this many"
     </markdown>
   </bg>
 </bg>
