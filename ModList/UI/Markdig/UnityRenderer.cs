@@ -32,7 +32,8 @@ namespace IPA.ModList.BeatSaber.UI.Markdig
             {
                 MarkdownDocument doc => RenderDocument(doc),
                 ParagraphBlock para => RenderParagraph(para),
-                _ => throw new NotImplementedException("Unknown markdown block type")
+
+                _ => throw new NotImplementedException($"Unknown markdown block type {obj.GetType()}")
             };
 
         private (RectTransform, HorizontalOrVerticalLayoutGroup) Block(string name, float spacing, bool vertical)
@@ -144,7 +145,7 @@ namespace IPA.ModList.BeatSaber.UI.Markdig
                     RenderContainerInlineToText(container, builder);
                     return;
                 default:
-                    throw new NotImplementedException("Unknown inline type");
+                    throw new NotImplementedException($"Unknown inline type {inline.GetType()}");
             }
         }
 

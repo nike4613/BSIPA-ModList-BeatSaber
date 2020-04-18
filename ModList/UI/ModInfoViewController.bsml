@@ -54,10 +54,10 @@
               anchor-max-x='1' anchor-max-y='1'
               anchor-pos-x='0' anchor-pos-y='0'
               size-delta-x='-5' size-delta-y='-5'>
-      __*hello*__ _**there**_ ~~strikethrough~~ ~underline~ ~~~strikeunderline~~~ this should wrap
+__*hello*__ _**there**_ ~~strikethrough~~ ~underline~ ~~~strikeunderline~~~ this should wrap
       
-      this is a new paragraph,
-      and this is appended to the last
+this is a new paragraph,
+and this is appended to the last
     </markdown>
   </bg>
 </bg>
