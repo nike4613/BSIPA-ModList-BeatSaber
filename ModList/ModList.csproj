@@ -130,6 +130,8 @@
     <Compile Include="ModListPlugin.cs" />
     <Compile Include="PluginInformation.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="UI\BSML\MarkdownTag.cs" />
+    <Compile Include="UI\BSML\MarkdownTextHandler.cs" />
     <Compile Include="UI\Components\MarkdownText.cs" />
     <Compile Include="UI\Components\OldMarkdownText.cs" />
     <Compile Include="UI\Markdig\MarkdownExtensions.cs" />

@@ -5,6 +5,7 @@ using HMUI;
 using IPA.Loader;
 using IPA.Logging;
 using IPA.ModList.BeatSaber.UI;
+using IPA.ModList.BeatSaber.UI.BSML;
 using IPA.Utilities;
 using System;
 using System.Collections;
@@ -33,6 +34,7 @@ namespace IPA.ModList.BeatSaber
         public void OnEnable()
         {
             Logger.log.Debug($"{CompileConstants.Manifest.Name} Enabled");
+            MarkdownTag.Register();
             MenuButtons.instance.RegisterButton(menuBtn);
         }
 
@@ -40,6 +42,7 @@ namespace IPA.ModList.BeatSaber
         public void OnDisable()
         {
             MenuButtons.instance.UnregisterButton(menuBtn);
+            MarkdownTag.Unregister();
             Logger.log.Debug("Disabled");
         }
 
