@@ -49,11 +49,19 @@
           anchor-max-x='1' anchor-max-y='1'
           anchor-pos-x='0' anchor-pos-y='0'
           size-delta-x='-5' size-delta-y='-5' />-->
-    <markdown 
-              anchor-min-x='0' anchor-min-y='0'
-              anchor-max-x='1' anchor-max-y='0'
-              anchor-pos-x='0' anchor-pos-y='6'
-              size-delta-x='-5' size-delta-y='0'>
+    <bg
+        anchor-min-x='0' anchor-min-y='0'
+        anchor-max-x='1' anchor-max-y='1'
+        anchor-pos-x='0' anchor-pos-y='0'
+        size-delta-x='-5' size-delta-y='-5'>
+      <scroll id='descriptionWindow' mask-overflow='true'
+              anchor-min-x='0' anchor-min-y='1'
+              anchor-max-x='1' anchor-max-y='1'
+              size-delta-x='0'>
+        <markdown vertical-fit='Unconstrained'
+              anchor-min-x='0' anchor-min-y='1'
+              anchor-max-x='1' anchor-max-y='1'
+              size-delta-x='0'>
 __*hello*__ _**there**_ ~~strikethrough~~ ~underline~ ~~~strikeunderline~~~ this should wrap
 
 this is a new paragraph,
@@ -69,6 +77,8 @@ Lets see what happens when we go over the bounds of the bg we're in!
 How many paragraphs can I add?
 
 Seems like the answer is "not this many"
-    </markdown>
+        </markdown>
+      </scroll>
+    </bg>
   </bg>
 </bg>

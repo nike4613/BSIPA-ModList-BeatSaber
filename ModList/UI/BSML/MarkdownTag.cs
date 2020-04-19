@@ -47,9 +47,9 @@ namespace IPA.ModList.BeatSaber.UI.BSML
             md.RectTransform.anchorMin = new Vector2(0.5f, 0.5f);
             md.RectTransform.anchorMax = new Vector2(0.5f, 0.5f);
 
-            var fitter = go.AddComponent<ContentSizeFitter>();
+            /*var fitter = go.AddComponent<ContentSizeFitter>();
             fitter.verticalFit = ContentSizeFitter.FitMode.PreferredSize;
-            fitter.horizontalFit = ContentSizeFitter.FitMode.Unconstrained;
+            fitter.horizontalFit = ContentSizeFitter.FitMode.Unconstrained;*/
 
             var layout = go.AddComponent<VerticalLayoutGroup>();
             layout.childControlHeight = true;
