@@ -1,5 +1,4 @@
-﻿using BeatSaberMarkupLanguage;
-using Markdig.Renderers;
+﻿using Markdig.Renderers;
 using Markdig.Syntax;
 using Markdig.Syntax.Inlines;
 using System;
@@ -13,7 +12,7 @@ using UnityEngine.UI;
 
 namespace IPA.ModList.BeatSaber.UI.Markdig
 {
-    internal class UnityRenderer : IMarkdownRenderer
+    public class UnityRenderer : IMarkdownRenderer
     {
         public Material UIMaterial { get; set; }
 
@@ -22,6 +21,8 @@ namespace IPA.ModList.BeatSaber.UI.Markdig
         event Action<IMarkdownRenderer, MarkdownObject> IMarkdownRenderer.ObjectWriteBefore { add { } remove { } }
 
         event Action<IMarkdownRenderer, MarkdownObject> IMarkdownRenderer.ObjectWriteAfter { add { } remove { } }
+
+        public event Action<MarkdownObject, GameObject> AfterObjectRendered;
 
         object IMarkdownRenderer.Render(MarkdownObject obj)
             => obj switch
@@ -38,7 +39,7 @@ namespace IPA.ModList.BeatSaber.UI.Markdig
                 MarkdownDocument doc => RenderDocument(doc).SingleEnumerable(),
                 ParagraphBlock para => RenderParagraph(para),
                 HeadingBlock heading => RenderHeading(heading),
-                ThematicBreakBlock _ => RenderThematicBreak(),
+                ThematicBreakBlock block => RenderThematicBreak(block),
 
                 _ => throw new NotImplementedException($"Unknown markdown block type {obj.GetType()}")
             };
@@ -89,6 +90,8 @@ namespace IPA.ModList.BeatSaber.UI.Markdig
                     child.SetParent(transform, false);
             }
 
+            AfterObjectRendered?.Invoke(doc, transform.gameObject);
+
             return transform;
         }
 
@@ -115,6 +118,8 @@ namespace IPA.ModList.BeatSaber.UI.Markdig
                 inline.SetParent(transform, false);
             }
 
+            AfterObjectRendered?.Invoke(para, transform.gameObject);
+
             return Helpers.SingleEnumerable(transform).Append(Spacer(1.5f));
         }
 
@@ -133,13 +138,15 @@ namespace IPA.ModList.BeatSaber.UI.Markdig
                 inline.SetParent(transform, false);
             }
 
+            AfterObjectRendered?.Invoke(heading, transform.gameObject);
+
             var result = Helpers.SingleEnumerable(transform);
             if (heading.Level <= 2)
-                result = result.Concat(RenderThematicBreak(spacing: 2f));
+                result = result.Concat(RenderThematicBreak(null, spacing: 2f));
             return result;
         }
 
-        private IEnumerable<RectTransform> RenderThematicBreak(float spacing = 1.5f) // I don't need to take the block, because it never looks any different
+        private IEnumerable<RectTransform> RenderThematicBreak(ThematicBreakBlock block, float spacing = 1.5f)
         {
             var go = new GameObject("ThematicBreak");
             var transform = go.AddComponent<RectTransform>();
@@ -153,6 +160,9 @@ namespace IPA.ModList.BeatSaber.UI.Markdig
 
             var layout = go.AddComponent<LayoutElement>();
             layout.minHeight = layout.preferredHeight = ThematicBreakHeight;
+
+            if (block != null)
+                AfterObjectRendered?.Invoke(block, transform.gameObject);
 
             return Helpers.SingleEnumerable(transform).Append(Spacer(spacing));
         }
@@ -170,6 +180,9 @@ namespace IPA.ModList.BeatSaber.UI.Markdig
             tmp.enableWordWrapping = true;
             tmp.fontSize = fontSize;
             if (center) tmp.alignment = TextAlignmentOptions.Center;
+
+            AfterObjectRendered?.Invoke(inline, tmp.gameObject);
+
             return tmp.rectTransform;
         }
 
