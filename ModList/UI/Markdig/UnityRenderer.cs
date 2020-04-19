@@ -17,10 +17,11 @@ namespace IPA.ModList.BeatSaber.UI.Markdig
     {
         public Material UIMaterial { get; set; }
 
-        public ObjectRendererCollection ObjectRenderers { get; } = new ObjectRendererCollection();
+        ObjectRendererCollection IMarkdownRenderer.ObjectRenderers { get; } = new ObjectRendererCollection();
 
-        public event Action<IMarkdownRenderer, MarkdownObject> ObjectWriteBefore;
-        public event Action<IMarkdownRenderer, MarkdownObject> ObjectWriteAfter;
+        event Action<IMarkdownRenderer, MarkdownObject> IMarkdownRenderer.ObjectWriteBefore { add { } remove { } }
+
+        event Action<IMarkdownRenderer, MarkdownObject> IMarkdownRenderer.ObjectWriteAfter { add { } remove { } }
 
         object IMarkdownRenderer.Render(MarkdownObject obj)
             => obj switch
@@ -80,15 +81,6 @@ namespace IPA.ModList.BeatSaber.UI.Markdig
             Logger.md.Debug("Rendering document");
             var (transform, layout) = Block("Document", .5f, true);
             layout.childForceExpandWidth = true;
-
-            /* this is from the original
-            if (isDoc)
-            {
-                vlayout.sizeDelta = new Vector2(rectTransform.rect.width, 0f);
-                vlayout.anchorMin = new Vector2(0f, 1f);
-                vlayout.anchorMax = new Vector2(1f, 1f);
-            }
-            */
 
             foreach (var block in doc)
             {
