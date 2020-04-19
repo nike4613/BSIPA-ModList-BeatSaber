@@ -14,6 +14,8 @@ namespace IPA.ModList.BeatSaber.UI.Markdig
 {
     internal class UnityRenderer : IMarkdownRenderer
     {
+        public Material UIMaterial { get; set; }
+
         public ObjectRendererCollection ObjectRenderers { get; } = new ObjectRendererCollection();
 
         public event Action<IMarkdownRenderer, MarkdownObject> ObjectWriteBefore;
@@ -22,16 +24,19 @@ namespace IPA.ModList.BeatSaber.UI.Markdig
         object IMarkdownRenderer.Render(MarkdownObject obj)
             => obj switch
             {
-                Block block => RenderBlock(block).transform,
+                Block block => RenderBlock(block).First(),
                 Inline inline => RenderInline(inline),
                 _ => throw new NotImplementedException("Unknown markdown object type")
             };
 
-        private (RectTransform transform, float? space) RenderBlock(Block obj)
+        #region Blocks
+        private IEnumerable<RectTransform> RenderBlock(Block obj)
             => obj switch
             {
-                MarkdownDocument doc => RenderDocument(doc),
+                MarkdownDocument doc => RenderDocument(doc).SingleEnumerable(),
                 ParagraphBlock para => RenderParagraph(para),
+                HeadingBlock heading => RenderHeading(heading),
+                ThematicBreakBlock _ => RenderThematicBreak().SingleEnumerable(),
 
                 _ => throw new NotImplementedException($"Unknown markdown block type {obj.GetType()}")
             };
@@ -74,7 +79,7 @@ namespace IPA.ModList.BeatSaber.UI.Markdig
             return transform;
         }
 
-        private (RectTransform, float?) RenderDocument(MarkdownDocument doc)
+        private RectTransform RenderDocument(MarkdownDocument doc)
         {
             Logger.md.Debug("Rendering document");
             var (transform, layout) = Block("Document", .5f, true);
@@ -91,18 +96,17 @@ namespace IPA.ModList.BeatSaber.UI.Markdig
 
             foreach (var block in doc)
             {
-                var (child, space) = RenderBlock(block);
-                child.SetParent(transform, false);
-                if (space.HasValue)
-                    Spacer(space.Value).SetParent(transform, false);
+                var children = RenderBlock(block);
+                foreach (var child in children)
+                    child.SetParent(transform, false);
             }
 
-            return (transform, null);
+            return transform;
         }
 
         private const int TextInset = 1;
 
-        private (RectTransform, float?) RenderParagraph(ParagraphBlock para)
+        private IEnumerable<RectTransform> RenderParagraph(ParagraphBlock para)
         {
             Logger.md.Debug("Rendering paragraph");
 
@@ -115,9 +119,66 @@ namespace IPA.ModList.BeatSaber.UI.Markdig
                 inline.SetParent(transform, false);
             }
 
-            return (transform, 1.5f);
+            return Helpers.SingleEnumerable(transform).Append(Spacer(1.5f));
         }
 
+        private IEnumerable<RectTransform> RenderHeading(HeadingBlock heading)
+        {
+            var (transform, layout) = Block("Heading", .1f, false);
+            layout.padding = new RectOffset(TextInset, TextInset, 0, 0);
+            if (heading.Level < 2)
+                layout.childAlignment = TextAnchor.UpperCenter;
+
+            if (heading.Inline != null)
+            { // TODO: add font sizes
+                var inline = RenderInline(heading.Inline);
+                inline.SetParent(transform, false);
+            }
+
+            var result = Helpers.SingleEnumerable(transform);
+            if (heading.Level <= 2)
+                result = result.Append(RenderThematicBreak()).Append(Spacer(2f));
+            return result;
+        }
+
+        private RectTransform RenderThematicBreak() // I don't need to take the block, because it never looks any different
+        {
+            var (transform, layout) = Block("ThematicBreak", 0f, false);
+            layout.childControlHeight = false;
+            layout.childControlWidth = false;
+            layout.childAlignment = TextAnchor.UpperCenter;
+            transform.anchorMin = new Vector2(0, 1);
+            transform.anchorMax = Vector2.one;
+
+            var go = new GameObject("ThematicBreak Visual");
+            var visualTransform = go.AddComponent<RectTransform>();
+            visualTransform.SetParent(transform, false);
+
+            var img = go.AddComponent<Image>();
+            img.color = Color.white;
+            // TODO: figure out a good way of making this not rely on a *new* sprite
+            img.sprite = Sprite.Create(Texture2D.whiteTexture, new Rect(Vector2.zero, Vector2.one), Vector2.zero);
+            if (UIMaterial != null) img.material = UIMaterial;
+
+            // lets see if we can get away without this
+            /*var le = go.AddComponent<LayoutElement>();
+            le.minWidth = le.preferredWidth = layout.Peek().rect.width;
+            le.minHeight = le.preferredHeight = BreakHeight;
+            le.flexibleHeight = le.flexibleWidth = 1f;*/
+
+            visualTransform.anchorMin = Vector2.zero;
+            visualTransform.anchorMax = Vector2.one;
+            visualTransform.anchoredPosition = Vector2.zero;
+            visualTransform.localScale = Vector3.one;
+            visualTransform.localPosition = Vector3.zero;
+            visualTransform.sizeDelta = Vector2.zero;
+
+            return transform;
+        }
+
+        #endregion
+
+        #region Inlines
         private RectTransform RenderInline(Inline inline)
         {
             Logger.md.Debug("Rendering inline from block");
@@ -131,40 +192,46 @@ namespace IPA.ModList.BeatSaber.UI.Markdig
             return tmp.rectTransform;
         }
 
-        private void RenderInlineToText(Inline inline, StringBuilder builder)
-        {
-            switch (inline)
+        private StringBuilder RenderInlineToText(Inline inline, StringBuilder builder)
+            => inline switch
             {
-                case LiteralInline lit:
-                    RenderLiteralToText(lit, builder);
-                    return;
-                case EmphasisInline em:
-                    RenderEmphasisToText(em, builder);
-                    return;
-                case LineBreakInline lb:
-                    RenderLineBreakInlineToText(lb, builder);
-                    return;
+                LiteralInline lit => RenderLiteralToText(lit, builder),
+                EmphasisInline em => RenderEmphasisToText(em, builder),
+                LineBreakInline lb => RenderLineBreakInlineToText(lb, builder),
+                CodeInline code => RenderCodeInlineToText(code, builder),
+                AutolinkInline link => throw new NotImplementedException(), // TODO: implement this
+                LinkInline link => throw new NotImplementedException(), // TODO: implement this
+                HtmlInline tag => RenderHtmlInlineToText(tag, builder),
+                HtmlEntityInline entity => RenderHtmlEntityToText(entity, builder),
 
-                case ContainerInline container:
-                    RenderContainerInlineToText(container, builder);
-                    return;
-                default:
-                    throw new NotImplementedException($"Unknown inline type {inline.GetType()}");
-            }
-        }
+                ContainerInline container => RenderContainerInlineToText(container, builder),
+                _ => throw new NotImplementedException($"Unknown inline type {inline.GetType()}")
+            };
 
-        private void RenderContainerInlineToText(ContainerInline container, StringBuilder builder)
+        private StringBuilder RenderContainerInlineToText(ContainerInline container, StringBuilder builder)
         {
             Logger.md.Debug("Rendering ContainerInline");
             foreach (var inline in container)
-                RenderInlineToText(inline, builder);
+                builder = RenderInlineToText(inline, builder);
+            return builder;
         }
 
-        private void RenderLiteralToText(LiteralInline lit, StringBuilder builder)
+        private StringBuilder RenderLiteralToText(LiteralInline lit, StringBuilder builder)
             => builder.Append("<noparse>").Append(lit.Content.ToString()).Append("</noparse>");
 
-        private void RenderLineBreakInlineToText(LineBreakInline lb, StringBuilder builder)
+        private StringBuilder RenderLineBreakInlineToText(LineBreakInline lb, StringBuilder builder)
             => builder.Append(lb.IsHard ? "\n" : " ");
+
+        private StringBuilder RenderCodeInlineToText(CodeInline code, StringBuilder builder)
+            => builder.Append("<font=\"CONSOLAS\"><size=80%><mark=#A0A0C080><noparse>")
+                      .Append(code.Content)
+                      .Append("</noparse></mark></size></font>");
+
+        private StringBuilder RenderHtmlInlineToText(HtmlInline tag, StringBuilder builder)
+            => builder.Append(tag.Tag);
+
+        private StringBuilder RenderHtmlEntityToText(HtmlEntityInline entity, StringBuilder builder)
+            => builder.Append(entity.Transcoded.ToString());
 
         private static EmphasisFlags GetEmphasisFlags(EmphasisInline em)
             => em.DelimiterChar switch
@@ -186,14 +253,15 @@ namespace IPA.ModList.BeatSaber.UI.Markdig
                 _ => EmphasisFlags.None
             };
 
-        private void RenderEmphasisToText(EmphasisInline em, StringBuilder builder)
+        private StringBuilder RenderEmphasisToText(EmphasisInline em, StringBuilder builder)
         {
             Logger.md.Debug("Rendering inline emphasis");
             var flags = GetEmphasisFlags(em);
             builder.AppendEmOpenTags(flags);
-            RenderContainerInlineToText(em, builder);
-            builder.AppendEmCloseTags(flags);
+            return RenderContainerInlineToText(em, builder)
+                   .AppendEmCloseTags(flags);
         }
+        #endregion
     }
 
     [Flags]

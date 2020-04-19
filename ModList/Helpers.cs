@@ -1,5 +1,6 @@
 ﻿using IPA.Loader;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -98,6 +99,39 @@ namespace IPA.ModList.BeatSaber
 
             gameObj.SetActive(true);
             return textMesh;
+        }
+
+        public static IEnumerable<T> SingleEnumerable<T>(this T item)
+            => new SingleValueEnumerable<T>(item);
+
+        private class SingleValueEnumerable<T> : IEnumerable<T>
+        {
+            private readonly T value;
+            public SingleValueEnumerable(T val)
+                => value = val;
+            public IEnumerator<T> GetEnumerator() => new Enumerator(value);
+
+            IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+
+            private class Enumerator : IEnumerator<T>
+            {
+                private byte state = 0;
+
+                public Enumerator(T val)
+                    => Current = val;
+
+                public T Current { get; }
+
+                object IEnumerator.Current => Current;
+
+                public void Dispose() { }
+
+                public bool MoveNext()
+                    => state++ < 1;
+
+                public void Reset()
+                    => state = 0;
+            }
         }
 
         public static IEnumerable<T> AppendIf<T>(this IEnumerable<T> enumerable, bool append, T item)

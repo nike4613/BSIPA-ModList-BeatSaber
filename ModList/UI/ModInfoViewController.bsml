@@ -54,31 +54,22 @@
         anchor-max-x='1' anchor-max-y='1'
         anchor-pos-x='0' anchor-pos-y='0'
         size-delta-x='-5' size-delta-y='-5'>
+      <!--
       <scroll id='descriptionWindow' mask-overflow='true'
               anchor-min-x='0' anchor-min-y='1'
               anchor-max-x='1' anchor-max-y='1'
-              size-delta-x='0'>
-        <markdown vertical-fit='Unconstrained'
+              size-delta-x='0'>-->
+        <markdown 
               anchor-min-x='0' anchor-min-y='1'
               anchor-max-x='1' anchor-max-y='1'
-              size-delta-x='0'>
+              size-delta-x='0'
+              pivot-x='.5' pivot-y='1'>
 __*hello*__ _**there**_ ~~strikethrough~~ ~underline~ ~~~strikeunderline~~~ this should wrap
-
-this is a new paragraph,
-and this is appended to the last
 
 And, here is yet *another* paragraph
 except this time we're using multiple types of ~inlines~ in it.
-
-Lets see what happens when we go over the bounds of the bg we're in!
-
-*Uh oh!* Everything is being squished together!
-
-How many paragraphs can I add?
-
-Seems like the answer is "not this many"
         </markdown>
-      </scroll>
+      <!--/scroll-->
     </bg>
   </bg>
 </bg>

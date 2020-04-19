@@ -9,6 +9,7 @@ using Markdig.Renderers;
 using Markdig.Syntax;
 using IPA.ModList.BeatSaber.UI.Markdig;
 using Markdig.Extensions.EmphasisExtras;
+using BSMLUtils = BeatSaberMarkupLanguage.Utilities;
 
 namespace IPA.ModList.BeatSaber.UI.Components
 {
@@ -47,7 +48,7 @@ namespace IPA.ModList.BeatSaber.UI.Components
             
         public static MarkdownPipeline Pipeline 
             => pipeline ??= new MarkdownPipelineBuilder()
-                    .UseAutoLinks().UseListExtras().DisableHtml().UsePreciseSourceLocation()
+                    .UseAutoLinks().UseListExtras().UsePreciseSourceLocation()
                     // the renderer treats the Subscript `~` as underline
                     .UseEmphasisExtras(EmphasisExtraOptions.Strikethrough | EmphasisExtraOptions.Subscript)
                     .WithLogger(Logger.md)
@@ -55,7 +56,10 @@ namespace IPA.ModList.BeatSaber.UI.Components
 
         private void Render()
         {
-            var root = Markdown.Convert(Text, new UnityRenderer(), Pipeline) as RectTransform;
+            var root = Markdown.Convert(Text, new UnityRenderer 
+                { 
+                    UIMaterial = BSMLUtils.ImageResources.NoGlowMat 
+                }, Pipeline) as RectTransform;
             root.SetParent(RectTransform, false);
             root.anchorMin = new Vector2(0, 1);
             root.anchorMax = Vector2.one;
