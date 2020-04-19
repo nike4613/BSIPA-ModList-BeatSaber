@@ -134,6 +134,16 @@ namespace IPA.ModList.BeatSaber
             }
         }
 
+        public static void Zero(RectTransform transform)
+        {
+            transform.anchorMin = Vector2.zero;
+            transform.anchorMax = Vector2.one;
+            transform.anchoredPosition = Vector2.zero;
+            transform.localScale = Vector3.one;
+            transform.localPosition = Vector3.zero;
+            transform.sizeDelta = Vector2.zero;
+        }
+
         public static IEnumerable<T> AppendIf<T>(this IEnumerable<T> enumerable, bool append, T item)
             => append ? enumerable.Append(item) : enumerable;
     }

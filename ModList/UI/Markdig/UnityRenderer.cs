@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -25,7 +26,7 @@ namespace IPA.ModList.BeatSaber.UI.Markdig
             => obj switch
             {
                 Block block => RenderBlock(block).First(),
-                Inline inline => RenderInline(inline),
+                Inline inline => RenderInline(inline, ParagraphFontSize),
                 _ => throw new NotImplementedException("Unknown markdown object type")
             };
 
@@ -36,7 +37,7 @@ namespace IPA.ModList.BeatSaber.UI.Markdig
                 MarkdownDocument doc => RenderDocument(doc).SingleEnumerable(),
                 ParagraphBlock para => RenderParagraph(para),
                 HeadingBlock heading => RenderHeading(heading),
-                ThematicBreakBlock _ => RenderThematicBreak().SingleEnumerable(),
+                ThematicBreakBlock _ => RenderThematicBreak(),
 
                 _ => throw new NotImplementedException($"Unknown markdown block type {obj.GetType()}")
             };
@@ -47,12 +48,7 @@ namespace IPA.ModList.BeatSaber.UI.Markdig
 
             var go = new GameObject(name);
             var transform = go.AddComponent<RectTransform>();
-            transform.anchorMin = Vector2.zero;
-            transform.anchorMax = Vector2.one;
-            transform.anchoredPosition = Vector2.zero;
-            transform.localScale = Vector3.one;
-            transform.localPosition = Vector3.zero;
-            transform.sizeDelta = Vector2.zero;
+            Helpers.Zero(transform);
 
             var layout = vertical ? go.AddComponent<VerticalLayoutGroup>() as HorizontalOrVerticalLayoutGroup
                                   : go.AddComponent<HorizontalLayoutGroup>();
@@ -104,7 +100,15 @@ namespace IPA.ModList.BeatSaber.UI.Markdig
             return transform;
         }
 
+        private const float ParagraphFontSize = 3.5f;
+        private const float BlockCodeSize = ParagraphFontSize - .5f;
+        private const float H1FontSize = 5.5f;
+        private const float HeaderLevelFontDecrease = 0.5f;
+        private const float ThematicBreakHeight = .5f;
         private const int TextInset = 1;
+        private const int BlockQuoteInset = TextInset * 2;
+        private const int BlockCodeInset = BlockQuoteInset;
+        private const int ListInset = TextInset;
 
         private IEnumerable<RectTransform> RenderParagraph(ParagraphBlock para)
         {
@@ -115,7 +119,7 @@ namespace IPA.ModList.BeatSaber.UI.Markdig
 
             if (para.Inline != null)
             {
-                var inline = RenderInline(para.Inline);
+                var inline = RenderInline(para.Inline, ParagraphFontSize);
                 inline.SetParent(transform, false);
             }
 
@@ -130,29 +134,24 @@ namespace IPA.ModList.BeatSaber.UI.Markdig
                 layout.childAlignment = TextAnchor.UpperCenter;
 
             if (heading.Inline != null)
-            { // TODO: add font sizes
-                var inline = RenderInline(heading.Inline);
+            {
+                var inline = RenderInline(heading.Inline, 
+                    fontSize: H1FontSize - (HeaderLevelFontDecrease * (heading.Level - 1)),
+                    center: heading.Level < 2);
                 inline.SetParent(transform, false);
             }
 
             var result = Helpers.SingleEnumerable(transform);
             if (heading.Level <= 2)
-                result = result.Append(RenderThematicBreak()).Append(Spacer(2f));
+                result = result.Concat(RenderThematicBreak(spacing: 2f));
             return result;
         }
 
-        private RectTransform RenderThematicBreak() // I don't need to take the block, because it never looks any different
+        private IEnumerable<RectTransform> RenderThematicBreak(float spacing = 1.5f) // I don't need to take the block, because it never looks any different
         {
-            var (transform, layout) = Block("ThematicBreak", 0f, false);
-            layout.childControlHeight = false;
-            layout.childControlWidth = false;
-            layout.childAlignment = TextAnchor.UpperCenter;
-            transform.anchorMin = new Vector2(0, 1);
-            transform.anchorMax = Vector2.one;
-
-            var go = new GameObject("ThematicBreak Visual");
-            var visualTransform = go.AddComponent<RectTransform>();
-            visualTransform.SetParent(transform, false);
+            var go = new GameObject("ThematicBreak");
+            var transform = go.AddComponent<RectTransform>();
+            Helpers.Zero(transform);
 
             var img = go.AddComponent<Image>();
             img.color = Color.white;
@@ -160,35 +159,25 @@ namespace IPA.ModList.BeatSaber.UI.Markdig
             img.sprite = Sprite.Create(Texture2D.whiteTexture, new Rect(Vector2.zero, Vector2.one), Vector2.zero);
             if (UIMaterial != null) img.material = UIMaterial;
 
-            // lets see if we can get away without this
-            /*var le = go.AddComponent<LayoutElement>();
-            le.minWidth = le.preferredWidth = layout.Peek().rect.width;
-            le.minHeight = le.preferredHeight = BreakHeight;
-            le.flexibleHeight = le.flexibleWidth = 1f;*/
+            var layout = go.AddComponent<LayoutElement>();
+            layout.minHeight = layout.preferredHeight = ThematicBreakHeight;
 
-            visualTransform.anchorMin = Vector2.zero;
-            visualTransform.anchorMax = Vector2.one;
-            visualTransform.anchoredPosition = Vector2.zero;
-            visualTransform.localScale = Vector3.one;
-            visualTransform.localPosition = Vector3.zero;
-            visualTransform.sizeDelta = Vector2.zero;
-
-            return transform;
+            return Helpers.SingleEnumerable(transform).Append(Spacer(spacing));
         }
 
         #endregion
 
         #region Inlines
-        private RectTransform RenderInline(Inline inline)
+        private RectTransform RenderInline(Inline inline, float fontSize, bool center = false)
         {
             Logger.md.Debug("Rendering inline from block");
-            var builder = new StringBuilder(inline.Span.Length);
-            RenderInlineToText(inline, builder);
-            var text = builder.ToString();
+            var text = RenderInlineToText(inline, new StringBuilder(inline.Span.Length)).ToString();
             Logger.md.Debug($"Inline rendered to '{text}'");
 
             var tmp = Helpers.CreateText(text, Vector2.zero, new Vector2(60f, 10f));
             tmp.enableWordWrapping = true;
+            tmp.fontSize = fontSize;
+            if (center) tmp.alignment = TextAlignmentOptions.Center;
             return tmp.rectTransform;
         }
 

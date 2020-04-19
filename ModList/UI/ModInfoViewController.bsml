@@ -64,10 +64,14 @@
               anchor-max-x='1' anchor-max-y='1'
               size-delta-x='0'
               pivot-x='.5' pivot-y='1'>
-__*hello*__ _**there**_ ~~strikethrough~~ ~underline~ ~~~strikeunderline~~~ this should wrap
+# ATX H1
+## ATX H2
+### ATX H3
+#### ATX H4
+##### ATX H5
+###### ATX H6
 
-And, here is yet *another* paragraph
-except this time we're using multiple types of ~inlines~ in it.
+regular paragraph
         </markdown>
       <!--/scroll-->
     </bg>
