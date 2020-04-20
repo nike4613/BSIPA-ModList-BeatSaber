@@ -2,9 +2,11 @@
 using IPA.ModList.BeatSaber.UI.Components;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml;
 
 namespace IPA.ModList.BeatSaber.UI.BSML
 {
@@ -21,7 +23,24 @@ namespace IPA.ModList.BeatSaber.UI.BSML
             = new Dictionary<string, Action<MarkdownText, string>>
             {
                 { "text", (md, text) => md.Text = text },
-                { "childText", (md, text) => md.Text = text }
+                { "childText", HandleTextAsChildren }
             };
+
+        private static void HandleTextAsChildren(MarkdownText obj, string content)
+        {
+            var doc = new XmlDocument();
+            try
+            {
+                doc.Load(XmlReader.Create(new StringReader($"<xmlWrapper>{content}</xmlWrapper>"), new XmlReaderSettings()));
+                var node = doc.DocumentElement.FirstChild;
+                if (node is XmlCharacterData cdata)
+                    content = cdata.Data;
+            }
+            catch (Exception) { }
+            finally
+            {
+                obj.Text = content;
+            }
+        }
     }
 }
