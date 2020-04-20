@@ -57,15 +57,16 @@ namespace IPA.ModList.BeatSaber.UI.Components
 
         private void Render()
         {
-            var renderer = new UnityRenderer
-            {
-                UIMaterial = BSMLUtils.ImageResources.NoGlowMat
-            };
-            renderer.AfterObjectRendered += (obj, go) =>
-            {
-                if (obj is HeadingBlock || obj is ThematicBreakBlock)
-                    go.AddComponent<ItemForFocussedScrolling>();
-            };
+            var renderer = new UnityRendererBuilder()
+                .UI.Material(BSMLUtils.ImageResources.NoGlowMat)
+                .Quotes.WithBackground(BSMLUtils.ImageResources.WhitePixel, UnityEngine.UI.Image.Type.Sliced)
+                       .OfColor(new Color(30f / 255, 109f / 255, 178f / 255, .25f))
+                .WithObjectRenderCallback((obj, go) =>
+                {
+                    if (obj is HeadingBlock || obj is ThematicBreakBlock)
+                        go.AddComponent<ItemForFocussedScrolling>();
+                })
+                .Build();
             var root = Markdown.Convert(Text, renderer, Pipeline) as RectTransform;
             root.SetParent(RectTransform, false);
             root.anchorMin = new Vector2(0, 1);

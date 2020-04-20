@@ -12,9 +12,96 @@ using UnityEngine.UI;
 
 namespace IPA.ModList.BeatSaber.UI.Markdig
 {
+    public sealed class UnityRendererBuilder : UnityRendererBuilder.IQuoteRendererBuilder, UnityRendererBuilder.IUIRendererBuidler
+    {
+        private Material uiMat = null;
+        private Color uiColor = Color.white;
+
+        private Color? quoteColor = null;
+        private Sprite quoteBg = null;
+        private Image.Type quoteBgType;
+
+        private event Action<MarkdownObject, GameObject> ObjRenderCallback;
+
+        public interface IQuoteRendererBuilder
+        {
+            IQuoteRendererBuilder WithBackground(Sprite bg, Image.Type type);
+            UnityRendererBuilder OfColor(Color col);
+            UnityRendererBuilder Parent();
+        }
+
+        public interface IUIRendererBuidler
+        {
+            UnityRendererBuilder Material(Material mat);
+            UnityRendererBuilder Color(Color col);
+        }
+
+        public IUIRendererBuidler UI => this;
+        public IQuoteRendererBuilder Quotes => this;
+
+        public UnityRendererBuilder WithObjectRenderCallback(Action<MarkdownObject, GameObject> callback)
+        {
+            ObjRenderCallback += callback;
+            return this;
+        }
+
+        public UnityRenderer Build()
+        {
+            if (uiMat == null) throw new ArgumentNullException(nameof(UnityRenderer.UIMaterial));
+            if (quoteColor == null) throw new ArgumentNullException(nameof(UnityRenderer.QuoteColor));
+            if (quoteBg == null) throw new ArgumentNullException(nameof(UnityRenderer.QuoteBackground));
+
+            var render = new UnityRenderer(uiMat, quoteBg, quoteBgType, quoteColor.Value)
+            {
+                UIColor = uiColor,
+            };
+            render.AfterObjectRendered += ObjRenderCallback;
+            return render;
+        }
+
+        UnityRendererBuilder IUIRendererBuidler.Color(Color col)
+        {
+            uiColor = col;
+            return this;
+        }
+
+        UnityRendererBuilder IUIRendererBuidler.Material(Material mat)
+        {
+            uiMat = mat;
+            return this;
+        }
+
+        UnityRendererBuilder IQuoteRendererBuilder.OfColor(Color col)
+        {
+            quoteColor = col;
+            return this;
+        }
+
+        IQuoteRendererBuilder IQuoteRendererBuilder.WithBackground(Sprite bg, Image.Type type)
+        {
+            quoteBg = bg;
+            quoteBgType = type;
+            return this;
+        }
+
+        UnityRendererBuilder IQuoteRendererBuilder.Parent() => this;
+    }
+
     public class UnityRenderer : IMarkdownRenderer
     {
-        public Material UIMaterial { get; set; }
+        public Material UIMaterial { get; }
+        public Color UIColor { get; set; } = Color.white;
+        public Color QuoteColor { get; }
+        public Sprite QuoteBackground { get; }
+        public Image.Type QuoteBackgroundType { get; }
+
+        public UnityRenderer(Material uiMat, Sprite quoteBg, Image.Type bgType, Color quoteColor)
+        {
+            UIMaterial = uiMat;
+            QuoteBackground = quoteBg;
+            QuoteBackgroundType = bgType;
+            QuoteColor = quoteColor;
+        }
 
         ObjectRendererCollection IMarkdownRenderer.ObjectRenderers { get; } = new ObjectRendererCollection();
 
@@ -40,6 +127,7 @@ namespace IPA.ModList.BeatSaber.UI.Markdig
                 ParagraphBlock para => RenderParagraph(para),
                 HeadingBlock heading => RenderHeading(heading),
                 ThematicBreakBlock block => RenderThematicBreak(block),
+                QuoteBlock quote => RenderQuote(quote),
 
                 _ => throw new NotImplementedException($"Unknown markdown block type {obj.GetType()}")
             };
@@ -153,7 +241,7 @@ namespace IPA.ModList.BeatSaber.UI.Markdig
             Helpers.Zero(transform);
 
             var img = go.AddComponent<Image>();
-            img.color = Color.white;
+            img.color = UIColor;
             // TODO: figure out a good way of making this not rely on a *new* sprite
             img.sprite = Sprite.Create(Texture2D.whiteTexture, new Rect(Vector2.zero, Vector2.one), Vector2.zero);
             if (UIMaterial != null) img.material = UIMaterial;
@@ -165,6 +253,26 @@ namespace IPA.ModList.BeatSaber.UI.Markdig
                 AfterObjectRendered?.Invoke(block, transform.gameObject);
 
             return Helpers.SingleEnumerable(transform).Append(Spacer(spacing));
+        }
+
+        private IEnumerable<RectTransform> RenderQuote(QuoteBlock quote)
+        {
+            var (transform, layout) = Block("Quote", .1f, true);
+            transform.anchorMin = new Vector2(0, 1);
+            layout.childForceExpandWidth = true;
+            layout.padding = new RectOffset(BlockQuoteInset, BlockQuoteInset, BlockQuoteInset, 0);
+
+            var go = transform.gameObject;
+
+            var img = go.AddComponent<Image>();
+            img.color = QuoteColor;
+            img.sprite = QuoteBackground;
+            img.type = QuoteBackgroundType;
+            img.material = UIMaterial;
+
+            AfterObjectRendered?.Invoke(quote, go);
+
+            return Helpers.SingleEnumerable(transform).Append(Spacer(1.5f));
         }
 
         #endregion
@@ -179,6 +287,7 @@ namespace IPA.ModList.BeatSaber.UI.Markdig
             var tmp = Helpers.CreateText(text, Vector2.zero, new Vector2(60f, 10f));
             tmp.enableWordWrapping = true;
             tmp.fontSize = fontSize;
+            tmp.color = UIColor;
             if (center) tmp.alignment = TextAlignmentOptions.Center;
 
             AfterObjectRendered?.Invoke(inline, tmp.gameObject);

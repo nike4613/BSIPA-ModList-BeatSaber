@@ -64,14 +64,10 @@
               anchor-max-x='1' anchor-max-y='1'
               size-delta-x='0'
               pivot-x='.5' pivot-y='1'>
-# ATX H1
-## ATX H2
-### ATX H3
-#### ATX H4
-##### ATX H5
-###### ATX H6
+# Main heading
 
-regular paragraph
+> Blocked heading
+> etc
         </markdown>
       <!--/scroll-->
     </bg>
