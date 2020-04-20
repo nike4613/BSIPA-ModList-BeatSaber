@@ -128,9 +128,11 @@ namespace IPA.ModList.BeatSaber.UI.Markdig
                 HeadingBlock heading => RenderHeading(heading),
                 ThematicBreakBlock block => RenderThematicBreak(block),
                 QuoteBlock quote => RenderQuote(quote),
+                HtmlBlock html => RenderHtmlBlock(html),
 
                 _ => throw new NotImplementedException($"Unknown markdown block type {obj.GetType()}")
             };
+
 
         private (RectTransform, HorizontalOrVerticalLayoutGroup) Block(string name, float spacing, bool vertical)
         {
@@ -167,7 +169,6 @@ namespace IPA.ModList.BeatSaber.UI.Markdig
 
         private RectTransform RenderDocument(MarkdownDocument doc)
         {
-            Logger.md.Debug("Rendering document");
             var (transform, layout) = Block("Document", .5f, true);
             layout.childForceExpandWidth = true;
 
@@ -195,8 +196,6 @@ namespace IPA.ModList.BeatSaber.UI.Markdig
 
         private IEnumerable<RectTransform> RenderParagraph(ParagraphBlock para)
         {
-            Logger.md.Debug("Rendering paragraph");
-
             var (transform, layout) = Block("Paragraph", .1f, false);
             layout.padding = new RectOffset(TextInset, TextInset, 0, 0);
 
@@ -270,9 +269,27 @@ namespace IPA.ModList.BeatSaber.UI.Markdig
             img.type = QuoteBackgroundType;
             img.material = UIMaterial;
 
+            foreach (var block in quote)
+            {
+                var children = RenderBlock(block);
+                foreach (var child in children)
+                    child.SetParent(transform, false);
+            }
+
             AfterObjectRendered?.Invoke(quote, go);
 
             return Helpers.SingleEnumerable(transform).Append(Spacer(1.5f));
+        }
+        private IEnumerable<RectTransform> RenderHtmlBlock(HtmlBlock html)
+        {
+            Logger.md.Warn("Found HtmlBlock when rendering Markdown document, cannot process");
+
+            Logger.md.Debug($"Block type: {html.Type}");
+            Logger.md.Debug($"Content: {(html.Inline == null ? "null" : RenderInlineToText(html.Inline, new StringBuilder()).ToString())}");
+
+            AfterObjectRendered?.Invoke(html, null);
+
+            return Enumerable.Empty<RectTransform>();
         }
 
         #endregion
@@ -316,6 +333,7 @@ namespace IPA.ModList.BeatSaber.UI.Markdig
             Logger.md.Debug("Rendering ContainerInline");
             foreach (var inline in container)
                 builder = RenderInlineToText(inline, builder);
+            Logger.md.Debug("Rendered ContainerInline");
             return builder;
         }
 
