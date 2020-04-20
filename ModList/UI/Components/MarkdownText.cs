@@ -63,10 +63,13 @@ namespace IPA.ModList.BeatSaber.UI.Components
                        .OfColor(new Color(30f / 255, 109f / 255, 178f / 255, .25f))
                 .WithObjectRenderCallback((obj, go) =>
                 {
+                    Logger.md.Debug($"Rendered markdown object of type {obj.GetType()}");
                     if (obj is HeadingBlock || obj is ThematicBreakBlock)
                         go.AddComponent<ItemForFocussedScrolling>();
                 })
                 .Build();
+
+            Logger.md.Debug($"Rendering markdown:\n{string.Join("\n", Text.Split('\n').Select(s => "| " + s))}");
             var root = Markdown.Convert(Text, renderer, Pipeline) as RectTransform;
             root.SetParent(RectTransform, false);
             root.anchorMin = new Vector2(0, 1);
