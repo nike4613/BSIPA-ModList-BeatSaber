@@ -317,9 +317,9 @@ namespace IPA.ModList.BeatSaber.UI.Markdig
         private const string CodeRegionLinkIdStart = "__CodeInline__";
         private int codeRegionLinkPostfix = 0;
         private StringBuilder RenderCodeInlineToText(CodeInline code, StringBuilder builder)
-            => builder.Append($"{(CodeFont == null ? "" : $"<font=\"{CodeFont?.name}\">")}<size=80%><link=\"{CodeRegionLinkIdStart}{codeRegionLinkPostfix++}\"> <noparse>")
+            => builder.Append($"{(CodeFont == null ? "" : $"<font=\"{CodeFont?.name}\">")}<size=80%><link=\"{CodeRegionLinkIdStart}{codeRegionLinkPostfix++}\"><nobr> </nobr><noparse>")
                       .Append(code.Content)
-                      .Append($"</noparse> </link></size>{(CodeFont == null ? "" : "</font>")}");
+                      .Append($"</noparse><nobr> </nobr></link></size>{(CodeFont == null ? "" : "</font>")}");
 
         private StringBuilder RenderHtmlInlineToText(HtmlInline tag, StringBuilder builder)
             => builder.Append(tag.Tag);
