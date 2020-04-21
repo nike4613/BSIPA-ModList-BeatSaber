@@ -2,6 +2,7 @@
 using BeatSaberMarkupLanguage.MenuButtons;
 using BS_Utils.Utilities;
 using HMUI;
+using IPA.Config.Stores;
 using IPA.Loader;
 using IPA.Logging;
 using IPA.ModList.BeatSaber.UI;
@@ -24,9 +25,10 @@ namespace IPA.ModList.BeatSaber
         private readonly MenuButton menuBtn;
 
         [Init]
-        public ModListPlugin(IPALogger logger)
+        public ModListPlugin(IPALogger logger, Config.Config config)
         {
             Logger.log = logger;
+            ModListConfig.Instance = config.Generated<ModListConfig>();
             menuBtn = new MenuButton(CompileConstants.Manifest.Name, PresentModList);
         }
 
