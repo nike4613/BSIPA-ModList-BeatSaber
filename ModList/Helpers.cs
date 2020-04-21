@@ -43,6 +43,10 @@ namespace IPA.ModList.BeatSaber
         public static Sprite WarnSprite
             => warnSprite ??= ReadImageFromSelf(ResourcePrefix + "!.png").AsSprite();
 
+        private static TMP_FontAsset tekoMediumFont = null;
+        public static TMP_FontAsset TekoMediumFont
+            => tekoMediumFont ??= Resources.FindObjectsOfTypeAll<TMP_FontAsset>().First(t => t.name == "Teko-Medium SDF No Glow");
+
         public static Texture2D ReadImageFromSelf(string name)
             => ReadImageFromAssembly(typeof(Helpers).Assembly, name);
         public static Texture2D ReadImageFromAssembly(Assembly assembly, string name)
@@ -86,7 +90,7 @@ namespace IPA.ModList.BeatSaber
             gameObj.SetActive(false);
 
             var textMesh = gameObj.AddComponent<TextMeshProUGUI>();
-            textMesh.font = GameObject.Instantiate(Resources.FindObjectsOfTypeAll<TMP_FontAsset>().First(t => t.name == "Teko-Medium SDF No Glow"));
+            textMesh.font = GameObject.Instantiate(TekoMediumFont);
             //textMesh.rectTransform.SetParent(parent, false);
             textMesh.text = text;
             textMesh.fontSize = 4;
@@ -99,6 +103,17 @@ namespace IPA.ModList.BeatSaber
 
             gameObj.SetActive(true);
             return textMesh;
+        }
+
+        public static TMP_FontAsset CreateFixedUIFontClone(TMP_FontAsset font)
+        {
+            var matCopy = GameObject.Instantiate(TekoMediumFont.material);
+            matCopy.mainTexture = font.material.mainTexture;
+            matCopy.mainTextureOffset = font.material.mainTextureOffset;
+            matCopy.mainTextureScale = font.material.mainTextureScale;
+            font.material = matCopy;
+            font = GameObject.Instantiate(font);
+            return font;
         }
 
         public static IEnumerable<T> SingleEnumerable<T>(this T item)
