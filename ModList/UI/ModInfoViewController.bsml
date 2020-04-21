@@ -66,17 +66,7 @@
               pivot-x='.5' pivot-y='1'>
 <![CDATA[
 `inline code`
-
-    indented code
-```
-fenced code
-```
-> `inline code`
->
->     indented code
-> ```
-> fenced code
-> ```
+`more inline code in the same paragraph, except it wraps now`
 ]]>
         </markdown>
       <!--/scroll-->

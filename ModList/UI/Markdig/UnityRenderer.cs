@@ -1,4 +1,5 @@
-﻿using Markdig.Renderers;
+﻿using IPA.ModList.BeatSaber.UI.Components;
+using Markdig.Renderers;
 using Markdig.Syntax;
 using Markdig.Syntax.Inlines;
 using System;
@@ -243,7 +244,7 @@ namespace IPA.ModList.BeatSaber.UI.Markdig
             img.type = CodeBackgroundType;
             img.material = UIMaterial;
 
-            var tmp = CreateText($"<noparse>{code}</noparse>", CodeFontSize, center: false);
+            var tmp = CreateText($"<noparse>{code}</noparse>", CodeFontSize, center: false, false);
             // tmp.font = Consolas;
             tmp.transform.SetParent(transform, false);
 
@@ -257,9 +258,10 @@ namespace IPA.ModList.BeatSaber.UI.Markdig
         private RectTransform RenderInline(Inline inline, float fontSize, bool center = false)
         {
             Logger.md.Debug("Rendering inline from block");
+            codeRegionLinkPostfix = 0;
             var text = RenderInlineToText(inline, new StringBuilder(inline.Span.Length)).ToString();
             Logger.md.Debug($"Inline rendered to '{text}'");
-            var tmp = CreateText(text, fontSize, center);
+            var tmp = CreateText(text, fontSize, center, true);
 
             AfterObjectRendered?.Invoke(inline, tmp.gameObject);
 
@@ -297,10 +299,12 @@ namespace IPA.ModList.BeatSaber.UI.Markdig
         private StringBuilder RenderLineBreakInlineToText(LineBreakInline lb, StringBuilder builder)
             => builder.Append(lb.IsHard ? "\n" : " ");
 
+        private const string CodeRegionLinkIdStart = "__CodeInline__";
+        private int codeRegionLinkPostfix = 0;
         private StringBuilder RenderCodeInlineToText(CodeInline code, StringBuilder builder)
-            => builder.Append("<font=\"CONSOLAS\"><size=80%><mark=#A0A0C080><noparse>")
+            => builder.Append($"<font=\"CONSOLAS\"><size=80%><link=\"{CodeRegionLinkIdStart}{codeRegionLinkPostfix++}\"><noparse>")
                       .Append(code.Content)
-                      .Append("</noparse></mark></size></font>");
+                      .Append("</noparse></link></size></font>");
 
         private StringBuilder RenderHtmlInlineToText(HtmlInline tag, StringBuilder builder)
             => builder.Append(tag.Tag);
@@ -318,13 +322,32 @@ namespace IPA.ModList.BeatSaber.UI.Markdig
         }
         #endregion
 
-        private TextMeshProUGUI CreateText(string text, float fontSize, bool center)
+        private TextMeshProUGUI CreateText(string text, float fontSize, bool center, bool addCodeRenderer)
         {
             var tmp = Helpers.CreateText(text, Vector2.zero, new Vector2(60f, 10f));
             tmp.enableWordWrapping = true;
             tmp.fontSize = fontSize;
             tmp.color = UIColor;
             if (center) tmp.alignment = TextAlignmentOptions.Center;
+
+            if (addCodeRenderer)
+            {
+                var renderer = tmp.gameObject.AddComponent<TextMeshProUGUILinkHighlighter>();
+                renderer.BackgroundImageColor = CodeBackgroundColor;
+                renderer.BackgroundSprite = CodeBackground;
+                renderer.BackgroundImageType = CodeBackgroundType;
+
+                /*tmp.SetAllDirty();
+                tmp.ForceMeshUpdate();
+
+                Logger.md.Debug($"Links are as follows: {string.Join(" ; ", tmp.textInfo.linkInfo.Select(l => $"'{l.GetLinkText()}' ({l.GetLinkID()})"))}");*/
+
+                /*renderer.HighlightLinks = tmp.textInfo.linkInfo.Take(tmp.textInfo.linkCount)
+                    .Where(link => link.GetLinkID().StartsWith(CodeRegionLinkIdStart));*/
+
+                renderer.LinkSelector = link => link.GetLinkID().StartsWith(CodeRegionLinkIdStart);
+            }
+
             return tmp;
         }
     }

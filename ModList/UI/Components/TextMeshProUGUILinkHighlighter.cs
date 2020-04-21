@@ -10,7 +10,7 @@ using UnityEngine.UI;
 
 namespace IPA.ModList.BeatSaber.UI.Components
 {
-    [RequireComponent(typeof(TextMeshProUGUI))]
+    [RequireComponent(typeof(TextMeshProUGUI), typeof(RectTransform))]
     public class TextMeshProUGUILinkHighlighter : MonoBehaviour
     {
         public TextMeshProUGUI TextMeshPro => GetComponent<TextMeshProUGUI>();
@@ -18,12 +18,13 @@ namespace IPA.ModList.BeatSaber.UI.Components
 
         public Sprite BackgroundSprite { get; set; }
         public Image.Type BackgroundImageType { get; set; }
+        public Color BackgroundImageColor { get; set; }
 
         private IEnumerable<TMP_LinkInfo> highlightLinks;
-        public IEnumerable<TMP_LinkInfo> HighlightLinks 
+        public IEnumerable<TMP_LinkInfo> HighlightedLinks 
         { 
             get => highlightLinks;
-            set
+            private set
             {
                 if (!ValidateLinks(value))
                     throw new ArgumentException("Arugment must contain only links from the associated TextMeshPro object", nameof(value));
@@ -32,11 +33,36 @@ namespace IPA.ModList.BeatSaber.UI.Components
             } 
         }
 
+        private Func<TMP_LinkInfo, bool> linkSelector;
+        public Func<TMP_LinkInfo, bool> LinkSelector
+        {
+            get => linkSelector;
+            set
+            {
+                linkSelector = value;
+                IsDirty = true;
+            }
+        }
+
+        public bool IsDirty { get; set; } = false;
+
         private bool hasLinksChanged = false;
-        private List<GameObject> createdObjects = new List<GameObject>();
+        private readonly List<GameObject> createdObjects = new List<GameObject>();
 
         internal void Update()
         {
+            if (IsDirty)
+            {
+                var tmp = TextMeshPro;
+                HighlightedLinks = tmp.textInfo.linkInfo.Take(tmp.textInfo.linkCount);
+
+                if (LinkSelector != null)
+                    HighlightedLinks = HighlightedLinks.Where(LinkSelector);
+
+                Logger.log.Debug($"Links are as follows: {string.Join(" ; ", HighlightedLinks.Select(l => $"'{l.GetLinkText()}' ({l.GetLinkID()})"))}");
+
+                IsDirty = false;
+            }
             if (hasLinksChanged && highlightLinks != null)
             {
                 Clear();
@@ -59,13 +85,16 @@ namespace IPA.ModList.BeatSaber.UI.Components
         {
             var tmp = TextMeshPro;
 
-            foreach (var link in HighlightLinks)
+            Logger.log.Debug("Calculating highlighted regions");
+            foreach (var link in HighlightedLinks)
             {
+                Logger.log.Debug($"Looking at region '{link.GetLinkText()}' with ID '{link.GetLinkID()}'");
+
                 var start = link.linkTextfirstCharacterIndex;
                 var end = start + link.linkTextLength;
 
                 var startLineIndex = FindLineContainingCharacter(start);
-                var endLineIndex = FindLineContainingCharacter(end, startLineIndex);
+                var endLineIndex = FindLineContainingCharacter(end - 1, startLineIndex);
 
                 var currentLineIndex = startLineIndex;
                 var currentLine = tmp.textInfo.lineInfo[currentLineIndex];
@@ -73,12 +102,12 @@ namespace IPA.ModList.BeatSaber.UI.Components
 
                 var currentExtent = new Extents(new Vector2(0, lineExtent.min.y), new Vector2(0, lineExtent.max.y));
 
-                for (var chrIdx = start; chrIdx < end && chrIdx < tmp.textInfo.characterCount; chrIdx++)
+                for (var charIdx = start; charIdx < end && charIdx < tmp.textInfo.characterCount; charIdx++)
                 {
-                    var charInfo = tmp.textInfo.characterInfo[chrIdx];
+                    var charInfo = tmp.textInfo.characterInfo[charIdx];
                     var charExt = CharInfoExtent(charInfo);
 
-                    if (!IsCharInLine(chrIdx, currentLine))
+                    if (!IsCharInLine(charIdx, currentLine))
                     {
                         currentLineIndex++;
                         currentLine = tmp.textInfo.lineInfo[currentLineIndex];
