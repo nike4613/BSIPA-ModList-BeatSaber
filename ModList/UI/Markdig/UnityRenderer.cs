@@ -247,8 +247,7 @@ namespace IPA.ModList.BeatSaber.UI.Markdig
             img.type = CodeBackgroundType;
             img.material = UIMaterial;
 
-            var tmp = CreateText($"<noparse>{code}</noparse>", CodeFontSize, center: false);
-            // tmp.font = Consolas;
+            var tmp = CreateText($"<noparse>{code.Lines}</noparse>", CodeFontSize, center: false);
             if (CodeFont != null) tmp.font = CodeFont;
             tmp.transform.SetParent(transform, false);
 

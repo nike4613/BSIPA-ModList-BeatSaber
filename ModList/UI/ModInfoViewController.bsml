@@ -67,6 +67,13 @@
 <![CDATA[
 `inline code` not in code
 `more inline code in the same paragraph, except it wraps now`
+```
+a longer
+code
+block with more
+lines
+```
+    but what about a code block?
 ]]>
         </markdown>
       <!--/scroll-->
