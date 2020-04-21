@@ -336,15 +336,7 @@ namespace IPA.ModList.BeatSaber.UI.Markdig
                 renderer.BackgroundImageColor = CodeBackgroundColor;
                 renderer.BackgroundSprite = CodeBackground;
                 renderer.BackgroundImageType = CodeBackgroundType;
-
-                /*tmp.SetAllDirty();
-                tmp.ForceMeshUpdate();
-
-                Logger.md.Debug($"Links are as follows: {string.Join(" ; ", tmp.textInfo.linkInfo.Select(l => $"'{l.GetLinkText()}' ({l.GetLinkID()})"))}");*/
-
-                /*renderer.HighlightLinks = tmp.textInfo.linkInfo.Take(tmp.textInfo.linkCount)
-                    .Where(link => link.GetLinkID().StartsWith(CodeRegionLinkIdStart));*/
-
+                renderer.BackgroundMaterial = UIMaterial;
                 renderer.LinkSelector = link => link.GetLinkID().StartsWith(CodeRegionLinkIdStart);
             }
 

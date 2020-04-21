@@ -16,6 +16,7 @@ namespace IPA.ModList.BeatSaber.UI.Components
         public TextMeshProUGUI TextMeshPro => GetComponent<TextMeshProUGUI>();
         public RectTransform RectTransform => GetComponent<RectTransform>();
 
+        public Material BackgroundMaterial { get; set; }
         public Sprite BackgroundSprite { get; set; }
         public Image.Type BackgroundImageType { get; set; }
         public Color BackgroundImageColor { get; set; }
@@ -26,8 +27,6 @@ namespace IPA.ModList.BeatSaber.UI.Components
             get => highlightLinks;
             private set
             {
-                if (!ValidateLinks(value))
-                    throw new ArgumentException("Arugment must contain only links from the associated TextMeshPro object", nameof(value));
                 highlightLinks = value;
                 hasLinksChanged = true;
             } 
@@ -78,7 +77,12 @@ namespace IPA.ModList.BeatSaber.UI.Components
         {
             var regions = CalculateHighlightedRegions();
 
+#if DEBUG
+            regions = regions.ToArray();
             Logger.log.Debug(string.Join(" ; ", regions.Select(e => e.ToString())));
+#endif
+
+            CreateHighlightObjects(regions);
         }
 
         private IEnumerable<Extents> CalculateHighlightedRegions()
@@ -132,6 +136,27 @@ namespace IPA.ModList.BeatSaber.UI.Components
             }
         }
 
+        private void CreateHighlightObjects(IEnumerable<Extents> regions)
+        {
+            foreach (var region in regions)
+            {
+                var go = new GameObject("LinkHighlight");
+                var transform = go.AddComponent<RectTransform>();
+                transform.SetParent(RectTransform, false);
+                transform.anchorMin = transform.anchorMax = new Vector2(.5f, .5f);
+                transform.anchoredPosition = ExtentCenter(region);
+                transform.sizeDelta = ExtentSize(region);
+
+                var img = go.AddComponent<Image>();
+                img.material = BackgroundMaterial;
+                img.color = BackgroundImageColor;
+                img.sprite = BackgroundSprite;
+                img.type = BackgroundImageType;
+
+                createdObjects.Add(go);
+            }
+        }
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static float ExtentWidth(Extents extent)
             => extent.max.x - extent.min.x;
@@ -139,6 +164,14 @@ namespace IPA.ModList.BeatSaber.UI.Components
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static float ExtentHeight(Extents extent)
             => extent.max.y - extent.min.y;
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static Vector2 ExtentCenter(Extents extent)
+            => (extent.min + extent.max) / 2;
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static Vector2 ExtentSize(Extents extent)
+            => extent.max - extent.min;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static Extents CharInfoExtent(TMP_CharacterInfo chr)
@@ -184,8 +217,5 @@ namespace IPA.ModList.BeatSaber.UI.Components
             createdObjects.Clear();
             if (!destroying) gameObject.SetActive(true);
         }
-
-        private bool ValidateLinks(IEnumerable<TMP_LinkInfo> links)
-            => links.All(l => l.textComponent == TextMeshPro);
     }
 }

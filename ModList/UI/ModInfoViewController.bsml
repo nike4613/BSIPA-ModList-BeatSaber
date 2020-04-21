@@ -65,7 +65,7 @@
               size-delta-x='0'
               pivot-x='.5' pivot-y='1'>
 <![CDATA[
-`inline code`
+`inline code` not in code
 `more inline code in the same paragraph, except it wraps now`
 ]]>
         </markdown>
