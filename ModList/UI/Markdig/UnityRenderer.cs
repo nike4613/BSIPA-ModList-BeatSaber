@@ -23,6 +23,7 @@ namespace IPA.ModList.BeatSaber.UI.Markdig
         public Color CodeBackgroundColor { get; }
         public Sprite CodeBackground { get; }
         public Image.Type CodeBackgroundType { get; }
+        public TMP_FontAsset CodeFont { get; set; }
 
         public UnityRenderer(Material uiMat, Sprite quoteBg, Image.Type bgType, Color quoteColor,
                                              Sprite codeBg, Image.Type codeBgType, Color codeColor)
@@ -248,6 +249,7 @@ namespace IPA.ModList.BeatSaber.UI.Markdig
 
             var tmp = CreateText($"<noparse>{code}</noparse>", CodeFontSize, center: false);
             // tmp.font = Consolas;
+            if (CodeFont != null) tmp.font = CodeFont;
             tmp.transform.SetParent(transform, false);
 
             AfterObjectRendered?.Invoke(code, go);
@@ -264,6 +266,9 @@ namespace IPA.ModList.BeatSaber.UI.Markdig
             var text = RenderInlineToText(inline, new StringBuilder(inline.Span.Length)).ToString();
             Logger.md.Debug($"Inline rendered to '{text}'");
             var tmp = CreateText(text, fontSize, center);
+
+            if (CodeFont != null && !MaterialReferenceManager.instance.Contains(CodeFont))
+                MaterialReferenceManager.AddFontAsset(CodeFont); // I wish there was a better way to do this
 
             var highlights = new GameObject("CodeBackgrounds");
             var highlightTransform = highlights.AddComponent<RectTransform>();
@@ -313,9 +318,9 @@ namespace IPA.ModList.BeatSaber.UI.Markdig
         private const string CodeRegionLinkIdStart = "__CodeInline__";
         private int codeRegionLinkPostfix = 0;
         private StringBuilder RenderCodeInlineToText(CodeInline code, StringBuilder builder)
-            => builder.Append($"<font=\"CONSOLAS\"><size=80%><link=\"{CodeRegionLinkIdStart}{codeRegionLinkPostfix++}\"> <noparse>")
+            => builder.Append($"{(CodeFont == null ? "" : $"<font=\"{CodeFont?.name}\">")}<size=80%><link=\"{CodeRegionLinkIdStart}{codeRegionLinkPostfix++}\"> <noparse>")
                       .Append(code.Content)
-                      .Append("</noparse> </link></size></font>");
+                      .Append($"</noparse> </link></size>{(CodeFont == null ? "" : "</font>")}");
 
         private StringBuilder RenderHtmlInlineToText(HtmlInline tag, StringBuilder builder)
             => builder.Append(tag.Tag);

@@ -1,6 +1,7 @@
 ﻿using Markdig.Syntax;
 using System;
 using System.Runtime.CompilerServices;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -21,20 +22,22 @@ namespace IPA.ModList.BeatSaber.UI.Markdig
         private Color? codeColor = null;
         private Sprite codeBg = null;
         private Image.Type? codeBgType = null;
+        private TMP_FontAsset codeFont = null;
 
         private event Action<MarkdownObject, GameObject> ObjRenderCallback;
 
         public interface IQuoteRendererBuilder
         {
-            IQuoteRendererBuilder WithBackground(Sprite bg, Image.Type type);
-            UnityRendererBuilder OfColor(Color col);
+            UnityRendererBuilder UseBackground(Sprite bg, Image.Type type);
+            UnityRendererBuilder UseColor(Color col);
             UnityRendererBuilder Builder { get; }
         }
 
         public interface ICodeRendererBuilder
         {
-            ICodeRendererBuilder WithBackground(Sprite bg, Image.Type type);
-            UnityRendererBuilder OfColor(Color col);
+            UnityRendererBuilder WithBackground(Sprite bg, Image.Type type);
+            UnityRendererBuilder UseColor(Color col);
+            UnityRendererBuilder WithFont(TMP_FontAsset font);
             UnityRendererBuilder Builder { get; }
         }
 
@@ -60,7 +63,7 @@ namespace IPA.ModList.BeatSaber.UI.Markdig
             get => this;
         }
 
-        public UnityRendererBuilder WithObjectRenderCallback(Action<MarkdownObject, GameObject> callback)
+        public UnityRendererBuilder UseObjectRendererCallback(Action<MarkdownObject, GameObject> callback)
         {
             ObjRenderCallback += callback;
             return this;
@@ -72,11 +75,12 @@ namespace IPA.ModList.BeatSaber.UI.Markdig
             if (quoteColor == null) throw new ArgumentNullException(nameof(UnityRenderer.QuoteColor));
             if (quoteBg == null) throw new ArgumentNullException(nameof(UnityRenderer.QuoteBackground));
 
-            var render = new UnityRenderer(uiMat, 
+            var render = new UnityRenderer(uiMat,
                 quoteBg, quoteBgType, quoteColor.Value,
                 codeBg ?? quoteBg, codeBgType ?? quoteBgType, codeColor ?? quoteColor.Value)
             {
                 UIColor = uiColor,
+                CodeFont = codeFont,
             };
             render.AfterObjectRendered += ObjRenderCallback;
             return render;
@@ -86,23 +90,26 @@ namespace IPA.ModList.BeatSaber.UI.Markdig
 
         UnityRendererBuilder IUIRendererBuidler.Material(Material mat) => Do(uiMat = mat);
 
-        UnityRendererBuilder IQuoteRendererBuilder.OfColor(Color col) => Do(quoteColor = col);
+        UnityRendererBuilder IQuoteRendererBuilder.UseColor(Color col) => Do(quoteColor = col);
 
-        IQuoteRendererBuilder IQuoteRendererBuilder.WithBackground(Sprite bg, Image.Type type)
+        UnityRendererBuilder IQuoteRendererBuilder.UseBackground(Sprite bg, Image.Type type)
         {
             quoteBg = bg;
             quoteBgType = type;
             return this;
         }
 
-        UnityRendererBuilder ICodeRendererBuilder.OfColor(Color col) => Do(codeColor = col);
+        UnityRendererBuilder ICodeRendererBuilder.UseColor(Color col) => Do(codeColor = col);
 
-        ICodeRendererBuilder ICodeRendererBuilder.WithBackground(Sprite bg, Image.Type type)
+        UnityRendererBuilder ICodeRendererBuilder.WithBackground(Sprite bg, Image.Type type)
         {
             codeBg = bg;
             codeBgType = type;
             return this;
         }
+
+        UnityRendererBuilder ICodeRendererBuilder.WithFont(TMP_FontAsset font)
+            => Do(codeFont = font);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private UnityRendererBuilder Do<T>(T _) => this;
