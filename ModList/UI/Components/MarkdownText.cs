@@ -46,7 +46,6 @@ namespace IPA.ModList.BeatSaber.UI.Components
             => Clear();
 
         private static MarkdownPipeline pipeline = null;
-            
         public static MarkdownPipeline Pipeline 
             => pipeline ??= new MarkdownPipelineBuilder()
                     .UseAutoLinks().UseListExtras().UsePreciseSourceLocation()
@@ -55,23 +54,30 @@ namespace IPA.ModList.BeatSaber.UI.Components
                     .WithLogger(Logger.md)
                     .Build();
 
-        private void Render()
+        private static UnityRenderer renderer = null;
+        public static UnityRenderer Renderer 
+            => renderer ??= CreateRenderer();
+
+        private static UnityRenderer CreateRenderer()
         {
-            var renderer = new UnityRendererBuilder()
+            return new UnityRendererBuilder()
                 .UI.Material(BSMLUtils.ImageResources.NoGlowMat)
-                .Quote.WithBackground(BSMLUtils.ImageResources.WhitePixel, UnityEngine.UI.Image.Type.Sliced)
-                      .OfColor(new Color(30f / 255, 109f / 255, 178f / 255, .25f))
-                .Code .OfColor(new Color(135f / 255, 135f / 255, 135f / 255, .5f))
-                .WithObjectRenderCallback((obj, go) =>
+                .Quote.UseBackground(BSMLUtils.ImageResources.WhitePixel, UnityEngine.UI.Image.Type.Sliced)
+                .Quote.UseColor(new Color(30f / 255, 109f / 255, 178f / 255, .25f))
+                .Code.UseColor(new Color(135f / 255, 135f / 255, 135f / 255, .5f))
+                .UseObjectRendererCallback((obj, go) =>
                 {
                     Logger.md.Debug($"Rendered markdown object of type {obj.GetType()}");
                     if (obj is HeadingBlock || obj is ThematicBreakBlock)
                         go.AddComponent<ItemForFocussedScrolling>();
                 })
                 .Build();
+        }
 
+        private void Render()
+        {
             Logger.md.Debug($"Rendering markdown:\n{string.Join("\n", Text.Split('\n').Select(s => "| " + s))}");
-            var root = Markdown.Convert(Text, renderer, Pipeline) as RectTransform;
+            var root = Markdown.Convert(Text, Renderer, Pipeline) as RectTransform;
             root.SetParent(RectTransform, false);
             root.anchorMin = new Vector2(0, 1);
             root.anchorMax = Vector2.one;
