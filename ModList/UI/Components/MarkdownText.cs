@@ -62,7 +62,7 @@ namespace IPA.ModList.BeatSaber.UI.Components
         {
             return new UnityRendererBuilder()
                 .UI.Material(BSMLUtils.ImageResources.NoGlowMat)
-                .Quote.UseBackground(BSMLUtils.ImageResources.WhitePixel, UnityEngine.UI.Image.Type.Sliced)
+                .Quote.UseBackground(Helpers.RoundedBackgroundSprite, UnityEngine.UI.Image.Type.Sliced)
                 .Quote.UseColor(new Color(30f / 255, 109f / 255, 178f / 255, .25f))
                 .Code.UseColor(new Color(135f / 255, 135f / 255, 135f / 255, .5f))
                 .UseObjectRendererCallback((obj, go) =>

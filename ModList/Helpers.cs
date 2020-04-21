@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 using BSMLUtils = BeatSaberMarkupLanguage.Utilities;
 
 namespace IPA.ModList.BeatSaber
@@ -42,6 +43,11 @@ namespace IPA.ModList.BeatSaber
         private static Sprite warnSprite = null;
         public static Sprite WarnSprite
             => warnSprite ??= ReadImageFromSelf(ResourcePrefix + "!.png").AsSprite();
+
+        private static Sprite roundedBackgroundSprite = null;
+        public static Sprite RoundedBackgroundSprite
+            => roundedBackgroundSprite ??= Resources.FindObjectsOfTypeAll<Image>()
+                    .Last(x => x.gameObject.name == "MinScoreInfo" && x.sprite?.name == "RoundRectPanel").sprite;
 
         private static TMP_FontAsset tekoMediumFont = null;
         public static TMP_FontAsset TekoMediumFont
