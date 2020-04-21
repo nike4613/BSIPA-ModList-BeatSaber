@@ -168,10 +168,6 @@ namespace IPA.ModList.BeatSaber.UI.Components
             => extent.max.x - extent.min.x;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static float ExtentHeight(Extents extent)
-            => extent.max.y - extent.min.y;
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static Vector2 ExtentCenter(Extents extent)
             => (extent.min + extent.max) / 2;
 
