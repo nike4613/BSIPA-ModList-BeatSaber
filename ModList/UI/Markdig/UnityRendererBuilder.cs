@@ -35,9 +35,9 @@ namespace IPA.ModList.BeatSaber.UI.Markdig
 
         public interface ICodeRendererBuilder
         {
-            UnityRendererBuilder WithBackground(Sprite bg, Image.Type type);
+            UnityRendererBuilder UseBackground(Sprite bg, Image.Type type);
             UnityRendererBuilder UseColor(Color col);
-            UnityRendererBuilder WithFont(TMP_FontAsset font);
+            UnityRendererBuilder UseFont(TMP_FontAsset font);
             UnityRendererBuilder Builder { get; }
         }
 
@@ -101,14 +101,14 @@ namespace IPA.ModList.BeatSaber.UI.Markdig
 
         UnityRendererBuilder ICodeRendererBuilder.UseColor(Color col) => Do(codeColor = col);
 
-        UnityRendererBuilder ICodeRendererBuilder.WithBackground(Sprite bg, Image.Type type)
+        UnityRendererBuilder ICodeRendererBuilder.UseBackground(Sprite bg, Image.Type type)
         {
             codeBg = bg;
             codeBgType = type;
             return this;
         }
 
-        UnityRendererBuilder ICodeRendererBuilder.WithFont(TMP_FontAsset font)
+        UnityRendererBuilder ICodeRendererBuilder.UseFont(TMP_FontAsset font)
             => Do(codeFont = font);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
