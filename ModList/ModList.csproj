@@ -135,8 +135,11 @@
     <Compile Include="UI\BSML\MarkdownTextHandler.cs" />
     <Compile Include="UI\Components\MarkdownText.cs" />
     <Compile Include="UI\Components\OldMarkdownText.cs" />
+    <Compile Include="UI\Markdig\EmphasisFlags.cs" />
     <Compile Include="UI\Markdig\MarkdownExtensions.cs" />
+    <Compile Include="UI\Markdig\RenderHelpers.cs" />
     <Compile Include="UI\Markdig\UnityRenderer.cs" />
+    <Compile Include="UI\Markdig\UnityRendererBuilder.cs" />
     <Compile Include="UI\ModInfoViewController.cs">
       <DependentUpon>ModInfoViewController.bsml</DependentUpon>
     </Compile>

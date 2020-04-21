@@ -12,81 +12,6 @@ using UnityEngine.UI;
 
 namespace IPA.ModList.BeatSaber.UI.Markdig
 {
-    public sealed class UnityRendererBuilder : UnityRendererBuilder.IQuoteRendererBuilder, UnityRendererBuilder.IUIRendererBuidler
-    {
-        private Material uiMat = null;
-        private Color uiColor = Color.white;
-
-        private Color? quoteColor = null;
-        private Sprite quoteBg = null;
-        private Image.Type quoteBgType;
-
-        private event Action<MarkdownObject, GameObject> ObjRenderCallback;
-
-        public interface IQuoteRendererBuilder
-        {
-            IQuoteRendererBuilder WithBackground(Sprite bg, Image.Type type);
-            UnityRendererBuilder OfColor(Color col);
-            UnityRendererBuilder Parent();
-        }
-
-        public interface IUIRendererBuidler
-        {
-            UnityRendererBuilder Material(Material mat);
-            UnityRendererBuilder Color(Color col);
-        }
-
-        public IUIRendererBuidler UI => this;
-        public IQuoteRendererBuilder Quotes => this;
-
-        public UnityRendererBuilder WithObjectRenderCallback(Action<MarkdownObject, GameObject> callback)
-        {
-            ObjRenderCallback += callback;
-            return this;
-        }
-
-        public UnityRenderer Build()
-        {
-            if (uiMat == null) throw new ArgumentNullException(nameof(UnityRenderer.UIMaterial));
-            if (quoteColor == null) throw new ArgumentNullException(nameof(UnityRenderer.QuoteColor));
-            if (quoteBg == null) throw new ArgumentNullException(nameof(UnityRenderer.QuoteBackground));
-
-            var render = new UnityRenderer(uiMat, quoteBg, quoteBgType, quoteColor.Value)
-            {
-                UIColor = uiColor,
-            };
-            render.AfterObjectRendered += ObjRenderCallback;
-            return render;
-        }
-
-        UnityRendererBuilder IUIRendererBuidler.Color(Color col)
-        {
-            uiColor = col;
-            return this;
-        }
-
-        UnityRendererBuilder IUIRendererBuidler.Material(Material mat)
-        {
-            uiMat = mat;
-            return this;
-        }
-
-        UnityRendererBuilder IQuoteRendererBuilder.OfColor(Color col)
-        {
-            quoteColor = col;
-            return this;
-        }
-
-        IQuoteRendererBuilder IQuoteRendererBuilder.WithBackground(Sprite bg, Image.Type type)
-        {
-            quoteBg = bg;
-            quoteBgType = type;
-            return this;
-        }
-
-        UnityRendererBuilder IQuoteRendererBuilder.Parent() => this;
-    }
-
     public class UnityRenderer : IMarkdownRenderer
     {
         public Material UIMaterial { get; }
@@ -94,13 +19,21 @@ namespace IPA.ModList.BeatSaber.UI.Markdig
         public Color QuoteColor { get; }
         public Sprite QuoteBackground { get; }
         public Image.Type QuoteBackgroundType { get; }
+        public Color CodeBackgroundColor { get; }
+        public Sprite CodeBackground { get; }
+        public Image.Type CodeBackgroundType { get; }
 
-        public UnityRenderer(Material uiMat, Sprite quoteBg, Image.Type bgType, Color quoteColor)
+        public UnityRenderer(Material uiMat, Sprite quoteBg, Image.Type bgType, Color quoteColor,
+                                             Sprite codeBg, Image.Type codeBgType, Color codeColor)
         {
             UIMaterial = uiMat;
             QuoteBackground = quoteBg;
             QuoteBackgroundType = bgType;
             QuoteColor = quoteColor;
+
+            CodeBackground = codeBg;
+            CodeBackgroundType = codeBgType;
+            CodeBackgroundColor = codeColor;
         }
 
         ObjectRendererCollection IMarkdownRenderer.ObjectRenderers { get; } = new ObjectRendererCollection();
@@ -119,6 +52,16 @@ namespace IPA.ModList.BeatSaber.UI.Markdig
                 _ => throw new NotImplementedException("Unknown markdown object type")
             };
 
+        private const float ParagraphFontSize = 3.5f;
+        private const float CodeFontSize = ParagraphFontSize - .5f;
+        private const float H1FontSize = 5.5f;
+        private const float HeaderLevelFontDecrease = 0.5f;
+        private const float ThematicBreakHeight = .5f;
+        private const int TextInset = 1;
+        private const int BlockQuoteInset = TextInset * 2;
+        private const int BlockCodeInset = BlockQuoteInset;
+        private const int ListInset = TextInset;
+
         #region Blocks
         private IEnumerable<RectTransform> RenderBlock(Block obj)
             => obj switch
@@ -129,6 +72,8 @@ namespace IPA.ModList.BeatSaber.UI.Markdig
                 ThematicBreakBlock block => RenderThematicBreak(block),
                 QuoteBlock quote => RenderQuote(quote),
                 HtmlBlock html => RenderHtmlBlock(html),
+                // I don't render FencedCodeBlock and CodeBlock differently, so there is just the one case
+                CodeBlock code => RenderCodeBlock(code),
 
                 _ => throw new NotImplementedException($"Unknown markdown block type {obj.GetType()}")
             };
@@ -183,16 +128,6 @@ namespace IPA.ModList.BeatSaber.UI.Markdig
 
             return transform;
         }
-
-        private const float ParagraphFontSize = 3.5f;
-        private const float BlockCodeSize = ParagraphFontSize - .5f;
-        private const float H1FontSize = 5.5f;
-        private const float HeaderLevelFontDecrease = 0.5f;
-        private const float ThematicBreakHeight = .5f;
-        private const int TextInset = 1;
-        private const int BlockQuoteInset = TextInset * 2;
-        private const int BlockCodeInset = BlockQuoteInset;
-        private const int ListInset = TextInset;
 
         private IEnumerable<RectTransform> RenderParagraph(ParagraphBlock para)
         {
@@ -280,6 +215,7 @@ namespace IPA.ModList.BeatSaber.UI.Markdig
 
             return Helpers.SingleEnumerable(transform).Append(Spacer(1.5f));
         }
+
         private IEnumerable<RectTransform> RenderHtmlBlock(HtmlBlock html)
         {
             Logger.md.Warn("Found HtmlBlock when rendering Markdown document, cannot process");
@@ -292,6 +228,29 @@ namespace IPA.ModList.BeatSaber.UI.Markdig
             return Enumerable.Empty<RectTransform>();
         }
 
+        private IEnumerable<RectTransform> RenderCodeBlock(CodeBlock code)
+        {
+            var (transform, layout) = Block("Code", .1f, true);
+            transform.anchorMin = new Vector2(0, 1);
+            layout.childForceExpandWidth = true;
+            layout.padding = new RectOffset(BlockCodeInset, BlockCodeInset, BlockCodeInset, BlockCodeInset);
+
+            var go = transform.gameObject;
+
+            var img = go.AddComponent<Image>();
+            img.color = CodeBackgroundColor;
+            img.sprite = CodeBackground;
+            img.type = CodeBackgroundType;
+            img.material = UIMaterial;
+
+            var tmp = CreateText($"<noparse>{code}</noparse>", CodeFontSize, center: false);
+            // tmp.font = Consolas;
+            tmp.transform.SetParent(transform, false);
+
+            AfterObjectRendered?.Invoke(code, go);
+
+            return Helpers.SingleEnumerable(transform).Append(Spacer(1.5f));
+        }
         #endregion
 
         #region Inlines
@@ -300,12 +259,7 @@ namespace IPA.ModList.BeatSaber.UI.Markdig
             Logger.md.Debug("Rendering inline from block");
             var text = RenderInlineToText(inline, new StringBuilder(inline.Span.Length)).ToString();
             Logger.md.Debug($"Inline rendered to '{text}'");
-
-            var tmp = Helpers.CreateText(text, Vector2.zero, new Vector2(60f, 10f));
-            tmp.enableWordWrapping = true;
-            tmp.fontSize = fontSize;
-            tmp.color = UIColor;
-            if (center) tmp.alignment = TextAlignmentOptions.Center;
+            var tmp = CreateText(text, fontSize, center);
 
             AfterObjectRendered?.Invoke(inline, tmp.gameObject);
 
@@ -354,68 +308,24 @@ namespace IPA.ModList.BeatSaber.UI.Markdig
         private StringBuilder RenderHtmlEntityToText(HtmlEntityInline entity, StringBuilder builder)
             => builder.Append(entity.Transcoded.ToString());
 
-        private static EmphasisFlags GetEmphasisFlags(EmphasisInline em)
-            => em.DelimiterChar switch
-            {
-                '~' => em.DelimiterCount switch
-                {
-                    1 => EmphasisFlags.Underline,
-                    2 => EmphasisFlags.Strike,
-                    var i when i > 2 => EmphasisFlags.Underline | EmphasisFlags.Strike,
-                    _ => EmphasisFlags.None
-                },
-                var c when c == '*' || c == '_' => em.DelimiterCount switch
-                {
-                    1 => EmphasisFlags.Italic,
-                    2 => EmphasisFlags.Bold,
-                    var i when i > 2 => EmphasisFlags.Italic | EmphasisFlags.Bold,
-                    _ => EmphasisFlags.None
-                },
-                _ => EmphasisFlags.None
-            };
-
         private StringBuilder RenderEmphasisToText(EmphasisInline em, StringBuilder builder)
         {
             Logger.md.Debug("Rendering inline emphasis");
-            var flags = GetEmphasisFlags(em);
+            var flags = RenderHelpers.GetEmphasisFlags(em);
             builder.AppendEmOpenTags(flags);
             return RenderContainerInlineToText(em, builder)
                    .AppendEmCloseTags(flags);
         }
         #endregion
-    }
 
-    [Flags]
-    internal enum EmphasisFlags
-    {
-        None, Italic = 1, Bold = 2, Strike = 4, Underline = 8
-    }
-
-    internal static class StringBuilderExtensions
-    {
-        public static StringBuilder AppendEmOpenTags(this StringBuilder builder, EmphasisFlags tags)
+        private TextMeshProUGUI CreateText(string text, float fontSize, bool center)
         {
-            if ((tags & EmphasisFlags.Italic) != EmphasisFlags.None)
-                builder.Append("<i>");
-            if ((tags & EmphasisFlags.Bold) != EmphasisFlags.None)
-                builder.Append("<b>");
-            if ((tags & EmphasisFlags.Strike) != EmphasisFlags.None)
-                builder.Append("<s>");
-            if ((tags & EmphasisFlags.Underline) != EmphasisFlags.None)
-                builder.Append("<u>");
-            return builder;
-        }
-        public static StringBuilder AppendEmCloseTags(this StringBuilder builder, EmphasisFlags tags)
-        {
-            if ((tags & EmphasisFlags.Underline) != EmphasisFlags.None)
-                builder.Append("</u>");
-            if ((tags & EmphasisFlags.Strike) != EmphasisFlags.None)
-                builder.Append("</s>");
-            if ((tags & EmphasisFlags.Bold) != EmphasisFlags.None)
-                builder.Append("</b>");
-            if ((tags & EmphasisFlags.Italic) != EmphasisFlags.None)
-                builder.Append("</i>");
-            return builder;
+            var tmp = Helpers.CreateText(text, Vector2.zero, new Vector2(60f, 10f));
+            tmp.enableWordWrapping = true;
+            tmp.fontSize = fontSize;
+            tmp.color = UIColor;
+            if (center) tmp.alignment = TextAlignmentOptions.Center;
+            return tmp;
         }
     }
 }

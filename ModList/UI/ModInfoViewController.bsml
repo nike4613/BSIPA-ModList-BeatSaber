@@ -65,13 +65,18 @@
               size-delta-x='0'
               pivot-x='.5' pivot-y='1'>
 <![CDATA[
-# Main heading
+`inline code`
 
-> ### Quoted heading
-> 
-> paragraph
-
-response
+    indented code
+```
+fenced code
+```
+> `inline code`
+>
+>     indented code
+> ```
+> fenced code
+> ```
 ]]>
         </markdown>
       <!--/scroll-->

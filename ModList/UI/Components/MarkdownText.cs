@@ -59,8 +59,9 @@ namespace IPA.ModList.BeatSaber.UI.Components
         {
             var renderer = new UnityRendererBuilder()
                 .UI.Material(BSMLUtils.ImageResources.NoGlowMat)
-                .Quotes.WithBackground(BSMLUtils.ImageResources.WhitePixel, UnityEngine.UI.Image.Type.Sliced)
-                       .OfColor(new Color(30f / 255, 109f / 255, 178f / 255, .25f))
+                .Quote.WithBackground(BSMLUtils.ImageResources.WhitePixel, UnityEngine.UI.Image.Type.Sliced)
+                      .OfColor(new Color(30f / 255, 109f / 255, 178f / 255, .25f))
+                .Code .OfColor(new Color(135f / 255, 135f / 255, 135f / 255, .5f))
                 .WithObjectRenderCallback((obj, go) =>
                 {
                     Logger.md.Debug($"Rendered markdown object of type {obj.GetType()}");
