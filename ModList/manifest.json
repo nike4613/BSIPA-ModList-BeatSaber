@@ -16,6 +16,7 @@
     "donate": "https://ko-fi.com/danike"
   },
   "files": [
+    "Libs/Markdig.dll"
   ],
   "misc": {
     "plugin-hint": "IPA.ModList.BeatSaber.Plugin"
