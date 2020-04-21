@@ -71,7 +71,7 @@ namespace IPA.ModList.BeatSaber.UI.Components
         }
 
         internal void OnDestroy()
-            => Clear();
+            => Clear(true);
 
         private void Render()
         {
@@ -141,6 +141,7 @@ namespace IPA.ModList.BeatSaber.UI.Components
             foreach (var region in regions)
             {
                 var go = new GameObject("LinkHighlight");
+
                 var transform = go.AddComponent<RectTransform>();
                 transform.SetParent(RectTransform, false);
                 transform.anchorMin = transform.anchorMax = new Vector2(.5f, .5f);
@@ -211,6 +212,7 @@ namespace IPA.ModList.BeatSaber.UI.Components
             if (!destroying) gameObject.SetActive(false);
             foreach (var go in createdObjects)
             {
+                if (go == null) continue;
                 ClearObject(go.transform);
                 Destroy(go);
             }
