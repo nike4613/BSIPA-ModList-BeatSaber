@@ -11,6 +11,7 @@ using IPA.ModList.BeatSaber.UI.Markdig;
 using Markdig.Extensions.EmphasisExtras;
 using BSMLUtils = BeatSaberMarkupLanguage.Utilities;
 using HMUI;
+using TMPro;
 
 namespace IPA.ModList.BeatSaber.UI.Components
 {
@@ -58,13 +59,35 @@ namespace IPA.ModList.BeatSaber.UI.Components
         public static UnityRenderer Renderer 
             => renderer ??= CreateRenderer();
 
+        private static TMP_FontAsset LoadConfigFont(ModListConfig config)
+        {
+            Font GetUnityFont()
+            {
+                if (config.MonospaceFontPath != null)
+                    return new Font(config.MonospaceFontPath);
+
+                var fonts = Font.GetOSInstalledFontNames();
+                Logger.log.Debug($"fonts: {string.Join(" ; ", fonts)}");
+                Logger.log.Debug($"select {config.MonospaceFontName}");
+                if (fonts.Contains(config.MonospaceFontName))
+                    return new Font(config.MonospaceFontName);
+
+                Logger.log.Warn($"Could not find font of name '{config.MonospaceFontName}'");
+                return new Font("Consolas");
+            }
+
+            var asset = TMP_FontAsset.CreateFontAsset(GetUnityFont());
+            return Helpers.CreateFixedUIFontClone(asset);
+        }
+
         private static UnityRenderer CreateRenderer()
         {
             return new UnityRendererBuilder()
                 .UI.Material(BSMLUtils.ImageResources.NoGlowMat)
                 .Quote.UseBackground(Helpers.RoundedBackgroundSprite, UnityEngine.UI.Image.Type.Sliced)
                 .Quote.UseColor(new Color(30f / 255, 109f / 255, 178f / 255, .25f))
-                .Code.UseColor(new Color(135f / 255, 135f / 255, 135f / 255, .5f))
+                .Code.UseColor(new Color(135f / 255, 135f / 255, 135f / 255, .25f))
+                .Code.UseFont(LoadConfigFont(ModListConfig.Instance))
                 .UseObjectRendererCallback((obj, go) =>
                 {
                     Logger.md.Debug($"Rendered markdown object of type {obj.GetType()}");
