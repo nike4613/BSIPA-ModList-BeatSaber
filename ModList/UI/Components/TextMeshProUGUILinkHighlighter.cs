@@ -21,6 +21,11 @@ namespace IPA.ModList.BeatSaber.UI.Components
         public Image.Type BackgroundImageType { get; set; }
         public Color BackgroundImageColor { get; set; }
 
+        /// <summary>
+        /// The object pointed to by this property should have the same position and size as the object this is on
+        /// </summary>
+        public Transform BackgroundParent { get; set; }
+
         private IEnumerable<TMP_LinkInfo> highlightLinks;
         public IEnumerable<TMP_LinkInfo> HighlightedLinks 
         { 
@@ -143,7 +148,7 @@ namespace IPA.ModList.BeatSaber.UI.Components
                 var go = new GameObject("LinkHighlight");
 
                 var transform = go.AddComponent<RectTransform>();
-                transform.SetParent(RectTransform, false);
+                transform.SetParent(BackgroundParent, false);
                 transform.anchorMin = transform.anchorMax = new Vector2(.5f, .5f);
                 transform.anchoredPosition = ExtentCenter(region);
                 transform.sizeDelta = ExtentSize(region);
