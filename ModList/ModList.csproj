@@ -131,6 +131,13 @@
     <Compile Include="FontManager.cs" />
     <Compile Include="ModListConfig.cs" />
     <Compile Include="ModListPlugin.cs" />
+    <Compile Include="OpenType\NumericHelpers.cs" />
+    <Compile Include="OpenType\OffsetTable.cs" />
+    <Compile Include="OpenType\OpenTypeFontReader.cs" />
+    <Compile Include="OpenType\OpenTypeReader.cs" />
+    <Compile Include="OpenType\OpenTypeTable.cs" />
+    <Compile Include="OpenType\OpenTypeTag.cs" />
+    <Compile Include="OpenType\TableRecord.cs" />
     <Compile Include="PluginInformation.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="UI\BSML\MarkdownTag.cs" />

@@ -1,6 +1,8 @@
-﻿using IPA.Utilities.Async;
+﻿using IPA.ModList.BeatSaber.OpenType;
+using IPA.Utilities.Async;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -54,6 +56,34 @@ namespace IPA.ModList.BeatSaber
 
             foreach (var path in paths)
             {
+                var ext = Path.GetExtension(path).ToLowerInvariant();
+                if (ext == ".ttf" || ext == ".otf")
+                {
+                    try
+                    {
+                        Logger.log.Debug($"In file {path}");
+                        var fileStream = new FileStream(path, FileMode.Open, FileAccess.Read);
+                        var reader = new OpenTypeFontReader(fileStream);
+                        var tables = reader.ReadAllTables();
+                        var nameTableDef = tables.First(t => t.TableTag == OpenTypeTag.NAME);
+                        var nameTable = reader.TryReadTable(nameTableDef) as OpenTypeNameTable;
+
+                        if (nameTable == null) 
+                            Logger.log.Warn("Could not read name table of font");
+                        else
+                        {
+                            foreach (var name in nameTable.NameRecords)
+                            {
+                                Logger.log.Debug($"record {name.PlatformID} {name.EncodingID} {name.LanguageID:X4} {name.NameID} = '{name.Value}'");
+                            }
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        Logger.log.Error(e);
+                    }
+                }
+
                 var font = new Font(path);
                 Logger.log.Debug($"'{path}' = '{font.name}'");
                 if (fonts.ContainsKey(font.name))
