@@ -319,7 +319,7 @@ namespace IPA.ModList.BeatSaber.UI.Markdig
         private StringBuilder RenderCodeInlineToText(CodeInline code, StringBuilder builder)
             => builder.Append($"{(CodeFont == null ? "" : $"<font=\"{CodeFont?.name}\">")}<size=80%><link=\"{CodeRegionLinkIdStart}{codeRegionLinkPostfix++}\"><nobr> </nobr><noparse>")
                       .Append(code.Content)
-                      .Append($"</noparse><nobr> </nobr></link></size>{(CodeFont == null ? "" : "</font>")}");
+                      .Append($" </noparse></link></size>{(CodeFont == null ? "" : "</font>")}");
 
         private StringBuilder RenderHtmlInlineToText(HtmlInline tag, StringBuilder builder)
             => builder.Append(tag.Tag);

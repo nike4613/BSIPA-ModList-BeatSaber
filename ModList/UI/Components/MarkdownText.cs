@@ -78,6 +78,7 @@ namespace IPA.ModList.BeatSaber.UI.Components
 
             var asset = TMP_FontAsset.CreateFontAsset(GetUnityFont());
             asset.name = config.MonospaceFontName;
+            asset.hashCode = TMP_TextUtilities.GetSimpleHashCode(asset.name);
             return Helpers.CreateFixedUIFontClone(asset);
         }
 
