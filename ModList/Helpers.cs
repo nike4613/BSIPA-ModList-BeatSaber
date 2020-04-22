@@ -118,8 +118,9 @@ namespace IPA.ModList.BeatSaber
             matCopy.mainTextureOffset = font.material.mainTextureOffset;
             matCopy.mainTextureScale = font.material.mainTextureScale;
             font.material = matCopy;
-            font = GameObject.Instantiate(font);
-            return font;
+            var copy = font = GameObject.Instantiate(font);
+            copy.name = font.name;
+            return copy;
         }
 
         public static IEnumerable<T> SingleEnumerable<T>(this T item)

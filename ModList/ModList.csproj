@@ -128,6 +128,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>CompileConstants.tt</DependentUpon>
     </Compile>
+    <Compile Include="FontManager.cs" />
     <Compile Include="ModListConfig.cs" />
     <Compile Include="ModListPlugin.cs" />
     <Compile Include="PluginInformation.cs" />

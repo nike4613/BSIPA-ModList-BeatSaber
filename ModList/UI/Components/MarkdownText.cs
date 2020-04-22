@@ -12,6 +12,8 @@ using Markdig.Extensions.EmphasisExtras;
 using BSMLUtils = BeatSaberMarkupLanguage.Utilities;
 using HMUI;
 using TMPro;
+using IPA.Utilities.Async;
+using System.Collections;
 
 namespace IPA.ModList.BeatSaber.UI.Components
 {
@@ -38,7 +40,7 @@ namespace IPA.ModList.BeatSaber.UI.Components
             if (IsDirty && text != null)
             {
                 Clear();
-                Render();
+                StartCoroutine(Render());
                 IsDirty = false;
             }
         }
@@ -55,32 +57,31 @@ namespace IPA.ModList.BeatSaber.UI.Components
                     .WithLogger(Logger.md)
                     .Build();
 
-        private static UnityRenderer renderer = null;
-        public static UnityRenderer Renderer 
+        private UnityRenderer renderer = null;
+        public UnityRenderer Renderer 
             => renderer ??= CreateRenderer();
 
-        private static TMP_FontAsset LoadConfigFont(ModListConfig config)
+        private TMP_FontAsset LoadConfigFont(ModListConfig config)
         {
             Font GetUnityFont()
             {
                 if (config.MonospaceFontPath != null)
                     return new Font(config.MonospaceFontPath);
 
-                var fonts = Font.GetOSInstalledFontNames();
-                Logger.log.Debug($"fonts: {string.Join(" ; ", fonts)}");
-                Logger.log.Debug($"select {config.MonospaceFontName}");
-                if (fonts.Contains(config.MonospaceFontName))
-                    return new Font(config.MonospaceFontName);
-
-                Logger.log.Warn($"Could not find font of name '{config.MonospaceFontName}'");
-                return new Font("Consolas");
+                if (FontManager.TryGetFont(config.MonospaceFontName, out var font))
+                    return font;
+                else if (FontManager.TryGetFont("consola", out font))
+                    return font;
+                else
+                    return null;
             }
 
             var asset = TMP_FontAsset.CreateFontAsset(GetUnityFont());
+            asset.name = config.MonospaceFontName;
             return Helpers.CreateFixedUIFontClone(asset);
         }
 
-        private static UnityRenderer CreateRenderer()
+        private UnityRenderer CreateRenderer()
         {
             return new UnityRendererBuilder()
                 .UI.Material(BSMLUtils.ImageResources.NoGlowMat)
@@ -97,8 +98,10 @@ namespace IPA.ModList.BeatSaber.UI.Components
                 .Build();
         }
 
-        private void Render()
+        private IEnumerator Render()
         {
+            yield return Coroutines.WaitForTask(FontManager.AsyncLoadSystemFonts());
+
             Logger.md.Debug($"Rendering markdown:\n{string.Join("\n", Text.Split('\n').Select(s => "| " + s))}");
             var root = Markdown.Convert(Text, Renderer, Pipeline) as RectTransform;
             root.SetParent(RectTransform, false);
