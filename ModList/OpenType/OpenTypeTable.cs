@@ -59,7 +59,7 @@ namespace IPA.ModList.BeatSaber.OpenType
                 var nameBytes = reader.ReadBytes(name.Length);
 
                 // TODO: maybe know how to identify more platforms and encodings?
-                if (name.PlatformID == NameRecord.Platform.Windows)
+                if (name.PlatformID == NameRecord.Platform.Windows || name.PlatformID == NameRecord.Platform.Unicode)
                 {
                     name.Value = Encoding.BigEndianUnicode.GetString(nameBytes);
                 }
@@ -120,11 +120,20 @@ namespace IPA.ModList.BeatSaber.OpenType
                 Copyright = 0, FontFamily = 1, FontSubfamily = 2,
                 UniqueId = 3, FullFontName = 4, Version = 5,
                 PostScriptName = 6, Trademark = 7, Manufacturer = 8,
-                Designer = 9, Description = 10,
-
+                Designer = 9, Description = 10, VendorURL = 11,
+                DesignerURL = 12, LicenseDescription = 13,
+                LicenseInfoURL = 14, Reserved1 = 15,
                 TypographicFamily = 16,
                 TypographicSubfamily = 17,
-                SampleText = 19
+                /// <summary>
+                /// This is a Macintosh only field.
+                /// </summary>
+                CompatibleFull = 18,
+                SampleText = 19, PostScriptCID = 20,
+                WWSFamily = 21, WWSSubfamily = 22,
+                LightBackgroundPalette = 23,
+                DarkBackgroundPalette = 24,
+                VariationsPostScriptPrefix = 25,
             }
 
             public NameType NameID { get; set; }
