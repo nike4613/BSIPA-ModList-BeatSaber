@@ -42,11 +42,11 @@ namespace IPA.ModList.BeatSaber
         }
 
         [OnDisable]
-        public void OnDisable()
+        public async Task OnDisable()
         {
             MenuButtons.instance.UnregisterButton(menuBtn);
             MarkdownTag.Unregister();
-            FontManager.Destroy();
+            await FontManager.Destroy();
             Logger.log.Debug("Disabled");
         }
 

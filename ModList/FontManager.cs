@@ -46,10 +46,10 @@ namespace IPA.ModList.BeatSaber
             return task;
         }
 
-        public static void Destroy()
+        public static Task Destroy()
         {
             fontInfoLookup = null;
-            UnityMainThreadTaskScheduler.Factory.StartNew(() => DestroyDict(loadedFontsCache))
+            return UnityMainThreadTaskScheduler.Factory.StartNew(() => DestroyDict(loadedFontsCache)).Unwrap()
                 .ContinueWith(_ => loadedFontsCache.Clear());
         }
 
@@ -77,6 +77,7 @@ namespace IPA.ModList.BeatSaber
 
             foreach (var path in paths)
             {
+                // TODO: support TTC
                 var ext = Path.GetExtension(path).ToLowerInvariant();
                 if (ext == ".ttf" || ext == ".otf")
                 {
