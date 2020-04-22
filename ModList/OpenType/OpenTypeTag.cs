@@ -5,7 +5,7 @@ namespace IPA.ModList.BeatSaber.OpenType
 {
     public struct OpenTypeTag
     {
-        public static readonly OpenTypeTag NAME = new OpenTypeTag(new[] { (byte)'n', (byte)'a', (byte)'m', (byte)'e' });
+        public static readonly OpenTypeTag NAME = FromString("name");
 
         public byte[] Value { get; set; }
         public uint IntValue => BitConverter.ToUInt32(Value, 0);
@@ -20,6 +20,11 @@ namespace IPA.ModList.BeatSaber.OpenType
             => 1637310455 + IntValue.GetHashCode();
 
         public OpenTypeTag(byte[] value) => Value = value;
+
+        public static OpenTypeTag FromChars(char[] chrs)
+            => new OpenTypeTag(chrs.Select(c => (byte)c).ToArray());
+        public static OpenTypeTag FromString(string str)
+            => FromChars(str.ToCharArray(0, 4));
 
         public static bool operator ==(OpenTypeTag left, OpenTypeTag right)
             => left.Equals(right);

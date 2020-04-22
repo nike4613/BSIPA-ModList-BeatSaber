@@ -22,6 +22,8 @@ namespace IPA.ModList.BeatSaber.OpenType
         /// </summary>
         public ushort RangeShift { get; set; }
 
+        public long TablesStart { get; set; }
+
         public bool Validate()
         {
             var powLessNumTables = NumericHelpers.NextPow2(NumTables) << 1;

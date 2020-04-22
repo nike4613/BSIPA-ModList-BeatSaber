@@ -15,9 +15,13 @@ namespace IPA.ModList.BeatSaber.OpenType
 
         public OpenTypeFontReader Reader { get; }
 
-        public OpenTypeFont(OpenTypeFontReader reader, bool lazyLoad = true)
+        public OpenTypeFont(OpenTypeFontReader reader, bool lazyLoad = true) : this(reader.ReadOffsetTable(), reader, lazyLoad)
         {
-            offsetTable = reader.ReadOffsetTable();
+        }
+
+        public OpenTypeFont(OffsetTable offsets, OpenTypeFontReader reader, bool lazyLoad = true)
+        {
+            offsetTable = offsets;
             tables = reader.ReadTableRecords(offsetTable);
             nameTableRecord = tables.Select(t => new TableRecord?(t))
                 .FirstOrDefault(t => t.Value.TableTag == OpenTypeTag.NAME);

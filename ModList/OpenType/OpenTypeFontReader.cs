@@ -7,6 +7,8 @@ using System.Threading.Tasks;
 
 namespace IPA.ModList.BeatSaber.OpenType
 {
+
+    // TODO: this shit is a mess, clean it up
     public class OpenTypeFontReader : OpenTypeReader
     {
         public OpenTypeFontReader(Stream input) : base(input)
@@ -29,9 +31,10 @@ namespace IPA.ModList.BeatSaber.OpenType
                 SearchRange = ReadUInt16(),
                 EntrySelector = ReadUInt16(),
                 RangeShift = ReadUInt16(),
+                TablesStart = BaseStream.Position,
             };
 
-        public TableRecord ReadTableRecord()
+        protected TableRecord ReadTableRecord()
             => new TableRecord()
             {
                 TableTag = ReadTag(),
@@ -41,8 +44,13 @@ namespace IPA.ModList.BeatSaber.OpenType
             };
 
         public TableRecord[] ReadTableRecords(OffsetTable offsets)
-            => Enumerable.Range(0, offsets.NumTables)
-                .Select(_ => ReadTableRecord()).ToArray();
+        { 
+            BaseStream.Position = offsets.TablesStart;
+            var tables = new TableRecord[offsets.NumTables];
+            for (int i = 0; i < offsets.NumTables; i++)
+                tables[i] = ReadTableRecord();
+            return tables;
+        }
 
         public TableRecord[] ReadAllTables() => ReadTableRecords(ReadOffsetTable());
 
