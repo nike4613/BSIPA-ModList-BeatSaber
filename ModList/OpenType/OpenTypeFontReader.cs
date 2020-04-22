@@ -40,24 +40,23 @@ namespace IPA.ModList.BeatSaber.OpenType
                 Length = ReadUInt32()
             };
 
-        public TableRecord[] ReadRecordsAfter(OffsetTable offsets)
+        public TableRecord[] ReadTableRecords(OffsetTable offsets)
             => Enumerable.Range(0, offsets.NumTables)
                 .Select(_ => ReadTableRecord()).ToArray();
 
-        public TableRecord[] ReadAllTables() => ReadRecordsAfter(ReadOffsetTable());
+        public TableRecord[] ReadAllTables() => ReadTableRecords(ReadOffsetTable());
 
         public OpenTypeTable TryReadTable(TableRecord table)
         {
             BaseStream.Position = table.Offset;
 
+            OpenTypeTable result = null;
             if (table.TableTag == OpenTypeTag.NAME)
-            {
-                var result = new OpenTypeNameTable();
-                result.ReadFrom(this, table.Length);
-                return result;
-            }
+                result = new OpenTypeNameTable();
 
-            return null;
+            result?.ReadFrom(this, table.Length);
+
+            return result;
         }
     }
 }

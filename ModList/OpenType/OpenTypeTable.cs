@@ -9,8 +9,6 @@ namespace IPA.ModList.BeatSaber.OpenType
 {
     public abstract class OpenTypeTable
     {
-        public TableRecord Record { get; set; }
-
         public abstract void ReadFrom(OpenTypeReader reader, uint length);
     }
 

@@ -70,7 +70,7 @@ namespace IPA.ModList.BeatSaber.UI.Components
 
                 if (FontManager.TryGetFont(config.MonospaceFontName, out var font))
                     return font;
-                else if (FontManager.TryGetFont("consola", out font))
+                else if (FontManager.TryGetFont("Consolas", out font))
                     return font;
                 else
                     return null;

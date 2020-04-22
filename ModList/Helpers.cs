@@ -127,6 +127,11 @@ namespace IPA.ModList.BeatSaber
         public static IEnumerable<T> SingleEnumerable<T>(this T item)
             => new SingleValueEnumerable<T>(item);
 
+        public static IEnumerable<T?> AsNullable<T>(this IEnumerable<T> items) where T : struct
+            => items.Select(i => new T?(i));
+
+        public static T? AsNullable<T>(this T item) where T : struct => item;
+
         private class SingleValueEnumerable<T> : IEnumerable<T>
         {
             private readonly T value;

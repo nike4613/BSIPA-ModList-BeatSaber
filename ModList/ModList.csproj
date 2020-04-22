@@ -133,6 +133,7 @@
     <Compile Include="ModListPlugin.cs" />
     <Compile Include="OpenType\NumericHelpers.cs" />
     <Compile Include="OpenType\OffsetTable.cs" />
+    <Compile Include="OpenType\OpenTypeFont.cs" />
     <Compile Include="OpenType\OpenTypeFontReader.cs" />
     <Compile Include="OpenType\OpenTypeReader.cs" />
     <Compile Include="OpenType\OpenTypeTable.cs" />
