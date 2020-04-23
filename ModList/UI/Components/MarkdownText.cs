@@ -14,6 +14,8 @@ using HMUI;
 using TMPro;
 using IPA.Utilities.Async;
 using System.Collections;
+using UnityEngine.TextCore;
+using IPA.Utilities;
 
 namespace IPA.ModList.BeatSaber.UI.Components
 {
@@ -61,7 +63,13 @@ namespace IPA.ModList.BeatSaber.UI.Components
         public UnityRenderer Renderer 
             => renderer ??= CreateRenderer();
 
-        private TMP_FontAsset LoadConfigFont(ModListConfig config)
+        private const uint UnicodePrivateUseStart = 0xE000;
+        private const uint UnicodePrivateUseEnd = 0xF8FF;
+        private const float InlineCodePadding = 20f;
+
+        private delegate bool TryAddCharacterInternalDelegate(TMP_FontAsset font, uint codepoint, out TMP_Character character);
+
+        private (TMP_FontAsset font, string padding) LoadConfigFont(ModListConfig config)
         {
             Font GetUnityFont()
             {
@@ -80,17 +88,45 @@ namespace IPA.ModList.BeatSaber.UI.Components
             var asset = TMP_FontAsset.CreateFontAsset(font);
             asset.name = font.name;
             asset.hashCode = TMP_TextUtilities.GetSimpleHashCode(asset.name);
-            return Helpers.CreateFixedUIFontClone(asset);
+
+            var paddingChar = UnicodePrivateUseStart;
+            var TryAddCharacterInternal = MethodAccessor<TMP_FontAsset, TryAddCharacterInternalDelegate>
+                .GetDelegate("TryAddCharacterInternal");
+
+            while (TryAddCharacterInternal(asset, paddingChar, out _) && paddingChar <= UnicodePrivateUseEnd)
+                paddingChar++;
+
+            if (paddingChar > UnicodePrivateUseEnd)
+            {
+                Logger.md.Error("Could not find open character in private use segment");
+                paddingChar = ' '; // fall back to a space
+            }
+            else
+            {
+                Logger.md.Debug($"Using unicode codepoint {paddingChar:X}");
+                var glyph = new Glyph(paddingChar,
+                        new GlyphMetrics(InlineCodePadding, 10f, 0, 0, InlineCodePadding),
+                        new GlyphRect(Rect.zero)
+                    );
+                var character = new TMP_Character(paddingChar, glyph);
+                asset.glyphTable.Add(glyph);
+                asset.characterTable.Add(character);
+                asset.characterLookupTable.Add(paddingChar, character);
+            }
+
+            return (Helpers.CreateFixedUIFontClone(asset), char.ConvertFromUtf32((int)paddingChar));
         }
 
         private UnityRenderer CreateRenderer()
         {
+            var (font, padding) = LoadConfigFont(ModListConfig.Instance);
             return new UnityRendererBuilder()
                 .UI.Material(BSMLUtils.ImageResources.NoGlowMat)
                 .Quote.UseBackground(Helpers.RoundedBackgroundSprite, UnityEngine.UI.Image.Type.Sliced)
                 .Quote.UseColor(new Color(30f / 255, 109f / 255, 178f / 255, .25f))
                 .Code.UseColor(new Color(135f / 255, 135f / 255, 135f / 255, .25f))
-                .Code.UseFont(LoadConfigFont(ModListConfig.Instance))
+                .Code.UseFont(font)
+                .Code.UseInlineCodePadding(padding)
                 .UseObjectRendererCallback((obj, go) =>
                 {
                     Logger.md.Debug($"Rendered markdown object of type {obj.GetType()}");

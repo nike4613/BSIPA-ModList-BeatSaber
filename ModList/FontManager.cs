@@ -68,7 +68,6 @@ namespace IPA.ModList.BeatSaber
 
             var fonts = new Dictionary<string, List<FontInfo>>(paths.Length, StringComparer.InvariantCultureIgnoreCase);
 
-
             foreach (var path in paths)
             {
                 try

@@ -24,6 +24,7 @@ namespace IPA.ModList.BeatSaber.UI.Markdig
         public Sprite CodeBackground { get; }
         public Image.Type CodeBackgroundType { get; }
         public TMP_FontAsset CodeFont { get; set; }
+        public string InlineCodePadding { get; set; } = "";
 
         public UnityRenderer(Material uiMat, Sprite quoteBg, Image.Type bgType, Color quoteColor,
                                              Sprite codeBg, Image.Type codeBgType, Color codeColor)
@@ -317,9 +318,10 @@ namespace IPA.ModList.BeatSaber.UI.Markdig
         private const string CodeRegionLinkIdStart = "__CodeInline__";
         private int codeRegionLinkPostfix = 0;
         private StringBuilder RenderCodeInlineToText(CodeInline code, StringBuilder builder)
-            => builder.Append($"{(CodeFont == null ? "" : $"<font=\"{CodeFont?.name}\">")}<size=80%><link=\"{CodeRegionLinkIdStart}{codeRegionLinkPostfix++}\"><nobr> </nobr><noparse>")
+            => builder.Append($"{(CodeFont == null ? "" : $"<font=\"{CodeFont?.name}\">")}<size=80%>")
+                      .Append($"<link=\"{CodeRegionLinkIdStart}{codeRegionLinkPostfix++}\">{InlineCodePadding}<noparse>")
                       .Append(code.Content)
-                      .Append($" </noparse></link></size>{(CodeFont == null ? "" : "</font>")}");
+                      .Append($"</noparse>{InlineCodePadding}</link></size>{(CodeFont == null ? "" : "</font>")}");
 
         private StringBuilder RenderHtmlInlineToText(HtmlInline tag, StringBuilder builder)
             => builder.Append(tag.Tag);
