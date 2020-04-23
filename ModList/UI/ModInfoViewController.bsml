@@ -66,14 +66,15 @@
               pivot-x='.5' pivot-y='1'>
 <![CDATA[
 `inline code` not in code
-`more inline code in the same paragraph, except it wraps now`
-```
-a longer
-code
-block with more
-lines
-```
-    but what about a code block?
+`more inline code in the same paragraph`
+
+> quote
+> > nested quote
+> ```
+> nested code
+> ```
+
+> but what about a `code` block?
 ]]>
         </markdown>
       <!--/scroll-->
