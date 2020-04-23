@@ -26,6 +26,17 @@ namespace IPA.ModList.BeatSaber.UI.Components
         /// </summary>
         public Transform BackgroundParent { get; set; }
 
+        private bool useLineHeight = false;
+        public bool UseLineHeight
+        {
+            get => useLineHeight;
+            set
+            {
+                useLineHeight = value;
+                needsRerender = true;
+            }
+        }
+
         private IEnumerable<TMP_LinkInfo> highlightLinks;
         public IEnumerable<TMP_LinkInfo> HighlightedLinks 
         { 
@@ -33,7 +44,7 @@ namespace IPA.ModList.BeatSaber.UI.Components
             private set
             {
                 highlightLinks = value;
-                hasLinksChanged = true;
+                needsRerender = true;
             } 
         }
 
@@ -50,7 +61,7 @@ namespace IPA.ModList.BeatSaber.UI.Components
 
         public bool IsDirty { get; set; } = false;
 
-        private bool hasLinksChanged = false;
+        private bool needsRerender = false;
         private readonly List<GameObject> createdObjects = new List<GameObject>();
 
         internal void Update()
@@ -67,11 +78,11 @@ namespace IPA.ModList.BeatSaber.UI.Components
 
                 IsDirty = false;
             }
-            if (hasLinksChanged && highlightLinks != null)
+            if (needsRerender && highlightLinks != null)
             {
                 Clear();
                 Render();
-                hasLinksChanged = false;
+                needsRerender = false;
             }
         }
 
@@ -109,7 +120,11 @@ namespace IPA.ModList.BeatSaber.UI.Components
                 var currentLine = tmp.textInfo.lineInfo[currentLineIndex];
                 var lineExtent = currentLine.lineExtents;
 
-                var currentExtent = new Extents(new Vector2(0, lineExtent.min.y), new Vector2(0, lineExtent.max.y));
+                Extents GetZeroedExtents(Extents lineExtent)
+                    => UseLineHeight ? new Extents(new Vector2(0, lineExtent.min.y), new Vector2(0, lineExtent.max.y))
+                                     : new Extents(new Vector2(0, float.MaxValue), new Vector2(0, float.MinValue));
+
+                var currentExtent = GetZeroedExtents(lineExtent);
 
                 for (var charIdx = start; charIdx < end && charIdx < tmp.textInfo.characterCount; charIdx++)
                 {
@@ -123,13 +138,14 @@ namespace IPA.ModList.BeatSaber.UI.Components
                         lineExtent = currentLine.lineExtents;
 
                         yield return currentExtent;
-                        currentExtent = new Extents(new Vector2(0, lineExtent.min.y), new Vector2(0, lineExtent.max.y));
+                        currentExtent = GetZeroedExtents(lineExtent);
                     }
 
                     if (ExtentWidth(currentExtent) == 0f)
                         currentExtent.min = new Vector2(charExt.min.x, currentExtent.min.y);
 
-                    currentExtent.max = new Vector2(charExt.max.x, currentExtent.max.y);
+                    currentExtent.min = new Vector2(currentExtent.min.x, Math.Min(currentExtent.min.y, charExt.min.y));
+                    currentExtent.max = new Vector2(charExt.max.x, Math.Max(currentExtent.max.y, charExt.max.y));
                 }
 
                 if (currentLineIndex != endLineIndex)
