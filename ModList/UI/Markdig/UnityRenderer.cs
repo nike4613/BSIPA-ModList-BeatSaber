@@ -363,6 +363,8 @@ namespace IPA.ModList.BeatSaber.UI.Markdig
             highlighter.BackgroundImageType = InlineCodeBackgroundType;
             highlighter.BackgroundMaterial = UIMaterial;
             highlighter.LinkSelector = linkSelector;
+            // TODO: move this padding to its own variable
+            highlighter.HighlightPadding = new Vector4(0, 0, .4f, .4f);
             return highlighter;
         }
     }

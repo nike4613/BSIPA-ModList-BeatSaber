@@ -37,6 +37,20 @@ namespace IPA.ModList.BeatSaber.UI.Components
             }
         }
 
+        private Vector4 highlightPadding = new Vector4(0, 0, 0, 0);
+        /// <summary>
+        /// The values are left, right, top, bottom
+        /// </summary>
+        public Vector4 HighlightPadding
+        {
+            get => highlightPadding;
+            set
+            {
+                highlightPadding = value;
+                needsRerender = true;
+            }
+        }
+
         private IEnumerable<TMP_LinkInfo> highlightLinks;
         public IEnumerable<TMP_LinkInfo> HighlightedLinks 
         { 
@@ -123,6 +137,11 @@ namespace IPA.ModList.BeatSaber.UI.Components
                 Extents GetZeroedExtents(Extents lineExtent)
                     => UseLineHeight ? new Extents(new Vector2(0, lineExtent.min.y), new Vector2(0, lineExtent.max.y))
                                      : new Extents(new Vector2(0, float.MaxValue), new Vector2(0, float.MinValue));
+                static Extents PadExtents(Extents extent, Vector4 padding)
+                    => new Extents( // x = left, y = right, z = top, w = bottom
+                            new Vector2(extent.min.x - padding.x, extent.min.y - padding.w),
+                            new Vector2(extent.max.x + padding.y, extent.max.y + padding.z)
+                        );
 
                 var currentExtent = GetZeroedExtents(lineExtent);
 
@@ -136,8 +155,8 @@ namespace IPA.ModList.BeatSaber.UI.Components
                         currentLineIndex++;
                         currentLine = tmp.textInfo.lineInfo[currentLineIndex];
                         lineExtent = currentLine.lineExtents;
-
-                        yield return currentExtent;
+                        
+                        yield return PadExtents(currentExtent, HighlightPadding);
                         currentExtent = GetZeroedExtents(lineExtent);
                     }
 
@@ -153,7 +172,7 @@ namespace IPA.ModList.BeatSaber.UI.Components
                         $"{currentLineIndex} was not the expected end line {endLineIndex}");
 
                 if (ExtentWidth(currentExtent) > 0f)
-                    yield return currentExtent;
+                    yield return PadExtents(currentExtent, HighlightPadding);
             }
         }
 
