@@ -16,6 +16,7 @@ using IPA.Utilities.Async;
 using System.Collections;
 using UnityEngine.TextCore;
 using IPA.Utilities;
+using UnityEngine.UI;
 
 namespace IPA.ModList.BeatSaber.UI.Components
 {
@@ -122,11 +123,13 @@ namespace IPA.ModList.BeatSaber.UI.Components
             var (font, padding) = LoadConfigFont(ModListConfig.Instance);
             return new UnityRendererBuilder()
                 .UI.Material(BSMLUtils.ImageResources.NoGlowMat)
-                .Quote.UseBackground(Helpers.RoundedBackgroundSprite, UnityEngine.UI.Image.Type.Sliced)
+                .Quote.UseBackground(Helpers.RoundedBackgroundSprite, Image.Type.Sliced)
                 .Quote.UseColor(new Color(30f / 255, 109f / 255, 178f / 255, .25f))
+                .Code.UseBackground(Helpers.SmallRoundedRectSprite, Image.Type.Sliced)
                 .Code.UseColor(new Color(135f / 255, 135f / 255, 135f / 255, .25f))
                 .Code.UseFont(font)
-                .Code.UseInlineCodePadding(padding)
+                .Code.Inline.UseBackground(Helpers.TinyRoundedRectSprite, Image.Type.Sliced)
+                .Code.Inline.UsePadding(padding)
                 .UseObjectRendererCallback((obj, go) =>
                 {
                     Logger.md.Debug($"Rendered markdown object of type {obj.GetType()}");

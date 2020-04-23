@@ -23,11 +23,14 @@ namespace IPA.ModList.BeatSaber.UI.Markdig
         public Color CodeBackgroundColor { get; }
         public Sprite CodeBackground { get; }
         public Image.Type CodeBackgroundType { get; }
+        public Sprite InlineCodeBackground { get; }
+        public Image.Type InlineCodeBackgroundType { get; }
         public TMP_FontAsset CodeFont { get; set; }
         public string InlineCodePadding { get; set; } = "";
 
         public UnityRenderer(Material uiMat, Sprite quoteBg, Image.Type bgType, Color quoteColor,
-                                             Sprite codeBg, Image.Type codeBgType, Color codeColor)
+                                             Sprite codeBg, Image.Type codeBgType, Color codeColor,
+                                             Sprite inlineCodeBg, Image.Type inlineCodeBgType)
         {
             UIMaterial = uiMat;
             QuoteBackground = quoteBg;
@@ -37,6 +40,8 @@ namespace IPA.ModList.BeatSaber.UI.Markdig
             CodeBackground = codeBg;
             CodeBackgroundType = codeBgType;
             CodeBackgroundColor = codeColor;
+            InlineCodeBackground = inlineCodeBg;
+            InlineCodeBackgroundType = inlineCodeBgType;
         }
 
         ObjectRendererCollection IMarkdownRenderer.ObjectRenderers { get; } = new ObjectRendererCollection();
@@ -354,8 +359,8 @@ namespace IPA.ModList.BeatSaber.UI.Markdig
         {
             var highlighter = obj.AddComponent<TextMeshProUGUILinkHighlighter>();
             highlighter.BackgroundImageColor = CodeBackgroundColor;
-            highlighter.BackgroundSprite = CodeBackground;
-            highlighter.BackgroundImageType = CodeBackgroundType;
+            highlighter.BackgroundSprite = InlineCodeBackground;
+            highlighter.BackgroundImageType = InlineCodeBackgroundType;
             highlighter.BackgroundMaterial = UIMaterial;
             highlighter.LinkSelector = linkSelector;
             return highlighter;

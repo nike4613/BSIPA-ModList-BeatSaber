@@ -49,6 +49,14 @@ namespace IPA.ModList.BeatSaber
             => roundedBackgroundSprite ??= Resources.FindObjectsOfTypeAll<Image>()
                     .Last(x => x.gameObject.name == "MinScoreInfo" && x.sprite?.name == "RoundRectPanel").sprite;
 
+        private static Sprite smallRoundedRectSprite = null;
+        public static Sprite SmallRoundedRectSprite
+            => smallRoundedRectSprite ??= LoadSmallRoundedRectSprite();
+
+        private static Sprite tinyRoundedRectSprite = null;
+        public static Sprite TinyRoundedRectSprite
+            => tinyRoundedRectSprite ??= LoadTinyRoundedRectSprite();
+
         private static TMP_FontAsset tekoMediumFont = null;
         public static TMP_FontAsset TekoMediumFont
             => tekoMediumFont ??= Resources.FindObjectsOfTypeAll<TMP_FontAsset>().First(t => t.name == "Teko-Medium SDF No Glow");
@@ -76,6 +84,27 @@ namespace IPA.ModList.BeatSaber
             if (tex != null)
                 return Sprite.Create(tex, new Rect(0, 0, width ?? tex.width, height ?? tex.height), new Vector2(0, 0), PixelsPerUnit);
             return null;
+        }
+
+        private static Sprite LoadSmallRoundedRectSprite()
+        {
+            var tex = ReadImageFromSelf(ResourcePrefix + "small-rounded-rect.png");
+            return Sprite.Create(tex, new Rect(0, 0, tex.width, tex.height),
+                pivot: Vector2.zero,
+                border: new Vector4(32, 32, 32, 32),
+                pixelsPerUnit: 100f,
+                extrude: 0,
+                meshType: SpriteMeshType.FullRect);
+        }
+        private static Sprite LoadTinyRoundedRectSprite()
+        {
+            var tex = ReadImageFromSelf(ResourcePrefix + "tiny-rounded-rect.png");
+            return Sprite.Create(tex, new Rect(0, 0, tex.width, tex.height),
+                pivot: Vector2.zero,
+                border: new Vector4(8, 8, 8, 8),
+                pixelsPerUnit: 100f,
+                extrude: 0,
+                meshType: SpriteMeshType.FullRect);
         }
 
         public static Texture2D ReadPluginIcon(PluginInformation plugin) => ReadPluginIcon(plugin.Plugin);

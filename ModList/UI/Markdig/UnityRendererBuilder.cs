@@ -10,6 +10,7 @@ namespace IPA.ModList.BeatSaber.UI.Markdig
     public sealed class UnityRendererBuilder :
         UnityRendererBuilder.IQuoteRendererBuilder, 
         UnityRendererBuilder.ICodeRendererBuilder,
+        UnityRendererBuilder.IInlineCodeRendererBuilder,
         UnityRendererBuilder.IUIRendererBuidler
     {
         private Material uiMat = null;
@@ -22,6 +23,8 @@ namespace IPA.ModList.BeatSaber.UI.Markdig
         private Color? codeColor = null;
         private Sprite codeBg = null;
         private Image.Type? codeBgType = null;
+        private Sprite codeInlineBg = null;
+        private Image.Type? codeInlineBgType = null;
         private TMP_FontAsset codeFont = null;
         private string codeInlinePadding = "";
 
@@ -39,7 +42,14 @@ namespace IPA.ModList.BeatSaber.UI.Markdig
             UnityRendererBuilder UseBackground(Sprite bg, Image.Type type);
             UnityRendererBuilder UseColor(Color col);
             UnityRendererBuilder UseFont(TMP_FontAsset font);
-            UnityRendererBuilder UseInlineCodePadding(string padding);
+            IInlineCodeRendererBuilder Inline { get; }
+            UnityRendererBuilder Builder { get; }
+        }
+
+        public interface IInlineCodeRendererBuilder
+        {
+            UnityRendererBuilder UseBackground(Sprite bg, Image.Type type);
+            UnityRendererBuilder UsePadding(string padding);
             UnityRendererBuilder Builder { get; }
         }
 
@@ -64,6 +74,7 @@ namespace IPA.ModList.BeatSaber.UI.Markdig
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => this;
         }
+        IInlineCodeRendererBuilder ICodeRendererBuilder.Inline => this;
 
         public UnityRendererBuilder UseObjectRendererCallback(Action<MarkdownObject, GameObject> callback)
         {
@@ -79,7 +90,8 @@ namespace IPA.ModList.BeatSaber.UI.Markdig
 
             var render = new UnityRenderer(uiMat,
                 quoteBg, quoteBgType, quoteColor.Value,
-                codeBg ?? quoteBg, codeBgType ?? quoteBgType, codeColor ?? quoteColor.Value)
+                codeBg ?? quoteBg, codeBgType ?? quoteBgType, codeColor ?? quoteColor.Value,
+                codeInlineBg ?? codeBg ?? quoteBg, codeInlineBgType ?? codeBgType ?? quoteBgType)
             {
                 UIColor = uiColor,
                 CodeFont = codeFont,
@@ -114,7 +126,13 @@ namespace IPA.ModList.BeatSaber.UI.Markdig
         UnityRendererBuilder ICodeRendererBuilder.UseFont(TMP_FontAsset font)
             => Do(codeFont = font);
 
-        UnityRendererBuilder ICodeRendererBuilder.UseInlineCodePadding(string padding)
+        UnityRendererBuilder IInlineCodeRendererBuilder.UseBackground(Sprite bg, Image.Type type)
+        {
+            codeInlineBg = bg;
+            codeInlineBgType = type;
+            return this;
+        }
+        UnityRendererBuilder IInlineCodeRendererBuilder.UsePadding(string padding)
             => Do(codeInlinePadding = padding);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
