@@ -129,6 +129,7 @@ namespace IPA.ModList.BeatSaber.UI.Components
                 .Code.UseColor(new Color(135f / 255, 135f / 255, 135f / 255, .25f))
                 .Code.UseFont(font)
                 .Code.Inline.UseBackground(Helpers.TinyRoundedRectSprite, Image.Type.Sliced)
+                .Code.Inline.UseColor(new Color(135f / 255, 135f / 255, 135f / 255, .1f))
                 .Code.Inline.UsePadding(padding)
                 .UseObjectRendererCallback((obj, go) =>
                 {

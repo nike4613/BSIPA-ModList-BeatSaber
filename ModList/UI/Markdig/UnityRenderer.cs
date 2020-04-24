@@ -23,6 +23,7 @@ namespace IPA.ModList.BeatSaber.UI.Markdig
         public Color CodeBackgroundColor { get; }
         public Sprite CodeBackground { get; }
         public Image.Type CodeBackgroundType { get; }
+        public Color InlineCodeBackgroundColor { get; }
         public Sprite InlineCodeBackground { get; }
         public Image.Type InlineCodeBackgroundType { get; }
         public TMP_FontAsset CodeFont { get; set; }
@@ -30,7 +31,7 @@ namespace IPA.ModList.BeatSaber.UI.Markdig
 
         public UnityRenderer(Material uiMat, Sprite quoteBg, Image.Type bgType, Color quoteColor,
                                              Sprite codeBg, Image.Type codeBgType, Color codeColor,
-                                             Sprite inlineCodeBg, Image.Type inlineCodeBgType)
+                                             Sprite inlineCodeBg, Image.Type inlineCodeBgType, Color inlineCodeColor)
         {
             UIMaterial = uiMat;
             QuoteBackground = quoteBg;
@@ -42,6 +43,7 @@ namespace IPA.ModList.BeatSaber.UI.Markdig
             CodeBackgroundColor = codeColor;
             InlineCodeBackground = inlineCodeBg;
             InlineCodeBackgroundType = inlineCodeBgType;
+            InlineCodeBackgroundColor = inlineCodeColor;
         }
 
         ObjectRendererCollection IMarkdownRenderer.ObjectRenderers { get; } = new ObjectRendererCollection();
@@ -283,7 +285,7 @@ namespace IPA.ModList.BeatSaber.UI.Markdig
             var highlightLayout = highlights.AddComponent<LayoutElement>();
             highlightLayout.ignoreLayout = true;
 
-            var highlight = AddHighlighter(tmp.gameObject, link => link.GetLinkID().StartsWith(CodeRegionLinkIdStart));
+            var highlight = AddCodeHighlighter(tmp.gameObject, link => link.GetLinkID().StartsWith(CodeRegionLinkIdStart));
             highlight.BackgroundParent = highlightTransform;
 
             AfterObjectRendered?.Invoke(inline, tmp.gameObject);
@@ -357,10 +359,10 @@ namespace IPA.ModList.BeatSaber.UI.Markdig
             return tmp;
         }
 
-        private TextMeshProUGUILinkHighlighter AddHighlighter(GameObject obj, Func<TMP_LinkInfo, bool> linkSelector)
+        private TextMeshProUGUILinkHighlighter AddCodeHighlighter(GameObject obj, Func<TMP_LinkInfo, bool> linkSelector)
         {
             var highlighter = obj.AddComponent<TextMeshProUGUILinkHighlighter>();
-            highlighter.BackgroundImageColor = CodeBackgroundColor;
+            highlighter.BackgroundImageColor = InlineCodeBackgroundColor;
             highlighter.BackgroundSprite = InlineCodeBackground;
             highlighter.BackgroundImageType = InlineCodeBackgroundType;
             highlighter.BackgroundMaterial = UIMaterial;
