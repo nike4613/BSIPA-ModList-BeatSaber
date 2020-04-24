@@ -278,6 +278,8 @@ namespace IPA.ModList.BeatSaber.UI.Markdig
             var highlights = new GameObject("CodeBackgrounds");
             var highlightTransform = highlights.AddComponent<RectTransform>();
             Helpers.Zero(highlightTransform);
+            var highlightCopier = highlights.AddComponent<PositionSizeCopier>();
+            highlightCopier.CopyFrom = tmp.rectTransform;
             var highlightLayout = highlights.AddComponent<LayoutElement>();
             highlightLayout.ignoreLayout = true;
 
