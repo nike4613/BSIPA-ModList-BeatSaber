@@ -1,4 +1,5 @@
-﻿using Markdig.Syntax.Inlines;
+﻿using Markdig.Helpers;
+using Markdig.Syntax.Inlines;
 using System.Text;
 
 namespace IPA.ModList.BeatSaber.UI.Markdig
@@ -49,5 +50,7 @@ namespace IPA.ModList.BeatSaber.UI.Markdig
                 builder.Append("</i>");
             return builder;
         }
+        public static StringBuilder AppendSlice(this StringBuilder builder, StringSlice slice)
+            => builder.Append(slice.Text, slice.Start, slice.Length);
     }
 }

@@ -302,7 +302,6 @@ namespace IPA.ModList.BeatSaber.UI.Markdig
             var (transform, layout) = Block("ListItem", isLoose ? 0f : ParagraphInset, false);
             layout.childAlignment = TextAnchor.UpperLeft;
 
-            // TODO: do I really need to set up fallback fonts to make this damn bullet work?
             var bulletTmp = CreateText(ordered ? $"{item.Order}{orderedDelim}" : "\u2022", ParagraphFontSize, false);
             bulletTmp.alignment = TextAlignmentOptions.Right;
             var bulletLayoutElement = bulletTmp.gameObject.AddComponent<LayoutElement>();
@@ -404,7 +403,7 @@ namespace IPA.ModList.BeatSaber.UI.Markdig
         }
 
         private StringBuilder RenderLiteralToText(LiteralInline lit, StringBuilder builder)
-            => builder.Append("<noparse>").Append(lit.Content.ToString()).Append("</noparse>");
+            => builder.Append("<noparse>").AppendSlice(lit.Content).Append("</noparse>");
 
         private StringBuilder RenderLineBreakInlineToText(LineBreakInline lb, StringBuilder builder)
             => builder.Append(lb.IsHard ? "\n" : " ");
@@ -412,16 +411,22 @@ namespace IPA.ModList.BeatSaber.UI.Markdig
         private const string CodeRegionLinkIdStart = "__CodeInline__";
         private int codeRegionLinkPostfix = 0;
         private StringBuilder RenderCodeInlineToText(CodeInline code, StringBuilder builder)
-            => builder.Append($"{(CodeFont == null ? "" : $"<font=\"{CodeFont?.name}\">")}<size=80%>")
-                      .Append($"<link=\"{CodeRegionLinkIdStart}{codeRegionLinkPostfix++}\">{InlineCodePadding}<noparse>")
+            => builder.Append(CodeFont == null ? "" : $"<font=\"{CodeFont.name}\">")
+                      .Append("<size=80%>")
+                      .Append($"<link=\"{CodeRegionLinkIdStart}{codeRegionLinkPostfix++}\">")
+                      .Append(InlineCodePadding)
+                      .Append("<noparse>")
                       .Append(code.Content)
-                      .Append($"</noparse>{InlineCodePadding}</link></size>{(CodeFont == null ? "" : "</font>")}");
+                      .Append("</noparse>")
+                      .Append(InlineCodePadding)
+                      .Append("</link></size>")
+                      .Append(CodeFont == null ? "" : "</font>");
 
         private StringBuilder RenderHtmlInlineToText(HtmlInline tag, StringBuilder builder)
             => builder.Append(tag.Tag);
 
         private StringBuilder RenderHtmlEntityToText(HtmlEntityInline entity, StringBuilder builder)
-            => builder.Append(entity.Transcoded.ToString());
+            => builder.AppendSlice(entity.Transcoded);
 
         private StringBuilder RenderEmphasisToText(EmphasisInline em, StringBuilder builder)
         {
