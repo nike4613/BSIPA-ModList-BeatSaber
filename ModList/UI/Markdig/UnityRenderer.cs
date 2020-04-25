@@ -290,6 +290,8 @@ namespace IPA.ModList.BeatSaber.UI.Markdig
                 }
             }
 
+            AfterObjectRendered?.Invoke(list, transform.gameObject);
+
             return Helpers.SingleEnumerable(transform).Append(Spacer(1.5f));
         }
 
@@ -341,6 +343,8 @@ namespace IPA.ModList.BeatSaber.UI.Markdig
                 foreach (var child in children)
                     child.SetParent(content, false);
             }
+
+            AfterObjectRendered?.Invoke(item, transform.gameObject);
 
             return Helpers.SingleEnumerable(transform);
         }

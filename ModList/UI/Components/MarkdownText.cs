@@ -133,7 +133,7 @@ namespace IPA.ModList.BeatSaber.UI.Components
                 .UseObjectRendererCallback((obj, go) =>
                 {
                     Logger.md.Debug($"Rendered markdown object of type {obj.GetType()}");
-                    if (obj is HeadingBlock || obj is ThematicBreakBlock)
+                    if (obj is HeadingBlock || obj is ThematicBreakBlock || obj is ListItemBlock)
                         go.AddComponent<ItemForFocussedScrolling>();
                 })
                 .Build();
