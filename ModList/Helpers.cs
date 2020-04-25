@@ -61,6 +61,10 @@ namespace IPA.ModList.BeatSaber
         public static TMP_FontAsset TekoMediumFont
             => tekoMediumFont ??= Resources.FindObjectsOfTypeAll<TMP_FontAsset>().First(t => t.name == "Teko-Medium SDF No Glow");
 
+        private static TMP_FontAsset tekoMediumArialFallback = null;
+        public static TMP_FontAsset TekoMediumArialFallback
+            => tekoMediumArialFallback ??= CreateTekoWithArialFallback();
+
         public static Texture2D ReadImageFromSelf(string name)
             => ReadImageFromAssembly(typeof(Helpers).Assembly, name);
         public static Texture2D ReadImageFromAssembly(Assembly assembly, string name)
@@ -125,7 +129,7 @@ namespace IPA.ModList.BeatSaber
             gameObj.SetActive(false);
 
             var textMesh = gameObj.AddComponent<TextMeshProUGUI>();
-            textMesh.font = GameObject.Instantiate(TekoMediumFont);
+            textMesh.font = TekoMediumFont;
             //textMesh.rectTransform.SetParent(parent, false);
             textMesh.text = text;
             textMesh.fontSize = 4;
@@ -151,6 +155,34 @@ namespace IPA.ModList.BeatSaber
             copy.name = font.name;
             copy.hashCode = font.hashCode;
             return copy;
+        }
+
+        private static TMP_FontAsset CreateTekoWithArialFallback(bool fixForUI = true)
+        {
+            var teko = GameObject.Instantiate(TekoMediumFont);
+            teko.name = $"{TekoMediumFont.name} With Arial Fallback";
+            teko.hashCode = TMP_TextUtilities.GetSimpleHashCode(teko.name);
+
+            if (!FontManager.TryGetFont("Arial", out var ufont))
+            {
+                Logger.log.Warn("Cannot find system font Arial to use as a fallback!");
+                return teko;
+            }
+
+            var fallback = TMPFontFromUnityFont(ufont);
+            if (fixForUI)
+                fallback = CreateFixedUIFontClone(fallback);
+
+            teko.fallbackFontAssetTable.Add(fallback);
+            return teko;
+        }
+
+        public static TMP_FontAsset TMPFontFromUnityFont(Font font)
+        {
+            var asset = TMP_FontAsset.CreateFontAsset(font);
+            asset.name = font.name;
+            asset.hashCode = TMP_TextUtilities.GetSimpleHashCode(asset.name);
+            return asset;
         }
 
         public static IEnumerable<T> SingleEnumerable<T>(this T item)

@@ -86,9 +86,7 @@ namespace IPA.ModList.BeatSaber.UI.Components
             }
 
             var font = GetUnityFont();
-            var asset = TMP_FontAsset.CreateFontAsset(font);
-            asset.name = font.name;
-            asset.hashCode = TMP_TextUtilities.GetSimpleHashCode(asset.name);
+            var asset = Helpers.TMPFontFromUnityFont(font);
 
             var paddingChar = UnicodePrivateUseStart;
             var TryAddCharacterInternal = MethodAccessor<TMP_FontAsset, TryAddCharacterInternalDelegate>
