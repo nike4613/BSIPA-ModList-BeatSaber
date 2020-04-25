@@ -17,6 +17,7 @@ namespace IPA.ModList.BeatSaber.UI.Markdig
     {
         public Material UIMaterial { get; }
         public Color UIColor { get; set; } = Color.white;
+        public TMP_FontAsset UIFont { get; }
         public Color QuoteColor { get; }
         public Sprite QuoteBackground { get; }
         public Image.Type QuoteBackgroundType { get; }
@@ -29,11 +30,13 @@ namespace IPA.ModList.BeatSaber.UI.Markdig
         public TMP_FontAsset CodeFont { get; set; }
         public string InlineCodePadding { get; set; } = "";
 
-        public UnityRenderer(Material uiMat, Sprite quoteBg, Image.Type bgType, Color quoteColor,
-                                             Sprite codeBg, Image.Type codeBgType, Color codeColor,
-                                             Sprite inlineCodeBg, Image.Type inlineCodeBgType, Color inlineCodeColor)
+        public UnityRenderer(Material uiMat, TMP_FontAsset uiFont,
+            Sprite quoteBg, Image.Type bgType, Color quoteColor,
+            Sprite codeBg, Image.Type codeBgType, Color codeColor,
+            Sprite inlineCodeBg, Image.Type inlineCodeBgType, Color inlineCodeColor)
         {
             UIMaterial = uiMat;
+            UIFont = uiFont;
             QuoteBackground = quoteBg;
             QuoteBackgroundType = bgType;
             QuoteColor = quoteColor;
@@ -430,6 +433,7 @@ namespace IPA.ModList.BeatSaber.UI.Markdig
         {
             var tmp = Helpers.CreateText(text, Vector2.zero, new Vector2(60f, 10f));
             tmp.enableWordWrapping = true;
+            tmp.font = UIFont;
             tmp.fontSize = fontSize;
             tmp.color = UIColor;
             if (center) tmp.alignment = TextAlignmentOptions.Center;

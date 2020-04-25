@@ -14,6 +14,7 @@ namespace IPA.ModList.BeatSaber.UI.Markdig
         UnityRendererBuilder.IUIRendererBuidler
     {
         private Material _uiMat = null;
+        private TMP_FontAsset _uiFont = null;
         private Color uiColor = Color.white;
 
         private Color? _quoteColor = null;
@@ -59,6 +60,7 @@ namespace IPA.ModList.BeatSaber.UI.Markdig
         {
             UnityRendererBuilder Material(Material mat);
             UnityRendererBuilder Color(Color col);
+            UnityRendererBuilder Font(TMP_FontAsset font);
         }
 
         public IUIRendererBuidler UI 
@@ -87,6 +89,7 @@ namespace IPA.ModList.BeatSaber.UI.Markdig
         public UnityRenderer Build()
         {
             if (_uiMat == null) throw new ArgumentNullException(nameof(UnityRenderer.UIMaterial));
+            if (_uiFont == null) throw new ArgumentNullException(nameof(UnityRenderer.UIFont));
             if (_quoteColor == null) throw new ArgumentNullException(nameof(UnityRenderer.QuoteColor));
             if (_quoteBg == null) throw new ArgumentNullException(nameof(UnityRenderer.QuoteBackground));
 
@@ -97,7 +100,7 @@ namespace IPA.ModList.BeatSaber.UI.Markdig
             var inlineCodeBgType = _codeInlineBgType ?? codeBgType;
             var inlineCodeColor = _codeInlineColor ?? codeColor;
 
-            var render = new UnityRenderer(_uiMat,
+            var render = new UnityRenderer(_uiMat, _uiFont,
                 _quoteBg, _quoteBgType, _quoteColor.Value,
                 codeBg, codeBgType, codeColor,
                 inlineCodeBg, inlineCodeBgType, inlineCodeColor)
@@ -113,6 +116,8 @@ namespace IPA.ModList.BeatSaber.UI.Markdig
         UnityRendererBuilder IUIRendererBuidler.Color(Color col) => Do(uiColor = col);
 
         UnityRendererBuilder IUIRendererBuidler.Material(Material mat) => Do(_uiMat = mat);
+
+        UnityRendererBuilder IUIRendererBuidler.Font(TMP_FontAsset font) => Do(_uiFont = font);
 
         UnityRendererBuilder IQuoteRendererBuilder.UseColor(Color col) => Do(_quoteColor = col);
 
