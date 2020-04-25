@@ -65,16 +65,10 @@
               size-delta-x='0'
               pivot-x='.5' pivot-y='1'>
 <![CDATA[
-`inline code` not in code
-`more inline code in the same paragraph`
+9. thing
+10. this will have a larger bullet
 
-> quote
-> > nested quote
-> ```
-> nested code
-> ```
-
-> but what about a `code` block?
+11. this is a line that will `wrap`, and has *some* **inline** te`xt elemen`ts
 ]]>
         </markdown>
       <!--/scroll-->

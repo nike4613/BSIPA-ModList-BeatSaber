@@ -84,6 +84,7 @@ namespace IPA.ModList.BeatSaber.UI.Markdig
                 HtmlBlock html => RenderHtmlBlock(html),
                 // I don't render FencedCodeBlock and CodeBlock differently, so there is just the one case
                 CodeBlock code => RenderCodeBlock(code),
+                ListBlock list => RenderListBlock(list),
 
                 _ => throw new NotImplementedException($"Unknown markdown block type {obj.GetType()}")
             };
@@ -262,6 +263,86 @@ namespace IPA.ModList.BeatSaber.UI.Markdig
             AfterObjectRendered?.Invoke(code, go);
 
             return Helpers.SingleEnumerable(transform).Append(Spacer(1.5f));
+        }
+
+        private const float ListBulletRegionSize = 5f;
+
+        private IEnumerable<RectTransform> RenderListBlock(ListBlock list)
+        {
+            var (transform, layout) = Block("List", .1f, true);
+            layout.childForceExpandWidth = true;
+            layout.padding = new RectOffset(ListInset, ListInset, 0, 0);
+
+            foreach (var block in list)
+            {
+                if (!(block is ListItemBlock item))
+                {
+                    Logger.md.Warn("Block in list not a list item");
+                }
+                else
+                {
+                    var children = RenderListItem(item, list.IsLoose, list.IsOrdered, list.OrderedDelimiter, list.BulletType);
+                    foreach (var child in children)
+                        child.SetParent(transform, false);
+                }
+            }
+
+            return Helpers.SingleEnumerable(transform).Append(Spacer(1.5f));
+        }
+
+        private IEnumerable<RectTransform> RenderListItem(ListItemBlock item, bool isLoose, bool ordered, char orderedDelim, char bulletType)
+        {
+            Logger.md.Debug($"Rendering list item {item.Order}{orderedDelim} {bulletType} ({(ordered?"ordered":"unordered")})");
+
+            var (transform, layout) = Block("ListItem", 0f, false);
+            layout.childAlignment = TextAnchor.UpperLeft;
+
+            // TODO: do I really need to set up fallback fonts to make this damn bullet work?
+            var bulletTmp = CreateText(ordered ? $"{item.Order}{orderedDelim}" : "\u2022", ParagraphFontSize, false);
+            bulletTmp.alignment = TextAlignmentOptions.Right;
+            var bulletLayoutElement = bulletTmp.gameObject.AddComponent<LayoutElement>();
+            bulletLayoutElement.minWidth = ListBulletRegionSize;
+            bulletLayoutElement.preferredWidth = ListBulletRegionSize;
+            bulletLayoutElement.layoutPriority = 100;
+            bulletLayoutElement.flexibleWidth = 0;
+
+            bulletTmp.transform.SetParent(transform, false);
+
+            // TODO: add paragraph padding when isLoose == false
+            var (content, contentLayout) = Block("Content", .5f, isLoose);
+            contentLayout.childForceExpandWidth = isLoose;
+            var contentLayoutElement = content.gameObject.AddComponent<LayoutElement>();
+            contentLayoutElement.layoutPriority = 100;
+            contentLayoutElement.flexibleWidth = 1;
+
+            content.SetParent(transform, false);
+
+            // TODO: for some reason, code highlighting is misaligned in list items
+
+            foreach (var block in item)
+            {
+                IEnumerable<RectTransform> children;
+
+                if (isLoose)
+                {
+                    children = RenderBlock(block);
+                }
+                else
+                {
+                    if (!(block is LeafBlock leaf))
+                    {
+                        Logger.md.Warn("A tight list item contains a non-leaf block");
+                        continue;
+                    }
+
+                    children = RenderInline(leaf.Inline, ParagraphFontSize);
+                }
+
+                foreach (var child in children)
+                    child.SetParent(content, false);
+            }
+
+            return Helpers.SingleEnumerable(transform);
         }
         #endregion
 
