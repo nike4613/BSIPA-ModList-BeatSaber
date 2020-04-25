@@ -106,7 +106,7 @@ namespace IPA.ModList.BeatSaber.UI.Components
             {
                 Logger.md.Debug($"Using unicode codepoint {paddingChar:X}");
                 var glyph = new Glyph(paddingChar,
-                        new GlyphMetrics(0, 0, 0, 0, InlineCodePadding),
+                        new GlyphMetrics(InlineCodePadding, 1f, 0, 0, InlineCodePadding),
                         new GlyphRect(Rect.zero)
                     );
                 var character = new TMP_Character(paddingChar, glyph);

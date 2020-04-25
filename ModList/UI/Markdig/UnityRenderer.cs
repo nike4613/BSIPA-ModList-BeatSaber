@@ -67,10 +67,10 @@ namespace IPA.ModList.BeatSaber.UI.Markdig
         private const float H1FontSize = 5.5f;
         private const float HeaderLevelFontDecrease = 0.5f;
         private const float ThematicBreakHeight = .5f;
-        private const int TextInset = 1;
-        private const int BlockQuoteInset = TextInset * 2;
+        private const int ParagraphInset = 1;
+        private const int BlockQuoteInset = ParagraphInset * 2;
         private const int BlockCodeInset = BlockQuoteInset;
-        private const int ListInset = TextInset;
+        private const int ListInset = ParagraphInset;
 
         #region Blocks
         private IEnumerable<RectTransform> RenderBlock(Block obj)
@@ -143,7 +143,7 @@ namespace IPA.ModList.BeatSaber.UI.Markdig
         private IEnumerable<RectTransform> RenderParagraph(ParagraphBlock para)
         {
             var (transform, layout) = Block("Paragraph", .1f, false);
-            layout.padding = new RectOffset(TextInset, TextInset, 0, 0);
+            layout.padding = new RectOffset(ParagraphInset, ParagraphInset, 0, 0);
 
             if (para.Inline != null)
             {
@@ -160,7 +160,7 @@ namespace IPA.ModList.BeatSaber.UI.Markdig
         private IEnumerable<RectTransform> RenderHeading(HeadingBlock heading)
         {
             var (transform, layout) = Block("Heading", .1f, false);
-            layout.padding = new RectOffset(TextInset, TextInset, 0, 0);
+            layout.padding = new RectOffset(ParagraphInset, ParagraphInset, 0, 0);
             if (heading.Level < 2)
                 layout.childAlignment = TextAnchor.UpperCenter;
 
@@ -294,7 +294,7 @@ namespace IPA.ModList.BeatSaber.UI.Markdig
         {
             Logger.md.Debug($"Rendering list item {item.Order}{orderedDelim} {bulletType} ({(ordered?"ordered":"unordered")})");
 
-            var (transform, layout) = Block("ListItem", 0f, false);
+            var (transform, layout) = Block("ListItem", isLoose ? 0f : ParagraphInset, false);
             layout.childAlignment = TextAnchor.UpperLeft;
 
             // TODO: do I really need to set up fallback fonts to make this damn bullet work?
@@ -308,7 +308,6 @@ namespace IPA.ModList.BeatSaber.UI.Markdig
 
             bulletTmp.transform.SetParent(transform, false);
 
-            // TODO: add paragraph padding when isLoose == false
             var (content, contentLayout) = Block("Content", .5f, isLoose);
             contentLayout.childForceExpandWidth = isLoose;
             var contentLayoutElement = content.gameObject.AddComponent<LayoutElement>();
@@ -316,8 +315,6 @@ namespace IPA.ModList.BeatSaber.UI.Markdig
             contentLayoutElement.flexibleWidth = 1;
 
             content.SetParent(transform, false);
-
-            // TODO: for some reason, code highlighting is misaligned in list items
 
             foreach (var block in item)
             {

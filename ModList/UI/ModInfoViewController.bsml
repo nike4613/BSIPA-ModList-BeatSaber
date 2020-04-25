@@ -65,10 +65,13 @@
               size-delta-x='0'
               pivot-x='.5' pivot-y='1'>
 <![CDATA[
-9. thing
-10. this will have a larger bullet
+para `code` stuff after
 
-11. this is a line that will `wrap`, and has *some* **inline** te`xt elemen`ts
+- tight `code`
+- list `code`
++ loose `code`
+
++ list `code`
 ]]>
         </markdown>
       <!--/scroll-->
