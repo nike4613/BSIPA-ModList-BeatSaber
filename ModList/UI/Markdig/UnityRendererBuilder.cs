@@ -107,7 +107,7 @@ namespace IPA.ModList.BeatSaber.UI.Markdig
             {
                 UIColor = uiColor,
                 CodeFont = codeFont,
-                InlineCodePadding = codeInlinePadding,
+                InlineCodePaddingText = codeInlinePadding,
             };
             render.AfterObjectRendered += ObjRenderCallback;
             return render;

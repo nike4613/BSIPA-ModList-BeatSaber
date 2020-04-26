@@ -43,20 +43,6 @@ namespace IPA.ModList.BeatSaber.UI.Components
             }
         }
 
-        private Vector4 highlightPadding = new Vector4(0, 0, 0, 0);
-        /// <summary>
-        /// The values are left, right, top, bottom
-        /// </summary>
-        public Vector4 HighlightPadding
-        {
-            get => highlightPadding;
-            set
-            {
-                highlightPadding = value;
-                needsRerender = true;
-            }
-        }
-
         private readonly List<LinkType> linkTypes = new List<LinkType>();
         public IReadOnlyList<LinkType> LinkTypes => linkTypes;
 
@@ -81,6 +67,13 @@ namespace IPA.ModList.BeatSaber.UI.Components
             public Sprite BackgroundSprite { get; set; }
             public Image.Type BackgroundImageType { get; set; }
             public Color BackgroundImageColor { get; set; }
+
+            /// <summary>
+            /// The values are left, right, top, bottom
+            /// </summary>
+            public Vector4 Padding { get; set; } = Vector4.zero;
+
+            public float LineBreakPadding { get; set; } = 0f;
 
             public LinkType(Func<TMP_LinkInfo, bool> selector, object data)
             {
@@ -205,7 +198,7 @@ namespace IPA.ModList.BeatSaber.UI.Components
             CreateHighlightObjects(links);
         }
 
-        private IEnumerable<Extents> FindExtentsForLink(TextMeshProUGUI tmp, TMP_LinkInfo link)
+        private IEnumerable<Extents> FindExtentsForLink(TextMeshProUGUI tmp, LinkType type, TMP_LinkInfo link)
         {
             Logger.log.Debug($"Looking at region '{link.GetLinkText()}' with ID '{link.GetLinkID()}'");
 
@@ -230,6 +223,8 @@ namespace IPA.ModList.BeatSaber.UI.Components
 
             var currentExtent = GetZeroedExtents(lineExtent);
 
+            bool hitLineBreak = false;
+
             for (var charIdx = start; charIdx < end && charIdx < tmp.textInfo.characterCount; charIdx++)
             {
                 var charInfo = tmp.textInfo.characterInfo[charIdx];
@@ -237,16 +232,19 @@ namespace IPA.ModList.BeatSaber.UI.Components
 
                 if (!IsCharInLine(charIdx, currentLine))
                 {
+                    hitLineBreak = true;
                     currentLineIndex++;
                     currentLine = tmp.textInfo.lineInfo[currentLineIndex];
                     lineExtent = currentLine.lineExtents;
 
-                    yield return PadExtents(currentExtent, HighlightPadding);
+                    var pad = type.Padding;
+                    pad.y += type.LineBreakPadding;
+                    yield return PadExtents(currentExtent, pad);
                     currentExtent = GetZeroedExtents(lineExtent);
                 }
 
                 if (ExtentWidth(currentExtent) == 0f)
-                    currentExtent.min = new Vector2(charExt.min.x, currentExtent.min.y);
+                    currentExtent.min = new Vector2(charExt.min.x - (hitLineBreak ? type.LineBreakPadding : 0), currentExtent.min.y);
 
                 currentExtent.min = new Vector2(currentExtent.min.x, Math.Min(currentExtent.min.y, charExt.min.y));
                 currentExtent.max = new Vector2(charExt.max.x, Math.Max(currentExtent.max.y, charExt.max.y));
@@ -257,7 +255,7 @@ namespace IPA.ModList.BeatSaber.UI.Components
                     $"{currentLineIndex} was not the expected end line {endLineIndex}");
 
             if (ExtentWidth(currentExtent) > 0f)
-                yield return PadExtents(currentExtent, HighlightPadding);
+                yield return PadExtents(currentExtent, type.Padding);
         }
 
         private IEnumerable<LinkRenderInfo> CalculateHighlightedRegions(IEnumerable<LinkInfo> links)
@@ -268,12 +266,12 @@ namespace IPA.ModList.BeatSaber.UI.Components
             if (CreateSingleObjectForLinks)
             {
                 foreach (var link in links)
-                    yield return new LinkRenderInfo(link.Link, FindExtentsForLink(tmp, link.Link), link.Type);
+                    yield return new LinkRenderInfo(link.Link, FindExtentsForLink(tmp, link.Type, link.Link), link.Type);
             }
             else
             {
                 foreach (var link in links)
-                    foreach (var ext in FindExtentsForLink(tmp, link.Link))
+                    foreach (var ext in FindExtentsForLink(tmp, link.Type, link.Link))
                         yield return new LinkRenderInfo(link.Link, ext, link.Type);
             }
         }

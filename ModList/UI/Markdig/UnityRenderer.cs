@@ -28,7 +28,7 @@ namespace IPA.ModList.BeatSaber.UI.Markdig
         public Sprite InlineCodeBackground { get; }
         public Image.Type InlineCodeBackgroundType { get; }
         public TMP_FontAsset CodeFont { get; set; }
-        public string InlineCodePadding { get; set; } = "";
+        public string InlineCodePaddingText { get; set; } = "";
 
         public UnityRenderer(Material uiMat, TMP_FontAsset uiFont,
             Sprite quoteBg, Image.Type bgType, Color quoteColor,
@@ -74,6 +74,7 @@ namespace IPA.ModList.BeatSaber.UI.Markdig
         private const int BlockQuoteInset = ParagraphInset * 2;
         private const int BlockCodeInset = BlockQuoteInset;
         private const int ListInset = ParagraphInset;
+        private const float InlineCodePaddingSize = .4f;
 
         #region Blocks
         private IEnumerable<RectTransform> RenderBlock(Block obj)
@@ -418,11 +419,11 @@ namespace IPA.ModList.BeatSaber.UI.Markdig
             => builder.Append(CodeFont == null ? "" : $"<font=\"{CodeFont.name}\">")
                       .Append("<size=80%>")
                       .Append($"<link=\"{CodeRegionLinkIdStart}{codeRegionLinkPostfix++}\">")
-                      .Append(InlineCodePadding)
+                      .Append(InlineCodePaddingText)
                       .Append("<noparse>")
                       .Append(code.Content)
                       .Append("</noparse>")
-                      .Append(InlineCodePadding)
+                      .Append(InlineCodePaddingText)
                       .Append("</link></size>")
                       .Append(CodeFont == null ? "" : "</font>");
 
@@ -462,9 +463,6 @@ namespace IPA.ModList.BeatSaber.UI.Markdig
         private TextMeshProUGUILinkBackgroundGenerator CreateHighlighter(GameObject obj)
         {
             var highlighter = obj.AddComponent<TextMeshProUGUILinkBackgroundGenerator>();
-            //highlighter.LinkSelector = linkSelector;
-            // TODO: move this padding to its own variable
-            highlighter.HighlightPadding = new Vector4(0, 0, .4f, .4f);
             return highlighter;
         }
 
@@ -475,6 +473,8 @@ namespace IPA.ModList.BeatSaber.UI.Markdig
             type.BackgroundSprite = InlineCodeBackground;
             type.BackgroundImageType = InlineCodeBackgroundType;
             type.BackgroundMaterial = UIMaterial;
+            type.Padding = new Vector4(0, 0, InlineCodePaddingSize, InlineCodePaddingSize);
+            type.LineBreakPadding = InlineCodePaddingSize;
         }
     }
 }
