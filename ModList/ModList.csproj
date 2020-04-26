@@ -149,7 +149,7 @@
     <Compile Include="UI\Components\MarkdownText.cs" />
     <Compile Include="UI\Components\OldMarkdownText.cs" />
     <Compile Include="UI\Components\PositionSizeCopier.cs" />
-    <Compile Include="UI\Components\TextMeshProUGUILinkHighlighter.cs" />
+    <Compile Include="UI\Components\TextMeshProUGUILinkBackgroundGenerator.cs" />
     <Compile Include="UI\Markdig\EmphasisFlags.cs" />
     <Compile Include="UI\Markdig\MarkdownExtensions.cs" />
     <Compile Include="UI\Markdig\RenderHelpers.cs" />

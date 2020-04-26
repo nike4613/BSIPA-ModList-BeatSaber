@@ -67,11 +67,9 @@
 <![CDATA[
 para `code` stuff after
 
-- tight `code`
-- list `code`
-+ loose `code`
+this is a `paragraph` with multiple `code blocks, but one of them is really long and wraps`
 
-+ list `code`
+this `is` a `paragraph` with a `disjointed code block`
 ]]>
         </markdown>
       <!--/scroll-->

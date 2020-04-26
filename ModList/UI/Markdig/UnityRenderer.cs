@@ -354,7 +354,7 @@ namespace IPA.ModList.BeatSaber.UI.Markdig
         {
             Logger.md.Debug("Rendering inline from block");
             codeRegionLinkPostfix = 0;
-            var text = RenderInlineToText(inline, new StringBuilder(inline.Span.Length)).ToString();
+            var text = RenderInlineToText(inline, new StringBuilder(inline.Span.Length * 2)).ToString();
             Logger.md.Debug($"Inline rendered to '{text}'");
             var tmp = CreateText(text, fontSize, center);
 
@@ -369,8 +369,12 @@ namespace IPA.ModList.BeatSaber.UI.Markdig
             var highlightLayout = highlights.AddComponent<LayoutElement>();
             highlightLayout.ignoreLayout = true;
 
-            var highlight = AddCodeHighlighter(tmp.gameObject, link => link.GetLinkID().StartsWith(CodeRegionLinkIdStart));
+            var highlight = CreateHighlighter(tmp.gameObject);
             highlight.BackgroundParent = highlightTransform;
+
+            var codeLinkType = highlight.CreateLinkType(link => link.GetLinkID().StartsWith(CodeRegionLinkIdStart), null);
+            SetCodeBackgroundLinkType(codeLinkType);
+            highlight.AddLinkType(codeLinkType);
 
             AfterObjectRendered?.Invoke(inline, tmp.gameObject);
 
@@ -385,7 +389,7 @@ namespace IPA.ModList.BeatSaber.UI.Markdig
                 LineBreakInline lb => RenderLineBreakInlineToText(lb, builder),
                 CodeInline code => RenderCodeInlineToText(code, builder),
                 AutolinkInline link => throw new NotImplementedException(), // TODO: implement this
-                LinkInline link => throw new NotImplementedException(), // TODO: implement this
+                LinkInline link => RenderLinkInlineToText(link, builder),
                 HtmlInline tag => RenderHtmlInlineToText(tag, builder),
                 HtmlEntityInline entity => RenderHtmlEntityToText(entity, builder),
 
@@ -422,6 +426,11 @@ namespace IPA.ModList.BeatSaber.UI.Markdig
                       .Append("</link></size>")
                       .Append(CodeFont == null ? "" : "</font>");
 
+        private StringBuilder RenderLinkInlineToText(LinkInline link, StringBuilder builder)
+        { // link inlines can also be images
+            throw new NotImplementedException(); // TODO:
+        }
+
         private StringBuilder RenderHtmlInlineToText(HtmlInline tag, StringBuilder builder)
             => builder.Append(tag.Tag);
 
@@ -450,17 +459,22 @@ namespace IPA.ModList.BeatSaber.UI.Markdig
             return tmp;
         }
 
-        private TextMeshProUGUILinkHighlighter AddCodeHighlighter(GameObject obj, Func<TMP_LinkInfo, bool> linkSelector)
+        private TextMeshProUGUILinkBackgroundGenerator CreateHighlighter(GameObject obj)
         {
-            var highlighter = obj.AddComponent<TextMeshProUGUILinkHighlighter>();
-            highlighter.BackgroundImageColor = InlineCodeBackgroundColor;
-            highlighter.BackgroundSprite = InlineCodeBackground;
-            highlighter.BackgroundImageType = InlineCodeBackgroundType;
-            highlighter.BackgroundMaterial = UIMaterial;
-            highlighter.LinkSelector = linkSelector;
+            var highlighter = obj.AddComponent<TextMeshProUGUILinkBackgroundGenerator>();
+            //highlighter.LinkSelector = linkSelector;
             // TODO: move this padding to its own variable
             highlighter.HighlightPadding = new Vector4(0, 0, .4f, .4f);
             return highlighter;
+        }
+
+        private void SetCodeBackgroundLinkType(TextMeshProUGUILinkBackgroundGenerator.LinkType type)
+        {
+            type.ShowBackground = true;
+            type.BackgroundImageColor = InlineCodeBackgroundColor;
+            type.BackgroundSprite = InlineCodeBackground;
+            type.BackgroundImageType = InlineCodeBackgroundType;
+            type.BackgroundMaterial = UIMaterial;
         }
     }
 }
