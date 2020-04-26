@@ -31,6 +31,7 @@ namespace IPA.ModList.BeatSaber.UI.Markdig
         private string codeInlinePadding = "";
 
         private event Action<MarkdownObject, GameObject> ObjRenderCallback;
+        private event UnityRenderer.LinkRendered LinkRenderCallback;
 
         public interface IQuoteRendererBuilder
         {
@@ -80,9 +81,15 @@ namespace IPA.ModList.BeatSaber.UI.Markdig
         }
         IInlineCodeRendererBuilder ICodeRendererBuilder.Inline => this;
 
-        public UnityRendererBuilder UseObjectRendererCallback(Action<MarkdownObject, GameObject> callback)
+        public UnityRendererBuilder UseObjectRenderedCallback(Action<MarkdownObject, GameObject> callback)
         {
             ObjRenderCallback += callback;
+            return this;
+        }
+
+        public UnityRendererBuilder UseLinkRenderedCallback(UnityRenderer.LinkRendered callback)
+        {
+            LinkRenderCallback += callback;
             return this;
         }
 
@@ -110,6 +117,7 @@ namespace IPA.ModList.BeatSaber.UI.Markdig
                 InlineCodePaddingText = codeInlinePadding,
             };
             render.AfterObjectRendered += ObjRenderCallback;
+            render.OnLinkRendered += LinkRenderCallback;
             return render;
         }
 

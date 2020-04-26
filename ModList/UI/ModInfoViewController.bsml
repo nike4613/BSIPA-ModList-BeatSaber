@@ -65,9 +65,9 @@
               size-delta-x='0'
               pivot-x='.5' pivot-y='1'>
 <![CDATA[
-para `code` stuff after
+para [link](<https://duckduckgo.com/> "DuckDuckGo!") stuff after
 
-this is a `paragraph` with multiple `code blocks, but one of them is really long and wraps`
+this is a [paragraph](<https://duckduckgo.com/> "DuckDuckGo! para") with multiple [links, but one of them is really long and wraps](<https://duckduckgo.com/> "DuckDuckGo! long")
 
 this `is` a `paragraph` with a `disjointed code block`
 ]]>

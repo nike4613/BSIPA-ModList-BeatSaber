@@ -355,6 +355,7 @@ namespace IPA.ModList.BeatSaber.UI.Markdig
         {
             Logger.md.Debug("Rendering inline from block");
             codeRegionLinkPostfix = 0;
+            linkDict = new Dictionary<string, LinkInfo>();
             var text = RenderInlineToText(inline, new StringBuilder(inline.Span.Length * 2)).ToString();
             Logger.md.Debug($"Inline rendered to '{text}'");
             var tmp = CreateText(text, fontSize, center);
@@ -376,6 +377,12 @@ namespace IPA.ModList.BeatSaber.UI.Markdig
             var codeLinkType = highlight.CreateLinkType(link => link.GetLinkID().StartsWith(CodeRegionLinkIdStart), null);
             SetCodeBackgroundLinkType(codeLinkType);
             highlight.AddLinkType(codeLinkType);
+
+            var linkLinkType = highlight.CreateLinkType(link => link.GetLinkID().StartsWith(LinkIdStart), linkDict);
+            highlight.AddLinkType(linkLinkType);
+
+            highlight.OnLinkBackgroundRendered += Highlight_OnLinkBackgroundRendered;
+            highlight.OnLinkSingleObjectRendered += Highlight_OnLinkSingleObjectRendered;
 
             AfterObjectRendered?.Invoke(inline, tmp.gameObject);
 
@@ -427,11 +434,6 @@ namespace IPA.ModList.BeatSaber.UI.Markdig
                       .Append("</link></size>")
                       .Append(CodeFont == null ? "" : "</font>");
 
-        private StringBuilder RenderLinkInlineToText(LinkInline link, StringBuilder builder)
-        { // link inlines can also be images
-            throw new NotImplementedException(); // TODO:
-        }
-
         private StringBuilder RenderHtmlInlineToText(HtmlInline tag, StringBuilder builder)
             => builder.Append(tag.Tag);
 
@@ -445,6 +447,61 @@ namespace IPA.ModList.BeatSaber.UI.Markdig
             builder.AppendEmOpenTags(flags);
             return RenderContainerInlineToText(em, builder)
                    .AppendEmCloseTags(flags);
+        }
+        #endregion
+
+        #region Links
+        private const string LinkIdStart = "__Link__";
+        private Dictionary<string, LinkInfo> linkDict;
+        private StringBuilder RenderLinkInlineToText(LinkInline link, StringBuilder builder)
+        { // link inlines can also be images
+            if (link.IsImage) throw new NotImplementedException();
+
+            var linkInfo = new LinkInfo(link.GetDynamicUrl?.Invoke() ?? link.Url, link.Title);
+            Logger.md.Debug($"Rendering inline link to {linkInfo.Url} ({linkInfo.Title})");
+            var linkName = LinkIdStart + linkDict.Count;
+            linkDict.Add(linkName, linkInfo);
+
+            builder.Append($"<link=\"{linkName}\">");
+            return RenderContainerInlineToText(link, builder)
+                .Append("</link>");
+        }
+
+        private struct LinkInfo
+        {
+            public string Url;
+            public string Title;
+            public List<GameObject> SelectableObjects;
+
+            public LinkInfo(string url, string title)
+            {
+                Url = url;
+                Title = title;
+                SelectableObjects = new List<GameObject>();
+            }
+        }
+
+        private void Highlight_OnLinkBackgroundRendered(TMP_LinkInfo link, GameObject gameObject, object linkData)
+        {
+            if (!(linkData is Dictionary<string, LinkInfo> linkDict)) return;
+            if (!linkDict.TryGetValue(link.GetLinkID(), out var linkInfo)) return;
+
+            Logger.md.Debug($"Handling background rendering of link to {linkInfo.Url} ({linkInfo.Title})");
+            linkInfo.SelectableObjects.Add(gameObject);
+        }
+
+        public delegate void LinkRendered(IEnumerable<GameObject> textRegions, GameObject fullExtent, string url, string title);
+
+        public event LinkRendered OnLinkRendered;
+
+        private void Highlight_OnLinkSingleObjectRendered(TMP_LinkInfo link, GameObject gameObject, object linkData)
+        {
+            if (!(linkData is Dictionary<string, LinkInfo> linkDict)) return;
+            if (!linkDict.TryGetValue(link.GetLinkID(), out var linkInfo)) return;
+
+            Logger.md.Debug($"Handling large object rendering of link to {linkInfo.Url} ({linkInfo.Title})");
+
+            OnLinkRendered?.Invoke(linkInfo.SelectableObjects, gameObject, linkInfo.Url, linkInfo.Title);
         }
         #endregion
 

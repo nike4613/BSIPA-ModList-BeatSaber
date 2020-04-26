@@ -17,6 +17,7 @@ using System.Collections;
 using UnityEngine.TextCore;
 using IPA.Utilities;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
 
 namespace IPA.ModList.BeatSaber.UI.Components
 {
@@ -130,12 +131,17 @@ namespace IPA.ModList.BeatSaber.UI.Components
                 .Code.Inline.UseBackground(Helpers.TinyRoundedRectSprite, Image.Type.Sliced)
                 .Code.Inline.UseColor(new Color(135f / 255, 135f / 255, 135f / 255, .1f))
                 .Code.Inline.UsePadding(padding)
-                .UseObjectRendererCallback((obj, go) =>
+                .UseObjectRenderedCallback((obj, go) =>
                 {
                     Logger.md.Debug($"Rendered markdown object of type {obj.GetType()}");
                     if (obj is HeadingBlock || obj is ThematicBreakBlock || obj is ListItemBlock)
                         go.AddComponent<ItemForFocussedScrolling>();
+
+                    var tmp = go.GetComponent<TextMeshProUGUI>();
+                    if (tmp != null) // explicitly disable TMP raycasting on TMP objects
+                        tmp.raycastTarget = false;
                 })
+                .UseLinkRenderedCallback(OnLinkRendered)
                 .Build();
         }
 
@@ -168,5 +174,106 @@ namespace IPA.ModList.BeatSaber.UI.Components
             ClearObject(transform);
             gameObject.SetActive(true);
         }
+
+        #region Links
+        public delegate void LinkPressed(string url, string title);
+        public event LinkPressed OnLinkPressed;
+
+        private void OnLinkRendered(IEnumerable<GameObject> hoverableGOs, GameObject fullBgGO, string url, string title)
+        {
+            Logger.md.Debug($"Handling link rendered with {string.Join(", ", hoverableGOs.Select(g => g.ToString()))} over {fullBgGO} to {url} ({title})");
+
+            fullBgGO.AddComponent<LinkHoverHint>();
+            var hoverManager = fullBgGO.AddComponent<LinkHoverManager>();
+            hoverManager.HoverHint.Controller = Resources.FindObjectsOfTypeAll<HoverHintController>().First();
+            hoverManager.MarkdownText = this;
+            hoverManager.TitleText = title;
+            hoverManager.Url = url;
+
+            foreach (var go in hoverableGOs)
+            {
+                var hover = go.AddComponent<LinkPartHover>();
+                hover.Manager = hoverManager;
+                go.AddComponent<Interactable>(); // gives you a little buzz when hovering
+            }
+        }
+
+        private void InvokeLinkPressed(string url, string title)
+            => OnLinkPressed?.Invoke(url, title);
+        
+        [RequireComponent(typeof(LinkHoverHint))]
+        private class LinkHoverManager : MonoBehaviour
+        {
+            public LinkHoverHint HoverHint => GetComponent<LinkHoverHint>();
+
+            public HoverHintController HintController => HoverHint.Controller;
+
+            public string TitleText { get; set; }
+            public string Url { get; set; }
+            public MarkdownText MarkdownText { get; set; }
+
+            public void BeginHover()
+            {
+                Logger.md.Debug($"Begun hover for title {TitleText}");
+                if (TitleText != null)
+                {
+                    var hint = HoverHint;
+                    hint.text = TitleText;
+                    hint.Controller.ShowHint(hint);
+                }
+            }
+
+            public void EndHover()
+            {
+                HintController.HideHint();
+                Logger.md.Debug($"Ended hover for title {TitleText}");
+            }
+
+            public void Click()
+            {
+                Logger.md.Debug($"Link to {Url} has been clicked");
+                MarkdownText.InvokeLinkPressed(Url, TitleText);
+            }
+        }
+
+        private class LinkPartHover : Graphic, 
+            IPointerEnterHandler,
+            IPointerExitHandler,
+            IPointerClickHandler,
+            IEventSystemHandler
+        {
+            public LinkHoverManager Manager { get; set; }
+
+            protected override void Awake()
+                => raycastTarget = true;
+
+            public void OnPointerEnter(PointerEventData eventData)
+                => Manager.BeginHover();
+
+            public void OnPointerExit(PointerEventData eventData)
+                => Manager.EndHover();
+            public void OnPointerClick(PointerEventData eventData)
+                => Manager.Click();
+
+            protected override void UpdateMaterial() { }
+            protected override void UpdateGeometry() { }
+
+        }
+
+        private class LinkHoverHint : HoverHint
+        {
+            public HoverHintController Controller
+            {
+                get => _hoverHintController;
+                set => _hoverHintController = value;
+            }
+
+            internal void Start()
+                => enabled = false; // always force
+
+            internal void Update()
+                => enabled = false;
+        }
+        #endregion
     }
 }
