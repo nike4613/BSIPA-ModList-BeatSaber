@@ -70,6 +70,8 @@ para [link](<https://duckduckgo.com/> "DuckDuckGo!") stuff after
 this is a [paragraph](<https://duckduckgo.com/> "DuckDuckGo! para") with multiple [links, but one of them is really long and wraps](<https://duckduckgo.com/> "DuckDuckGo! long")
 
 this `is` a `paragraph` with a `disjointed code block`
+
+this is an autolink <https://duckduckgo.com/>
 ]]>
         </markdown>
       <!--/scroll-->

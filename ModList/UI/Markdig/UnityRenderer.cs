@@ -354,8 +354,10 @@ namespace IPA.ModList.BeatSaber.UI.Markdig
         private IEnumerable<RectTransform> RenderInline(Inline inline, float fontSize, bool center = false)
         {
             Logger.md.Debug("Rendering inline from block");
+
             codeRegionLinkPostfix = 0;
             linkDict = new Dictionary<string, LinkInfo>();
+
             var text = RenderInlineToText(inline, new StringBuilder(inline.Span.Length * 2)).ToString();
             Logger.md.Debug($"Inline rendered to '{text}'");
             var tmp = CreateText(text, fontSize, center);
@@ -384,6 +386,8 @@ namespace IPA.ModList.BeatSaber.UI.Markdig
             highlight.OnLinkBackgroundRendered += Highlight_OnLinkBackgroundRendered;
             highlight.OnLinkSingleObjectRendered += Highlight_OnLinkSingleObjectRendered;
 
+            linkDict = null;
+
             AfterObjectRendered?.Invoke(inline, tmp.gameObject);
 
             return Helpers.SingleEnumerable(highlightTransform).Append(tmp.rectTransform);
@@ -396,7 +400,7 @@ namespace IPA.ModList.BeatSaber.UI.Markdig
                 EmphasisInline em => RenderEmphasisToText(em, builder),
                 LineBreakInline lb => RenderLineBreakInlineToText(lb, builder),
                 CodeInline code => RenderCodeInlineToText(code, builder),
-                AutolinkInline link => throw new NotImplementedException(), // TODO: implement this
+                AutolinkInline link => RenderAutolinkInlineToText(link, builder),
                 LinkInline link => RenderLinkInlineToText(link, builder),
                 HtmlInline tag => RenderHtmlInlineToText(tag, builder),
                 HtmlEntityInline entity => RenderHtmlEntityToText(entity, builder),
@@ -458,13 +462,30 @@ namespace IPA.ModList.BeatSaber.UI.Markdig
             if (link.IsImage) throw new NotImplementedException();
 
             var linkInfo = new LinkInfo(link.GetDynamicUrl?.Invoke() ?? link.Url, link.Title);
-            Logger.md.Debug($"Rendering inline link to {linkInfo.Url} ({linkInfo.Title})");
-            var linkName = LinkIdStart + linkDict.Count;
-            linkDict.Add(linkName, linkInfo);
+            var linkName = AddLinkToDict(linkInfo);
 
             builder.Append($"<link=\"{linkName}\">");
             return RenderContainerInlineToText(link, builder)
                 .Append("</link>");
+        }
+
+        private StringBuilder RenderAutolinkInlineToText(AutolinkInline link, StringBuilder builder)
+        {
+            var linkInfo = new LinkInfo(link.Url, null);
+            var linkName = AddLinkToDict(linkInfo);
+
+            return builder
+                    .Append($"<link=\"{linkName}\">")
+                    .Append(link.Url)
+                    .Append("</link>");
+        }
+
+        private string AddLinkToDict(LinkInfo linkInfo)
+        {
+            Logger.md.Debug($"Rendering inline link to {linkInfo.Url} ({linkInfo.Title})");
+            var linkName = LinkIdStart + linkDict.Count;
+            linkDict.Add(linkName, linkInfo);
+            return linkName;
         }
 
         private struct LinkInfo

@@ -215,7 +215,7 @@ namespace IPA.ModList.BeatSaber.UI.Components
             public void BeginHover()
             {
                 Logger.md.Debug($"Begun hover for title {TitleText}");
-                if (TitleText != null)
+                if (!string.IsNullOrEmpty(TitleText))
                 {
                     var hint = HoverHint;
                     hint.text = TitleText;
