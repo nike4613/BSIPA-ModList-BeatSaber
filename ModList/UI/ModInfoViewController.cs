@@ -61,6 +61,14 @@ namespace IPA.ModList.BeatSaber.UI
                 IconImage.texture = PluginIcon;
         }
 
+        [UIAction("OnDescLinkPressed")]
+        [SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "BSML calls this")]
+        private void OnDescriptionLinkPressed(string url, string title)
+        {
+            Logger.log.Debug($"Link to {url} ({title}) has been clicked");
+
+        }
+
         protected override void DidActivate(bool firstActivation, ActivationType type)
         {
             base.DidActivate(firstActivation, type);
