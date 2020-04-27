@@ -77,4 +77,23 @@ this is an autolink <https://duckduckgo.com/>
       <!--/scroll-->
     </bg>
   </bg>
+  <modal show-event='ShowLinkModal' hide-event='HideLinkModal'
+         move-to-center='true' clickerino-offerino-closerino='false'
+         size-delta-x='70' size-delta-y='30'>
+    <vertical child-align='MiddleCenter' child-expand-width='true' child-expand-height='false' spacing='0'
+              anchor-min-x='0' anchor-min-y='.25'
+              anchor-max-x='1' anchor-max-y='1'>
+      <text text='Do you want to open this link?' font-align='Center' />
+      <text text='~link_url' rich-text='false' font-align='Center' 
+            word-wrapping='false' overflow-mode='Ellipsis' color='red'/>
+      <text text='~link_title' rich-text='false' font-align='Center' id='link-title-text' 
+            word-wrapping='false' overflow-mode='Ellipsis' color='cyan' />
+    </vertical>
+    <bottom-button-panel>
+      <button text='Open Link' interactable='true'
+              click-event='HideLinkModal' on-click='ConfirmOpenLink' />
+      <button text='Cancel' interactable='true'
+              click-event='HideLinkModal' />
+    </bottom-button-panel>
+  </modal>
 </bg>
