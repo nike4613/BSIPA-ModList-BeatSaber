@@ -56,6 +56,11 @@ namespace IPA.ModList.BeatSaber.UI.BSML
             base.HandleType(componentType, parserParams);
 
             var markdownText = componentType.component as MarkdownText;
+
+            // run this manually once to ensure it overwrites the children
+            if (componentType.data.TryGetValue("text", out string text))
+                markdownText.Text = text;
+
             if (componentType.data.TryGetValue("linkPressed", out string selectCell))
             {
                 markdownText.OnLinkPressed += (string url, string title) => 
