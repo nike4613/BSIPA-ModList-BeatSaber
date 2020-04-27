@@ -187,12 +187,6 @@ namespace IPA.ModList.BeatSaber.UI.Components
         private void Render(IEnumerable<LinkInfo> linkInfos)
         {
             var links = CalculateHighlightedRegions(linkInfos);
-
-#if DEBUG
-            links = links.ToArray();
-            Logger.log.Debug(string.Join(" ; ", links.Select(e => e.ToString())));
-#endif
-
             CreateHighlightObjects(links);
         }
 
