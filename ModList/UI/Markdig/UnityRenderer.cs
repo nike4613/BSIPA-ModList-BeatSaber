@@ -316,7 +316,7 @@ namespace IPA.ModList.BeatSaber.UI.Markdig
 
             bulletTmp.transform.SetParent(transform, false);
 
-            var (content, contentLayout) = Block("Content", .5f, isLoose);
+            var (content, contentLayout) = Block("Content", .5f, true);
             contentLayout.childForceExpandWidth = isLoose;
             var contentLayoutElement = content.gameObject.AddComponent<LayoutElement>();
             contentLayoutElement.layoutPriority = 100;
@@ -334,13 +334,10 @@ namespace IPA.ModList.BeatSaber.UI.Markdig
                 }
                 else
                 {
-                    if (!(block is LeafBlock leaf))
-                    {
-                        Logger.md.Warn("A tight list item contains a non-leaf block");
-                        continue;
-                    }
-
-                    children = RenderInline(leaf.Inline, ParagraphFontSize);
+                    if (block is ParagraphBlock para && para.Inline != null)
+                        children = RenderInline(para.Inline, ParagraphFontSize);
+                    else
+                        children = RenderBlock(block);
                 }
 
                 foreach (var child in children)

@@ -74,12 +74,16 @@ this is an autolink <https://duckduckgo.com/>
 
 this is some more content
 
++ normal tight list
++ with 3 items
++ all of which are garbage
+
 - and this is a list
 - except it has a 
-  
   ```
   CODE BLOCK
   ```
+- how does another item look after that?
 ]]>
         </markdown>
       </scroll>
