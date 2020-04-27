@@ -59,8 +59,8 @@
               anchor-min-x='0' anchor-min-y='1'
               anchor-max-x='1' anchor-max-y='1'
               size-delta-x='0'>-->
-        <markdown link-pressed='OnDescLinkPressed'
-              anchor-min-x='0' anchor-min-y='1'
+        <markdown link-pressed='OnDescLinkPressed' link-color='cyan'
+              anchor-min-x='0' anchor-min-y='1' autolink-color='red'
               anchor-max-x='1' anchor-max-y='1'
               size-delta-x='0'
               pivot-x='.5' pivot-y='1'>

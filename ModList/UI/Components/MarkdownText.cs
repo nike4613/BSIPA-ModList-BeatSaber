@@ -26,6 +26,7 @@ namespace IPA.ModList.BeatSaber.UI.Components
     {
         public RectTransform RectTransform => gameObject.GetComponent<RectTransform>();
 
+        private bool resetRenderer = true;
         public bool IsDirty { get; private set; } = false;
 
         private string text = null;
@@ -39,8 +40,33 @@ namespace IPA.ModList.BeatSaber.UI.Components
             } 
         }
 
+        private Color linkColor = Color.cyan;
+        public Color LinkColor
+        {
+            get => linkColor;
+            set
+            {
+                linkColor = value;
+                IsDirty = true;
+                resetRenderer = true;
+            }
+        }
+
+        private Color autolinkColor = Color.red;
+        public Color AutolinkColor
+        {
+            get => autolinkColor;
+            set
+            {
+                autolinkColor = value;
+                IsDirty = true;
+                resetRenderer = true;
+            }
+        }
+
         internal void Update() 
         {
+            if (resetRenderer) renderer = null;
             if (IsDirty && text != null)
             {
                 Clear();
@@ -123,8 +149,8 @@ namespace IPA.ModList.BeatSaber.UI.Components
             return new UnityRendererBuilder()
                 .UI.Material(BSMLUtils.ImageResources.NoGlowMat)
                 .UI.Font(Helpers.TekoMediumArialFallback)
-                .Link.UseColor(Color.cyan)
-                .Link.UseAutoColor(Color.red)
+                .Link.UseColor(LinkColor)
+                .Link.UseAutoColor(AutolinkColor)
                 .Quote.UseBackground(Helpers.SmallRoundedRectSprite, Image.Type.Sliced)
                 .Quote.UseColor(new Color(30f / 255, 109f / 255, 178f / 255, .25f))
                 .Code.UseBackground(Helpers.SmallRoundedRectSprite, Image.Type.Sliced)

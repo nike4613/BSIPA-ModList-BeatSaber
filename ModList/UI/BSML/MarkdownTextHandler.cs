@@ -9,6 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
+using UnityEngine;
 
 namespace IPA.ModList.BeatSaber.UI.BSML
 {
@@ -19,14 +20,18 @@ namespace IPA.ModList.BeatSaber.UI.BSML
         {
             { "text", new[] { "text", "value" } },
             { "childText", new[] { "_children" } },
-            { "linkPressed", new[] { "link-pressed" } }
+            { "linkPressed", new[] { "link-pressed" } },
+            { "linkColor", new[] { "link-color" } },
+            { "autolinkColor", new[] { "autolink-color" } },
         };
 
         public override Dictionary<string, Action<MarkdownText, string>> Setters { get; } 
             = new Dictionary<string, Action<MarkdownText, string>>
             {
                 { "text", (md, text) => md.Text = text },
-                { "childText", HandleTextAsChildren }
+                { "childText", HandleTextAsChildren },
+                { "linkColor", (md, col) => md.LinkColor = GetColor(col, md.LinkColor) },
+                { "autolinkColor", (md, col) => md.AutolinkColor = GetColor(col, md.AutolinkColor) },
             };
 
         private static void HandleTextAsChildren(MarkdownText obj, string content)
@@ -61,6 +66,14 @@ namespace IPA.ModList.BeatSaber.UI.BSML
                     action.Invoke(url, title);
                 };
             }
+        }
+
+        private static Color GetColor(string colorStr, Color defaultCol)
+        {
+            if (ColorUtility.TryParseHtmlString(colorStr, out Color color))
+                return color;
+            Logger.md.Warn($"Color {colorStr}, is not a valid color.");
+            return defaultCol;
         }
     }
 }
