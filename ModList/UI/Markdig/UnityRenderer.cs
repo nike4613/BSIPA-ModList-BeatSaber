@@ -96,8 +96,6 @@ namespace IPA.ModList.BeatSaber.UI.Markdig
 
         private (RectTransform, HorizontalOrVerticalLayoutGroup) Block(string name, float spacing, bool vertical)
         {
-            Logger.md.Debug($"Creating {(vertical ? "vertical" : "horizontal")} block node {name} with spacing {spacing}");
-
             var go = new GameObject(name);
             var transform = go.AddComponent<RectTransform>();
             Helpers.Zero(transform);
@@ -298,8 +296,6 @@ namespace IPA.ModList.BeatSaber.UI.Markdig
 
         private IEnumerable<RectTransform> RenderListItem(ListItemBlock item, bool isLoose, bool ordered, char orderedDelim, char bulletType)
         {
-            Logger.md.Debug($"Rendering list item {item.Order}{orderedDelim} {bulletType} ({(ordered?"ordered":"unordered")})");
-
             var (transform, layout) = Block("ListItem", isLoose ? 0f : ParagraphInset, false);
             layout.childAlignment = TextAnchor.UpperLeft;
 
@@ -353,13 +349,13 @@ namespace IPA.ModList.BeatSaber.UI.Markdig
         #region Inlines
         private IEnumerable<RectTransform> RenderInline(Inline inline, float fontSize, bool center = false)
         {
-            Logger.md.Debug("Rendering inline from block");
-
             codeRegionLinkPostfix = 0;
             linkDict = new Dictionary<string, LinkInfo>();
 
             var text = RenderInlineToText(inline, new StringBuilder(inline.Span.Length * 2)).ToString();
+#if DEBUG
             Logger.md.Debug($"Inline rendered to '{text}'");
+#endif
             var tmp = CreateText(text, fontSize, center);
 
             if (CodeFont != null && !MaterialReferenceManager.instance.Contains(CodeFont))
@@ -411,10 +407,8 @@ namespace IPA.ModList.BeatSaber.UI.Markdig
 
         private StringBuilder RenderContainerInlineToText(ContainerInline container, StringBuilder builder)
         {
-            Logger.md.Debug("Rendering ContainerInline");
             foreach (var inline in container)
                 builder = RenderInlineToText(inline, builder);
-            Logger.md.Debug("Rendered ContainerInline");
             return builder;
         }
 
@@ -446,7 +440,6 @@ namespace IPA.ModList.BeatSaber.UI.Markdig
 
         private StringBuilder RenderEmphasisToText(EmphasisInline em, StringBuilder builder)
         {
-            Logger.md.Debug("Rendering inline emphasis");
             var flags = RenderHelpers.GetEmphasisFlags(em);
             builder.AppendEmOpenTags(flags);
             return RenderContainerInlineToText(em, builder)
@@ -507,7 +500,6 @@ namespace IPA.ModList.BeatSaber.UI.Markdig
             if (!(linkData is Dictionary<string, LinkInfo> linkDict)) return;
             if (!linkDict.TryGetValue(link.GetLinkID(), out var linkInfo)) return;
 
-            Logger.md.Debug($"Handling background rendering of link to {linkInfo.Url} ({linkInfo.Title})");
             linkInfo.SelectableObjects.Add(gameObject);
         }
 
@@ -519,8 +511,6 @@ namespace IPA.ModList.BeatSaber.UI.Markdig
         {
             if (!(linkData is Dictionary<string, LinkInfo> linkDict)) return;
             if (!linkDict.TryGetValue(link.GetLinkID(), out var linkInfo)) return;
-
-            Logger.md.Debug($"Handling large object rendering of link to {linkInfo.Url} ({linkInfo.Title})");
 
             OnLinkRendered?.Invoke(linkInfo.SelectableObjects, gameObject, linkInfo.Url, linkInfo.Title);
         }

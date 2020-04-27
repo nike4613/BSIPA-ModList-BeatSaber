@@ -147,7 +147,6 @@
     <Compile Include="UI\BSML\MarkdownTag.cs" />
     <Compile Include="UI\BSML\MarkdownTextHandler.cs" />
     <Compile Include="UI\Components\MarkdownText.cs" />
-    <Compile Include="UI\Components\OldMarkdownText.cs" />
     <Compile Include="UI\Components\PositionSizeCopier.cs" />
     <Compile Include="UI\Components\TextMeshProUGUILinkBackgroundGenerator.cs" />
     <Compile Include="UI\Markdig\EmphasisFlags.cs" />
@@ -191,9 +190,6 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
-    <PackageReference Include="CommonMark.NET">
-      <Version>0.15.1</Version>
-    </PackageReference>
     <PackageReference Include="Markdig">
       <Version>0.18.3</Version>
     </PackageReference>

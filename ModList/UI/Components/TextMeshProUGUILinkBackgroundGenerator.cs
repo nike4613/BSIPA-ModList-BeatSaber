@@ -137,8 +137,6 @@ namespace IPA.ModList.BeatSaber.UI.Components
 
                 renderedLinks = GetLinkInfosFor(allLinks, LinkTypes);
 
-                Logger.log.Debug($"Links are as follows: {string.Join(" ; ", renderedLinks.Select(l => $"'{l.Link.GetLinkText()}' ({l.Link.GetLinkID()})"))}");
-
                 IsDirty = false;
             }
             if (needsRerender && renderedLinks != null)
@@ -200,8 +198,6 @@ namespace IPA.ModList.BeatSaber.UI.Components
 
         private IEnumerable<Extents> FindExtentsForLink(TextMeshProUGUI tmp, LinkType type, TMP_LinkInfo link)
         {
-            Logger.log.Debug($"Looking at region '{link.GetLinkText()}' with ID '{link.GetLinkID()}'");
-
             var start = link.linkTextfirstCharacterIndex;
             var end = start + link.linkTextLength;
 
@@ -262,7 +258,6 @@ namespace IPA.ModList.BeatSaber.UI.Components
         {
             var tmp = TextMeshPro;
 
-            Logger.log.Debug("Calculating highlighted regions");
             if (CreateSingleObjectForLinks)
             {
                 foreach (var link in links)
@@ -364,7 +359,6 @@ namespace IPA.ModList.BeatSaber.UI.Components
             foreach (Transform child in target)
             {
                 ClearObject(child);
-                Logger.md.Debug($"Destroying {child.name}");
                 child.SetParent(null);
                 Destroy(child.gameObject);
             }

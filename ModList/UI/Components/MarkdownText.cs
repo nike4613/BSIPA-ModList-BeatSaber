@@ -133,7 +133,6 @@ namespace IPA.ModList.BeatSaber.UI.Components
                 .Code.Inline.UsePadding(padding)
                 .UseObjectRenderedCallback((obj, go) =>
                 {
-                    Logger.md.Debug($"Rendered markdown object of type {obj.GetType()}");
                     if (obj is HeadingBlock || obj is ThematicBreakBlock || obj is ListItemBlock)
                         go.AddComponent<ItemForFocussedScrolling>();
 
@@ -162,7 +161,6 @@ namespace IPA.ModList.BeatSaber.UI.Components
             foreach (Transform child in target)
             {
                 ClearObject(child);
-                Logger.md.Debug($"Destroying {child.name}");
                 child.SetParent(null);
                 Destroy(child.gameObject);
             }
@@ -181,8 +179,6 @@ namespace IPA.ModList.BeatSaber.UI.Components
 
         private void OnLinkRendered(IEnumerable<GameObject> hoverableGOs, GameObject fullBgGO, string url, string title)
         {
-            Logger.md.Debug($"Handling link rendered with {string.Join(", ", hoverableGOs.Select(g => g.ToString()))} over {fullBgGO} to {url} ({title})");
-
             fullBgGO.AddComponent<LinkHoverHint>();
             var hoverManager = fullBgGO.AddComponent<LinkHoverManager>();
             hoverManager.HoverHint.Controller = Resources.FindObjectsOfTypeAll<HoverHintController>().First();
@@ -214,7 +210,6 @@ namespace IPA.ModList.BeatSaber.UI.Components
 
             public void BeginHover()
             {
-                Logger.md.Debug($"Begun hover for title {TitleText}");
                 if (!string.IsNullOrEmpty(TitleText))
                 {
                     var hint = HoverHint;
@@ -226,12 +221,10 @@ namespace IPA.ModList.BeatSaber.UI.Components
             public void EndHover()
             {
                 HintController.HideHint();
-                Logger.md.Debug($"Ended hover for title {TitleText}");
             }
 
             public void Click()
             {
-                Logger.md.Debug($"Link to {Url} has been clicked");
                 MarkdownText.InvokeLinkPressed(Url, TitleText);
             }
         }
