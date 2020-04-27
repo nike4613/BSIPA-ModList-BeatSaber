@@ -1,6 +1,7 @@
 ﻿using Markdig.Helpers;
 using Markdig.Syntax.Inlines;
 using System.Text;
+using UnityEngine;
 
 namespace IPA.ModList.BeatSaber.UI.Markdig
 {
@@ -50,6 +51,12 @@ namespace IPA.ModList.BeatSaber.UI.Markdig
                 builder.Append("</i>");
             return builder;
         }
+
+        public static StringBuilder AppendColorHex(this StringBuilder builder, Color color)
+            => builder.AppendFormat("{0:X2}{1:X2}{2:X2}{3:X2}",
+                (int)(color.r * 255), (int)(color.g * 255), 
+                (int)(color.b * 255), (int)(color.a * 255));
+
         public static StringBuilder AppendSlice(this StringBuilder builder, StringSlice slice)
             => builder.Append(slice.Text, slice.Start, slice.Length);
     }

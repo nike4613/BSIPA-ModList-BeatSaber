@@ -123,6 +123,8 @@ namespace IPA.ModList.BeatSaber.UI.Components
             return new UnityRendererBuilder()
                 .UI.Material(BSMLUtils.ImageResources.NoGlowMat)
                 .UI.Font(Helpers.TekoMediumArialFallback)
+                .Link.UseColor(Color.cyan)
+                .Link.UseAutoColor(Color.red)
                 .Quote.UseBackground(Helpers.SmallRoundedRectSprite, Image.Type.Sliced)
                 .Quote.UseColor(new Color(30f / 255, 109f / 255, 178f / 255, .25f))
                 .Code.UseBackground(Helpers.SmallRoundedRectSprite, Image.Type.Sliced)

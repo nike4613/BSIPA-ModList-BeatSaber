@@ -18,6 +18,8 @@ namespace IPA.ModList.BeatSaber.UI.Markdig
         public Material UIMaterial { get; }
         public Color UIColor { get; set; } = Color.white;
         public TMP_FontAsset UIFont { get; }
+        public Color LinkColor { get; }
+        public Color AutolinkColor { get; }
         public Color QuoteColor { get; }
         public Sprite QuoteBackground { get; }
         public Image.Type QuoteBackgroundType { get; }
@@ -30,13 +32,18 @@ namespace IPA.ModList.BeatSaber.UI.Markdig
         public TMP_FontAsset CodeFont { get; set; }
         public string InlineCodePaddingText { get; set; } = "";
 
-        public UnityRenderer(Material uiMat, TMP_FontAsset uiFont,
+        public UnityRenderer(Material uiMat, TMP_FontAsset uiFont, 
+            Color linkColor, Color autolinkColor,
             Sprite quoteBg, Image.Type bgType, Color quoteColor,
             Sprite codeBg, Image.Type codeBgType, Color codeColor,
             Sprite inlineCodeBg, Image.Type inlineCodeBgType, Color inlineCodeColor)
         {
             UIMaterial = uiMat;
             UIFont = uiFont;
+
+            LinkColor = linkColor;
+            AutolinkColor = autolinkColor;
+
             QuoteBackground = quoteBg;
             QuoteBackgroundType = bgType;
             QuoteColor = quoteColor;
@@ -457,8 +464,10 @@ namespace IPA.ModList.BeatSaber.UI.Markdig
             var linkInfo = new LinkInfo(link.GetDynamicUrl?.Invoke() ?? link.Url, link.Title);
             var linkName = AddLinkToDict(linkInfo);
 
-            builder.Append($"<link=\"{linkName}\">");
+            builder.Append($"<link=\"{linkName}\">")
+                   .Append("<color=#").AppendColorHex(LinkColor).Append(">");
             return RenderContainerInlineToText(link, builder)
+                .Append("</color>")
                 .Append("</link>");
         }
 
@@ -469,7 +478,9 @@ namespace IPA.ModList.BeatSaber.UI.Markdig
 
             return builder
                     .Append($"<link=\"{linkName}\">")
+                    .Append("<color=#").AppendColorHex(AutolinkColor).Append(">")
                     .Append(link.Url)
+                    .Append("</color>")
                     .Append("</link>");
         }
 

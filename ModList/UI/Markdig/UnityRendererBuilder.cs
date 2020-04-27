@@ -8,6 +8,7 @@ using UnityEngine.UI;
 namespace IPA.ModList.BeatSaber.UI.Markdig
 {
     public sealed class UnityRendererBuilder :
+        UnityRendererBuilder.ILinkRendererBuilder,
         UnityRendererBuilder.IQuoteRendererBuilder, 
         UnityRendererBuilder.ICodeRendererBuilder,
         UnityRendererBuilder.IInlineCodeRendererBuilder,
@@ -15,7 +16,9 @@ namespace IPA.ModList.BeatSaber.UI.Markdig
     {
         private Material _uiMat = null;
         private TMP_FontAsset _uiFont = null;
-        private Color uiColor = Color.white;
+        private Color _uiColor = Color.white;
+        private Color _linkColor = Color.cyan;
+        private Color? _autolinkColor = null;
 
         private Color? _quoteColor = null;
         private Sprite _quoteBg = null;
@@ -27,11 +30,17 @@ namespace IPA.ModList.BeatSaber.UI.Markdig
         private Color? _codeInlineColor = null;
         private Sprite _codeInlineBg = null;
         private Image.Type? _codeInlineBgType = null;
-        private TMP_FontAsset codeFont = null;
-        private string codeInlinePadding = "";
+        private TMP_FontAsset _codeFont = null;
+        private string _codeInlinePadding = "";
 
         private event Action<MarkdownObject, GameObject> ObjRenderCallback;
         private event UnityRenderer.LinkRendered LinkRenderCallback;
+
+        public interface ILinkRendererBuilder
+        {
+            UnityRendererBuilder UseColor(Color col);
+            UnityRendererBuilder UseAutoColor(Color col);
+        }
 
         public interface IQuoteRendererBuilder
         {
@@ -62,6 +71,12 @@ namespace IPA.ModList.BeatSaber.UI.Markdig
             UnityRendererBuilder Material(Material mat);
             UnityRendererBuilder Color(Color col);
             UnityRendererBuilder Font(TMP_FontAsset font);
+        }
+
+        public ILinkRendererBuilder Link
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => this;
         }
 
         public IUIRendererBuidler UI 
@@ -107,21 +122,25 @@ namespace IPA.ModList.BeatSaber.UI.Markdig
             var inlineCodeBgType = _codeInlineBgType ?? codeBgType;
             var inlineCodeColor = _codeInlineColor ?? codeColor;
 
-            var render = new UnityRenderer(_uiMat, _uiFont,
+            var render = new UnityRenderer(_uiMat, _uiFont, 
+                _linkColor, _autolinkColor ?? _linkColor,
                 _quoteBg, _quoteBgType, _quoteColor.Value,
                 codeBg, codeBgType, codeColor,
                 inlineCodeBg, inlineCodeBgType, inlineCodeColor)
             {
-                UIColor = uiColor,
-                CodeFont = codeFont,
-                InlineCodePaddingText = codeInlinePadding,
+                UIColor = _uiColor,
+                CodeFont = _codeFont,
+                InlineCodePaddingText = _codeInlinePadding,
             };
             render.AfterObjectRendered += ObjRenderCallback;
             render.OnLinkRendered += LinkRenderCallback;
             return render;
         }
 
-        UnityRendererBuilder IUIRendererBuidler.Color(Color col) => Do(uiColor = col);
+        UnityRendererBuilder ILinkRendererBuilder.UseColor(Color col) => Do(_linkColor = col);
+        UnityRendererBuilder ILinkRendererBuilder.UseAutoColor(Color col) => Do(_autolinkColor = col);
+
+        UnityRendererBuilder IUIRendererBuidler.Color(Color col) => Do(_uiColor = col);
 
         UnityRendererBuilder IUIRendererBuidler.Material(Material mat) => Do(_uiMat = mat);
 
@@ -146,7 +165,7 @@ namespace IPA.ModList.BeatSaber.UI.Markdig
         }
 
         UnityRendererBuilder ICodeRendererBuilder.UseFont(TMP_FontAsset font)
-            => Do(codeFont = font);
+            => Do(_codeFont = font);
 
         UnityRendererBuilder IInlineCodeRendererBuilder.UseBackground(Sprite bg, Image.Type type)
         {
@@ -157,7 +176,7 @@ namespace IPA.ModList.BeatSaber.UI.Markdig
 
         UnityRendererBuilder IInlineCodeRendererBuilder.UseColor(Color col) => Do(_codeInlineColor = col);
         UnityRendererBuilder IInlineCodeRendererBuilder.UsePadding(string padding)
-            => Do(codeInlinePadding = padding);
+            => Do(_codeInlinePadding = padding);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private UnityRendererBuilder Do<T>(T _) => this;
