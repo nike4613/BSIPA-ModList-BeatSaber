@@ -54,13 +54,12 @@
         anchor-max-x='1' anchor-max-y='1'
         anchor-pos-x='0' anchor-pos-y='0'
         size-delta-x='-5' size-delta-y='-5'>
-      <!--
-      <scroll id='descriptionWindow' mask-overflow='true'
+      <scroll id='DescriptionWindow' mask-overflow='true'
               anchor-min-x='0' anchor-min-y='1'
               anchor-max-x='1' anchor-max-y='1'
-              size-delta-x='0'>-->
+              size-delta-x='0'>
         <markdown link-pressed='OnDescLinkPressed' link-color='cyan'
-              anchor-min-x='0' anchor-min-y='1' autolink-color='red'
+              anchor-min-x='0' anchor-min-y='0' autolink-color='red'
               anchor-max-x='1' anchor-max-y='1'
               size-delta-x='0'
               pivot-x='.5' pivot-y='1'>
@@ -72,10 +71,29 @@ this is a [paragraph](<https://duckduckgo.com/> "DuckDuckGo! para") with multipl
 this `is` a `paragraph` with a `disjointed code block`
 
 this is an autolink <https://duckduckgo.com/>
+
+this is some more content
+
+- and this is a list
+- except it has a 
+  
+  ```
+  CODE BLOCK
+  ```
 ]]>
         </markdown>
-      <!--/scroll-->
+      </scroll>
     </bg>
+    <page-button direction='Up' tags='PageUpFor:DescriptionWindow'
+                 anchor-min-x='1' anchor-min-y='1'
+                 anchor-max-x='1' anchor-max-y='1'
+                 pivot-x='1' pivot-y='1'
+                 pref-width='8' pref-height='8' />
+    <page-button direction='Down' tags='PageDownFor:DescriptionWindow'
+                 anchor-min-x='1' anchor-min-y='0'
+                 anchor-max-x='1' anchor-max-y='0'
+                 pivot-x='1' pivot-y='0'
+                 pref-width='8' pref-height='8' />
   </bg>
   <modal show-event='ShowLinkModal' hide-event='HideLinkModal'
          move-to-center='true' clickerino-offerino-closerino='false'
