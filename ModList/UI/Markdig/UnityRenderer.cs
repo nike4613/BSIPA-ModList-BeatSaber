@@ -483,7 +483,7 @@ namespace IPA.ModList.BeatSaber.UI.Markdig
 
         private StringBuilder RenderAutolinkInlineToText(AutolinkInline link, StringBuilder builder)
         {
-            var linkInfo = new LinkInfo(link.Url, null);
+            var linkInfo = new LinkInfo((link.IsEmail ? "mailto:" : "") + link.Url, null);
             var linkName = AddLinkToDict(linkInfo);
 
             return builder
