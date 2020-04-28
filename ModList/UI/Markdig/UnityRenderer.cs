@@ -96,10 +96,11 @@ namespace IPA.ModList.BeatSaber.UI.Markdig
                 // I don't render FencedCodeBlock and CodeBlock differently, so there is just the one case
                 CodeBlock code => RenderCodeBlock(code),
                 ListBlock list => RenderListBlock(list),
+                LinkReferenceDefinition linkRef => RenderLinkReference(linkRef),
+                LinkReferenceDefinitionGroup refs => RenderLinkReferenceGroup(refs),
 
                 _ => throw new NotImplementedException($"Unknown markdown block type {obj.GetType()}")
             };
-
 
         private (RectTransform, HorizontalOrVerticalLayoutGroup) Block(string name, float spacing, bool vertical)
         {
@@ -347,6 +348,18 @@ namespace IPA.ModList.BeatSaber.UI.Markdig
             AfterObjectRendered?.Invoke(item, transform.gameObject);
 
             return Helpers.SingleEnumerable(transform);
+        }
+
+        private IEnumerable<RectTransform> RenderLinkReferenceGroup(LinkReferenceDefinitionGroup _)
+        {
+            // do nothing, because these are hidden
+            return Enumerable.Empty<RectTransform>();
+        }
+
+        private IEnumerable<RectTransform> RenderLinkReference(LinkReferenceDefinition _)
+        {
+            // do nothing, because these are hidden
+            return Enumerable.Empty<RectTransform>();
         }
         #endregion
 
