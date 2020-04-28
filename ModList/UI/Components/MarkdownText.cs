@@ -161,9 +161,6 @@ namespace IPA.ModList.BeatSaber.UI.Components
                 .Code.Inline.UsePadding(padding)
                 .UseObjectRenderedCallback((obj, go) =>
                 {
-                    if (obj is HeadingBlock || obj is ThematicBreakBlock || obj is ListItemBlock)
-                        go.AddComponent<ItemForFocussedScrolling>();
-
                     var tmp = go.GetComponent<TextMeshProUGUI>();
                     if (tmp != null) // explicitly disable TMP raycasting on TMP objects
                         tmp.raycastTarget = false;
