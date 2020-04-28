@@ -44,13 +44,7 @@
       anchor-min-x='0' anchor-min-y='.1'
       anchor-max-x='1' anchor-max-y='.7'
       size-delta-x='1' size-delta-y='1'>
-    <!--<text text='~description' overflow-mode='Masking' word-wrapping='true' 
-          anchor-min-x='0' anchor-min-y='0' rich-text='false'
-          anchor-max-x='1' anchor-max-y='1'
-          anchor-pos-x='0' anchor-pos-y='0'
-          size-delta-x='-5' size-delta-y='-5' />-->
-    <bg
-        anchor-min-x='0' anchor-min-y='0'
+    <bg anchor-min-x='0' anchor-min-y='0'
         anchor-max-x='1' anchor-max-y='1'
         anchor-pos-x='0' anchor-pos-y='0'
         size-delta-x='-5' size-delta-y='-5'>
@@ -61,30 +55,7 @@
         <markdown link-pressed='OnDescLinkPressed' link-color='cyan'
               anchor-min-x='0' anchor-min-y='0' autolink-color='red'
               anchor-max-x='1' anchor-max-y='1' size-delta-x='0'
-              pivot-x='.5' pivot-y='1' text='~description'>
-<!--[CDATA[
-para [link](<https://duckduckgo.com/> "DuckDuckGo!") stuff after
-
-this is a [paragraph](<https://duckduckgo.com/> "DuckDuckGo! para") with multiple [links, but one of them is really long and wraps](<https://duckduckgo.com/> "DuckDuckGo! long")
-
-this `is` a `paragraph` with a `disjointed code block`
-
-this is an autolink <https://duckduckgo.com/>
-
-this is some more content
-
-+ normal tight list
-+ with 3 items
-+ all of which are garbage
-
-- and this is a list
-- except it has a 
-  ```
-  CODE BLOCK
-  ```
-- how does another item look after that?
-]]-->
-        </markdown>
+              pivot-x='.5' pivot-y='1' text='~description' />
       </scroll>
     </bg>
     <page-button direction='Up' tags='PageUpFor:DescriptionWindow'
@@ -101,9 +72,11 @@ this is some more content
   <modal show-event='ShowLinkModal' hide-event='HideLinkModal'
          move-to-center='true' clickerino-offerino-closerino='false'
          size-delta-x='70' size-delta-y='30'>
-    <vertical child-align='MiddleCenter' child-expand-width='true' child-expand-height='false' spacing='0'
+    <vertical child-align='MiddleCenter' horizontal-fit='Unconstrained'
+              child-expand-width='true' child-expand-height='false' spacing='0'
               anchor-min-x='0' anchor-min-y='.25'
-              anchor-max-x='1' anchor-max-y='1'>
+              anchor-max-x='1' anchor-max-y='1'
+              size-delta-x='-5' size-delta-y='0'>
       <text text='Do you want to open this link?' font-align='Center' />
       <text text='~link_url' rich-text='false' font-align='Center' 
             word-wrapping='false' overflow-mode='Ellipsis' color='red'/>
