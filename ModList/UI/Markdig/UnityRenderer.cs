@@ -469,7 +469,15 @@ namespace IPA.ModList.BeatSaber.UI.Markdig
         private Dictionary<string, LinkInfo> linkDict;
         private StringBuilder RenderLinkInlineToText(LinkInline link, StringBuilder builder)
         { // link inlines can also be images
-            if (link.IsImage) throw new NotImplementedException();
+            if (link.IsImage)
+            {
+                // TODO: implement images
+                builder.Append("[<noparse>")
+                       .Append(link.Title)
+                       .Append("</noparse>]");
+
+                return builder;
+            }
 
             var linkInfo = new LinkInfo(link.GetDynamicUrl?.Invoke() ?? link.Url, link.Title);
             var linkName = AddLinkToDict(linkInfo);
