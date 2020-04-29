@@ -48,8 +48,9 @@
       pivot-x='.5' pivot-y='1' >
     <bg anchor-min-x='0' anchor-min-y='0'
         anchor-max-x='1' anchor-max-y='1'
-        anchor-pos-x='0' anchor-pos-y='0'
-        size-delta-x='-5' size-delta-y='-5'>
+        anchor-pos-x='0' anchor-pos-y='-2.5'
+        size-delta-x='-5' size-delta-y='-5'
+        pivot-x='.5' pivot-y='1'>
       <scroll id='DescriptionWindow' mask-overflow='true'
               anchor-min-x='0' anchor-min-y='0'
               anchor-max-x='1' anchor-max-y='1'
@@ -80,9 +81,11 @@
                  pivot-x='0' pivot-y='0' />
   </bg>
   <bottom-button-panel id='LinkPanel' size-delta-x='1' active='~has_links'>
-    <button text='Source' active='~has_source_link' on-click='SourceLinkPressed' />
-    <button text='Home' active='~has_home_link' on-click='HomeLinkPressed' />
-    <button text='Donate' active='~has_donate_link' on-click='HomeLinkPressed' />
+    <button text='' interactable='false' pref-width='0' active='~show_pad_links' />
+    <button text='Source' on-click='SourceLinkPressed'  active='~has_source_link' />
+    <button text='Home'   on-click='HomeLinkPressed'    active='~has_home_link' />
+    <button text='Donate' on-click='DonateLinkPressed'  active='~has_donate_link' />
+    <button text='' interactable='false' pref-width='0' active='~show_pad_links' />
   </bottom-button-panel>
   <modal show-event='ShowLinkModal' hide-event='HideLinkModal'
          move-to-center='true' clickerino-offerino-closerino='false'
@@ -93,10 +96,10 @@
               anchor-max-x='1' anchor-max-y='1'
               size-delta-x='-5' size-delta-y='0'>
       <text text='Do you want to open this link?' font-align='Center' />
+      <text text='~link_title' rich-text='false' font-align='Center' active='~link_has_title'
+            word-wrapping='false' overflow-mode='Ellipsis' color='cyan' />
       <text text='~link_url' rich-text='false' font-align='Center'
             word-wrapping='false' overflow-mode='Ellipsis' color='red'/>
-      <text text='~link_title' rich-text='false' font-align='Center' id='LinkTitleText'
-            word-wrapping='false' overflow-mode='Ellipsis' color='cyan' />
     </vertical>
     <bottom-button-panel>
       <button text='Open Link' interactable='true'

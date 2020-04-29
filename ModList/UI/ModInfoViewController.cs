@@ -80,6 +80,9 @@ namespace IPA.ModList.BeatSaber.UI
         #region Link Panel management
         [UIValue("has_links")]
         internal bool HasLinks => HasSourceLink || HasHomeLink || HasDonateLink;
+        [UIValue("show_pad_links")]
+        internal bool ShowPadLinks // only true when exactly one link is present
+            => (HasSourceLink ? 1 : 0) + (HasHomeLink ? 1 : 0) + (HasDonateLink ? 1 : 0) == 1;
 
         private const float NoLinkPanelDescMin = 0f;
         private const float WithLinkPanelDescMin = .1f;
@@ -101,6 +104,7 @@ namespace IPA.ModList.BeatSaber.UI
         private void NotifyLinksChanged()
         {
             NotifyPropertyChanged(nameof(HasLinks));
+            NotifyPropertyChanged(nameof(ShowPadLinks));
             NotifyPropertyChanged(nameof(HasSourceLink));
             NotifyPropertyChanged(nameof(HasHomeLink));
             NotifyPropertyChanged(nameof(HasDonateLink));
@@ -125,20 +129,18 @@ namespace IPA.ModList.BeatSaber.UI
             CurrentLinkTitle = title ?? "";
             NotifyPropertyChanged(nameof(CurrentLinkUrl));
             NotifyPropertyChanged(nameof(CurrentLinkTitle));
-
-            LinkTitleText.enabled = !string.IsNullOrEmpty(CurrentLinkTitle);
+            NotifyPropertyChanged(nameof(HasLinkTitle));
 
             ParserParams.EmitEvent("ShowLinkModal");
         }
 
         [UIValue("link_url")]
-        public string CurrentLinkUrl { get; private set; } = "";
+        internal string CurrentLinkUrl { get; private set; } = "";
 
         [UIValue("link_title")]
-        public string CurrentLinkTitle { get; private set; } = "";
-
-        [UIComponent("LinkTitleText")]
-        internal TextMeshProUGUI LinkTitleText;
+        internal string CurrentLinkTitle { get; private set; } = "";
+        [UIValue("link_has_title")]
+        internal bool HasLinkTitle => !string.IsNullOrEmpty(CurrentLinkTitle);
 
         [UIAction("ConfirmOpenLink")]
         [SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "BSML calls this")]
