@@ -3414,7 +3414,7 @@
             </summary>
             <param name="task">the task to attempt to execute</param>
             <param name="taskWasPreviouslyQueued">whether the task was previously queued to this scheduler</param>
-            <returns><see langword="false"/></returns>
+            <returns><see langword="false"/> if the task could not be run, <see langword="true"/> if it was</returns>
             <exception cref="T:System.ObjectDisposedException">Thrown if this object has already been disposed.</exception>
         </member>
         <member name="M:IPA.Utilities.Async.UnityMainThreadTaskScheduler.Dispose(System.Boolean)">

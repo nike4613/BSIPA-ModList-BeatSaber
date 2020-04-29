@@ -1,4 +1,5 @@
 ﻿using BeatSaberMarkupLanguage.Attributes;
+using BeatSaberMarkupLanguage.Components;
 using BeatSaberMarkupLanguage.Parser;
 using BeatSaberMarkupLanguage.ViewControllers;
 using System;
@@ -46,6 +47,8 @@ namespace IPA.ModList.BeatSaber.UI
 
             if (IconImage != null)
                 IconImage.texture = PluginIcon;
+
+            UpdateDescriptionBackground();
         }
 
         public bool Activated { get; private set; } = false;
@@ -55,6 +58,11 @@ namespace IPA.ModList.BeatSaber.UI
             this.plugin = plugin;
             NotifyPluginChanged();
         }
+
+        [UIComponent("DescriptionBackground")]
+        internal Backgroundable DescriptionBackground = null;
+        private Sprite descBgSprite = null;
+        private Sprite descBgSpriteFlatBase = null;
 
         [UIAction("#post-parse")]
         [SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "BSML calls this")]
@@ -66,6 +74,23 @@ namespace IPA.ModList.BeatSaber.UI
 
             if (IconImage != null)
                 IconImage.texture = PluginIcon;
+            if (DescriptionBackground != null)
+            {
+                descBgSprite = Helpers.SmallRoundedRectSprite;
+                descBgSpriteFlatBase = Helpers.SmallRoundedRectFlatSprite;
+            }
+
+            UpdateDescriptionBackground();
+        }
+
+        private void UpdateDescriptionBackground()
+        {
+            if (DescriptionBackground != null)
+            {
+                DescriptionBackground.background.sprite
+                    = HasLinks ? descBgSpriteFlatBase
+                               : descBgSprite;
+            }
         }
 
         [UIAction("OnDescLinkPressed")]
@@ -84,11 +109,10 @@ namespace IPA.ModList.BeatSaber.UI
         internal bool ShowPadLinks // only true when exactly one link is present
             => (HasSourceLink ? 1 : 0) + (HasHomeLink ? 1 : 0) + (HasDonateLink ? 1 : 0) == 1;
 
-        private const float NoLinkPanelDescMin = 0f;
-        private const float WithLinkPanelDescMin = .1f;
-
         [UIValue("desc_anchor_min")]
-        internal float DescriptionAnchorMinY => HasLinks ? WithLinkPanelDescMin : NoLinkPanelDescMin;
+        internal float DescriptionAnchorMinY => HasLinks ? .1f : 0f;
+        [UIValue("desc_size_delta_min")]
+        internal float DescriptionContentSizeDeltaY => HasLinks ? -2.5f : -5f;
 
         private string SourceLink => plugin.Plugin.PluginSourceLink?.ToString();
         private string HomeLink => plugin.Plugin.PluginHomeLink?.ToString();

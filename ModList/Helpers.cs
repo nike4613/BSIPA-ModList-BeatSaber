@@ -51,7 +51,10 @@ namespace IPA.ModList.BeatSaber
 
         private static Sprite smallRoundedRectSprite = null;
         public static Sprite SmallRoundedRectSprite
-            => smallRoundedRectSprite ??= LoadSmallRoundedRectSprite();
+            => smallRoundedRectSprite ??= LoadSmallRoundedRectSprite(false);
+        private static Sprite smallRoundedRectFlatSprite = null;
+        public static Sprite SmallRoundedRectFlatSprite
+            => smallRoundedRectFlatSprite ??= LoadSmallRoundedRectSprite(true);
 
         private static Sprite tinyRoundedRectSprite = null;
         public static Sprite TinyRoundedRectSprite
@@ -90,12 +93,12 @@ namespace IPA.ModList.BeatSaber
             return null;
         }
 
-        private static Sprite LoadSmallRoundedRectSprite()
+        private static Sprite LoadSmallRoundedRectSprite(bool flatBottom = false)
         {
             var tex = ReadImageFromSelf(ResourcePrefix + "small-rounded-rect.png");
-            return Sprite.Create(tex, new Rect(0, 0, tex.width, tex.height),
+            return Sprite.Create(tex, new Rect(0, (flatBottom ? 32 : 0), tex.width, tex.height - (flatBottom ? 32 : 0)),
                 pivot: Vector2.zero,
-                border: new Vector4(32, 32, 32, 32),
+                border: new Vector4(32, flatBottom ? 1 : 32, 32, 32),
                 pixelsPerUnit: 100f,
                 extrude: 0,
                 meshType: SpriteMeshType.FullRect);

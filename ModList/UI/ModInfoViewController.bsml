@@ -40,7 +40,7 @@
       </horizontal>
     </bg>
   </bg>
-  <bg bg='round-rect-panel'
+  <bg bg='round-rect-panel' id='DescriptionBackground'
       anchor-min-x='0' anchor-min-y='~desc_anchor_min'
       anchor-max-x='1' anchor-max-y='.7'
       anchor-pos-x='0' anchor-pos-y='0'
@@ -49,7 +49,7 @@
     <bg anchor-min-x='0' anchor-min-y='0'
         anchor-max-x='1' anchor-max-y='1'
         anchor-pos-x='0' anchor-pos-y='-2.5'
-        size-delta-x='-5' size-delta-y='-5'
+        size-delta-x='-5' size-delta-y='~desc_size_delta_min'
         pivot-x='.5' pivot-y='1'>
       <scroll id='DescriptionWindow' mask-overflow='true'
               anchor-min-x='0' anchor-min-y='0'
@@ -80,7 +80,7 @@
                  pref-width='8' pref-height='8'
                  pivot-x='0' pivot-y='0' />
   </bg>
-  <bottom-button-panel id='LinkPanel' size-delta-x='1' active='~has_links'>
+  <bottom-button-panel id='LinkPanel' size-delta-x='1.5' active='~has_links'>
     <button text='' interactable='false' pref-width='0' active='~show_pad_links' />
     <button text='Source' on-click='SourceLinkPressed'  active='~has_source_link' />
     <button text='Home'   on-click='HomeLinkPressed'    active='~has_home_link' />
