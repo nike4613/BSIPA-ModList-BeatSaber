@@ -31,7 +31,7 @@ namespace IPA.ModList.BeatSaber.UI
         [UIValue("description")]
         public string PluginDescription => plugin.Plugin.Description;
 
-        [UIComponent("icon-img")]
+        [UIComponent("IconImage")]
         internal RawImage IconImage = null;
 
         private PluginInformation plugin;
@@ -42,6 +42,7 @@ namespace IPA.ModList.BeatSaber.UI
             NotifyPropertyChanged(nameof(PluginVersion));
             NotifyPropertyChanged(nameof(PluginAuthor));
             NotifyPropertyChanged(nameof(PluginDescription));
+            NotifyLinksChanged();
 
             if (IconImage != null)
                 IconImage.texture = PluginIcon;
@@ -67,21 +68,59 @@ namespace IPA.ModList.BeatSaber.UI
                 IconImage.texture = PluginIcon;
         }
 
-        [UIValue("link_url")]
-        public string CurrentLinkUrl { get; private set; } = "";
-
-        [UIValue("link_title")]
-        public string CurrentLinkTitle { get; private set; } = "";
-
-        [UIComponent("link-title-text")]
-        internal TextMeshProUGUI LinkTitleText;
-
         [UIAction("OnDescLinkPressed")]
         [SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "BSML calls this")]
         private void OnDescriptionLinkPressed(string url, string title)
         {
             Logger.log.Debug($"Link to {url} ({title}) has been clicked");
 
+            OpenLink(url, title);
+        }
+
+        #region Link Panel management
+        [UIValue("has_links")]
+        internal bool HasLinks => HasSourceLink || HasHomeLink || HasDonateLink;
+
+        private const float NoLinkPanelDescMin = 0f;
+        private const float WithLinkPanelDescMin = .1f;
+
+        [UIValue("desc_anchor_min")]
+        internal float DescriptionAnchorMinY => HasLinks ? WithLinkPanelDescMin : NoLinkPanelDescMin;
+
+        private string SourceLink => plugin.Plugin.PluginSourceLink?.ToString();
+        private string HomeLink => plugin.Plugin.PluginHomeLink?.ToString();
+        private string DonateLink => plugin.Plugin.DonateLink?.ToString();
+
+        [UIValue("has_source_link")]
+        internal bool HasSourceLink => SourceLink != null;
+        [UIValue("has_home_link")]
+        internal bool HasHomeLink => HomeLink != null;
+        [UIValue("has_donate_link")]
+        internal bool HasDonateLink => DonateLink != null;
+
+        private void NotifyLinksChanged()
+        {
+            NotifyPropertyChanged(nameof(HasLinks));
+            NotifyPropertyChanged(nameof(HasSourceLink));
+            NotifyPropertyChanged(nameof(HasHomeLink));
+            NotifyPropertyChanged(nameof(HasDonateLink));
+            NotifyPropertyChanged(nameof(DescriptionAnchorMinY));
+        }
+
+        [UIAction(nameof(SourceLinkPressed))]
+        [SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "BSML calls this")]
+        private void SourceLinkPressed() => OpenLink(SourceLink, $"{PluginName} Source");
+        [UIAction(nameof(HomeLinkPressed))]
+        [SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "BSML calls this")]
+        private void HomeLinkPressed() => OpenLink(HomeLink, $"{PluginName} Home");
+        [UIAction(nameof(DonateLinkPressed))]
+        [SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "BSML calls this")]
+        private void DonateLinkPressed() => OpenLink(DonateLink, $"Donate to {PluginAuthor}");
+        #endregion
+
+        #region Links
+        private void OpenLink(string url, string title)
+        {
             CurrentLinkUrl = url;
             CurrentLinkTitle = title ?? "";
             NotifyPropertyChanged(nameof(CurrentLinkUrl));
@@ -92,6 +131,15 @@ namespace IPA.ModList.BeatSaber.UI
             ParserParams.EmitEvent("ShowLinkModal");
         }
 
+        [UIValue("link_url")]
+        public string CurrentLinkUrl { get; private set; } = "";
+
+        [UIValue("link_title")]
+        public string CurrentLinkTitle { get; private set; } = "";
+
+        [UIComponent("LinkTitleText")]
+        internal TextMeshProUGUI LinkTitleText;
+
         [UIAction("ConfirmOpenLink")]
         [SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "BSML calls this")]
         private void OpenLink()
@@ -100,6 +148,7 @@ namespace IPA.ModList.BeatSaber.UI
 
             Process.Start(CurrentLinkUrl);
         }
+        #endregion
 
         protected override void DidActivate(bool firstActivation, ActivationType type)
         {

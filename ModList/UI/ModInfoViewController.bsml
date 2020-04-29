@@ -5,7 +5,7 @@
     anchor-min-y='0' anchor-max-y='1'>
   <bg anchor-min-x='0' anchor-min-y='.7'
       anchor-max-x='1' anchor-max-y='1'>
-    <raw-image id='icon-img' 
+    <raw-image id='IconImage' 
                anchor-min-x='0' anchor-min-y='.5'
                anchor-max-x='0' anchor-max-y='.5'
                pivot-x='0' pivot-y='.5'
@@ -41,15 +41,17 @@
     </bg>
   </bg>
   <bg bg='round-rect-panel'
-      anchor-min-x='0' anchor-min-y='.1'
+      anchor-min-x='0' anchor-min-y='~desc_anchor_min'
       anchor-max-x='1' anchor-max-y='.7'
-      size-delta-x='1' size-delta-y='1'>
+      anchor-pos-x='0' anchor-pos-y='0'
+      size-delta-x='1' size-delta-y='-2'
+      pivot-x='.5' pivot-y='1' >
     <bg anchor-min-x='0' anchor-min-y='0'
         anchor-max-x='1' anchor-max-y='1'
         anchor-pos-x='0' anchor-pos-y='0'
         size-delta-x='-5' size-delta-y='-5'>
       <scroll id='DescriptionWindow' mask-overflow='true'
-              anchor-min-x='0' anchor-min-y='1'
+              anchor-min-x='0' anchor-min-y='0'
               anchor-max-x='1' anchor-max-y='1'
               size-delta-x='0'>
         <markdown link-pressed='OnDescLinkPressed' link-color='cyan'
@@ -57,18 +59,31 @@
               anchor-max-x='1' anchor-max-y='1' size-delta-x='0'
               pivot-x='.5' pivot-y='1' text='~description' />
       </scroll>
+      <scroll-indicator tags='IndicatorFor:DescriptionWindow'
+                        anchor-pos-x='.5' anchor-pos-y='0'
+                        anchor-min-x='1' anchor-min-y='0'
+                        anchor-max-x='1' anchor-max-y='1'
+                        size-delta-x='1' size-delta-y='-2'
+                        pivot-x='0' pivot-y='.5' />
     </bg>
     <page-button direction='Up' tags='PageUpFor:DescriptionWindow'
                  anchor-min-x='1' anchor-min-y='1'
                  anchor-max-x='1' anchor-max-y='1'
-                 pivot-x='1' pivot-y='1'
-                 pref-width='8' pref-height='8' />
+                 anchor-pos-x='.5' anchor-pos-y='0'
+                 pref-width='8' pref-height='8'
+                 pivot-x='0' pivot-y='1' />
     <page-button direction='Down' tags='PageDownFor:DescriptionWindow'
                  anchor-min-x='1' anchor-min-y='0'
                  anchor-max-x='1' anchor-max-y='0'
-                 pivot-x='1' pivot-y='0'
-                 pref-width='8' pref-height='8' />
+                 anchor-pos-x='.5' anchor-pos-y='0'
+                 pref-width='8' pref-height='8'
+                 pivot-x='0' pivot-y='0' />
   </bg>
+  <bottom-button-panel id='LinkPanel' size-delta-x='1' active='~has_links'>
+    <button text='Source' active='~has_source_link' on-click='SourceLinkPressed' />
+    <button text='Home' active='~has_home_link' on-click='HomeLinkPressed' />
+    <button text='Donate' active='~has_donate_link' on-click='HomeLinkPressed' />
+  </bottom-button-panel>
   <modal show-event='ShowLinkModal' hide-event='HideLinkModal'
          move-to-center='true' clickerino-offerino-closerino='false'
          size-delta-x='70' size-delta-y='30'>
@@ -78,9 +93,9 @@
               anchor-max-x='1' anchor-max-y='1'
               size-delta-x='-5' size-delta-y='0'>
       <text text='Do you want to open this link?' font-align='Center' />
-      <text text='~link_url' rich-text='false' font-align='Center' 
+      <text text='~link_url' rich-text='false' font-align='Center'
             word-wrapping='false' overflow-mode='Ellipsis' color='red'/>
-      <text text='~link_title' rich-text='false' font-align='Center' id='link-title-text' 
+      <text text='~link_title' rich-text='false' font-align='Center' id='LinkTitleText'
             word-wrapping='false' overflow-mode='Ellipsis' color='cyan' />
     </vertical>
     <bottom-button-panel>
