@@ -51,10 +51,7 @@
         anchor-pos-x='0' anchor-pos-y='-2.5'
         size-delta-x='-5' size-delta-y='~desc_size_delta_min'
         pivot-x='.5' pivot-y='1'>
-      <scroll id='DescriptionWindow' mask-overflow='true'
-              anchor-min-x='0' anchor-min-y='0'
-              anchor-max-x='1' anchor-max-y='1'
-              size-delta-x='0'>
+      <scroll id='DescriptionWindow' mask-overflow='true' size-delta-x='0'>
         <markdown link-pressed='OnDescLinkPressed' link-color='cyan'
               anchor-min-x='0' anchor-min-y='0' autolink-color='red'
               anchor-max-x='1' anchor-max-y='1' size-delta-x='0'
