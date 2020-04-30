@@ -189,42 +189,12 @@ namespace IPA.ModList.BeatSaber
         }
 
         public static IEnumerable<T> SingleEnumerable<T>(this T item)
-            => new SingleValueEnumerable<T>(item);
+            => Enumerable.Empty<T>().Append(item);
 
         public static IEnumerable<T?> AsNullable<T>(this IEnumerable<T> items) where T : struct
             => items.Select(i => new T?(i));
 
         public static T? AsNullable<T>(this T item) where T : struct => item;
-
-        private class SingleValueEnumerable<T> : IEnumerable<T>
-        {
-            private readonly T value;
-            public SingleValueEnumerable(T val)
-                => value = val;
-            public IEnumerator<T> GetEnumerator() => new Enumerator(value);
-
-            IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
-
-            private class Enumerator : IEnumerator<T>
-            {
-                private byte state = 0;
-
-                public Enumerator(T val)
-                    => Current = val;
-
-                public T Current { get; }
-
-                object IEnumerator.Current => Current;
-
-                public void Dispose() { }
-
-                public bool MoveNext()
-                    => state++ < 1;
-
-                public void Reset()
-                    => state = 0;
-            }
-        }
 
         public static void Zero(RectTransform transform)
         {
