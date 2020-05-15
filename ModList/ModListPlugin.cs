@@ -36,17 +36,15 @@ namespace IPA.ModList.BeatSaber
         public void OnEnable()
         {
             Logger.log.Debug($"{CompileConstants.Manifest.Name} Enabled");
-            FontManager.AsyncLoadSystemFonts();
             MarkdownTag.Register();
             MenuButtons.instance.RegisterButton(menuBtn);
         }
 
         [OnDisable]
-        public async Task OnDisable()
+        public void OnDisable()
         {
             MenuButtons.instance.UnregisterButton(menuBtn);
             MarkdownTag.Unregister();
-            await FontManager.Destroy();
             Logger.log.Debug("Disabled");
         }
 

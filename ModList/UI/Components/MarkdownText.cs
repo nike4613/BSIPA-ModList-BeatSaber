@@ -18,6 +18,8 @@ using UnityEngine.TextCore;
 using IPA.Utilities;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
+using BeatSaberMarkupLanguage;
+using System.IO;
 
 namespace IPA.ModList.BeatSaber.UI.Components
 {
@@ -70,7 +72,7 @@ namespace IPA.ModList.BeatSaber.UI.Components
             if (IsDirty && text != null)
             {
                 Clear();
-                StartCoroutine(Render());
+                Render();
                 IsDirty = false;
             }
         }
@@ -99,21 +101,34 @@ namespace IPA.ModList.BeatSaber.UI.Components
 
         private (TMP_FontAsset font, string padding) LoadConfigFont(ModListConfig config)
         {
-            Font GetUnityFont()
+            TMP_FontAsset asset = null;
+            if (config.MonospaceFontPath != null)
             {
-                if (config.MonospaceFontPath != null)
-                    return new Font(config.MonospaceFontPath);
-
-                if (FontManager.TryGetFont(config.MonospaceFontName, out var font))
-                    return font;
-                else if (FontManager.TryGetFont("Consolas", out font))
-                    return font;
+                if (!File.Exists(config.MonospaceFontPath))
+                    Logger.md.Warn($"File '{config.MonospaceFontPath}' does not exist");
                 else
-                    return null;
+                {
+                    var ufont = new Font(config.MonospaceFontPath);
+                    asset = Helpers.TMPFontFromUnityFont(ufont);
+                }
+            }
+            if (asset == null)
+            {
+                if (!FontManager.TryGetTMPFontByFullName(config.MonospaceFontName, out asset, setupOsFallbacks: false)
+                 && !FontManager.TryGetTMPFontByFamily(config.MonospaceFontName, out asset, setupOsFallbacks: false))
+                {
+                    Logger.md.Warn($"Could not locate font '{config.MonospaceFontName}'");
+                    if (!FontManager.TryGetTMPFontByFullName("Consolas", out asset, setupOsFallbacks: false))
+                    {
+                        Logger.md.Error("Could not locate monospace font that is usable");
+                    }
+                }
             }
 
-            var font = GetUnityFont();
-            var asset = Helpers.TMPFontFromUnityFont(font);
+            var assetName = asset.name;
+            asset = BeatSaberUI.CreateFixedUIFontClone(asset);
+            asset.SetName($"__markdown__{assetName}");
+            asset.ReadFontAssetDefinition(); // this likely won't be necessary if/when BSML stops caching TMP fonts
 
             var paddingChar = UnicodePrivateUseStart;
             var TryAddCharacterInternal = MethodAccessor<TMP_FontAsset, TryAddCharacterInternalDelegate>
@@ -140,7 +155,7 @@ namespace IPA.ModList.BeatSaber.UI.Components
                 asset.characterLookupTable.Add(paddingChar, character);
             }
 
-            return (Helpers.CreateFixedUIFontClone(asset), char.ConvertFromUtf32((int)paddingChar));
+            return (asset, char.ConvertFromUtf32((int)paddingChar));
         }
 
         private UnityRenderer CreateRenderer()
@@ -148,7 +163,7 @@ namespace IPA.ModList.BeatSaber.UI.Components
             var (font, padding) = LoadConfigFont(ModListConfig.Instance);
             return new UnityRendererBuilder()
                 .UI.Material(BSMLUtils.ImageResources.NoGlowMat)
-                .UI.Font(Helpers.TekoMediumArialFallback)
+                .UI.Font(BeatSaberUI.MainTextFont)
                 .Link.UseColor(LinkColor)
                 .Link.UseAutoColor(AutolinkColor)
                 .Quote.UseBackground(Helpers.SmallRoundedRectSprite, Image.Type.Sliced)
@@ -169,10 +184,8 @@ namespace IPA.ModList.BeatSaber.UI.Components
                 .Build();
         }
 
-        private IEnumerator Render()
+        private void Render()
         {
-            yield return Coroutines.WaitForTask(FontManager.AsyncLoadSystemFonts());
-
             Logger.md.Debug($"Rendering markdown:\n{string.Join("\n", Text.Split('\n').Select(s => "| " + s))}");
             var root = Markdown.Convert(Text, Renderer, Pipeline) as RectTransform;
             root.SetParent(RectTransform, false);

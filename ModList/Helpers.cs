@@ -1,4 +1,5 @@
-﻿using IPA.Loader;
+﻿using BeatSaberMarkupLanguage;
+using IPA.Loader;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -59,14 +60,6 @@ namespace IPA.ModList.BeatSaber
         private static Sprite tinyRoundedRectSprite = null;
         public static Sprite TinyRoundedRectSprite
             => tinyRoundedRectSprite ??= LoadTinyRoundedRectSprite();
-
-        private static TMP_FontAsset tekoMediumFont = null;
-        public static TMP_FontAsset TekoMediumFont
-            => tekoMediumFont ??= Resources.FindObjectsOfTypeAll<TMP_FontAsset>().First(t => t.name == "Teko-Medium SDF No Glow");
-
-        private static TMP_FontAsset tekoMediumArialFallback = null;
-        public static TMP_FontAsset TekoMediumArialFallback
-            => tekoMediumArialFallback ??= CreateTekoWithArialFallback();
 
         public static Texture2D ReadImageFromSelf(string name)
             => ReadImageFromAssembly(typeof(Helpers).Assembly, name);
@@ -132,7 +125,7 @@ namespace IPA.ModList.BeatSaber
             gameObj.SetActive(false);
 
             var textMesh = gameObj.AddComponent<TextMeshProUGUI>();
-            textMesh.font = TekoMediumFont;
+            textMesh.font = BeatSaberUI.MainTextFont;
             //textMesh.rectTransform.SetParent(parent, false);
             textMesh.text = text;
             textMesh.fontSize = 4;
@@ -145,39 +138,6 @@ namespace IPA.ModList.BeatSaber
 
             gameObj.SetActive(true);
             return textMesh;
-        }
-
-        public static TMP_FontAsset CreateFixedUIFontClone(TMP_FontAsset font)
-        {
-            var matCopy = GameObject.Instantiate(TekoMediumFont.material);
-            matCopy.mainTexture = font.material.mainTexture;
-            matCopy.mainTextureOffset = font.material.mainTextureOffset;
-            matCopy.mainTextureScale = font.material.mainTextureScale;
-            font.material = matCopy;
-            var copy = GameObject.Instantiate(font);
-            copy.name = font.name;
-            copy.hashCode = font.hashCode;
-            return copy;
-        }
-
-        private static TMP_FontAsset CreateTekoWithArialFallback(bool fixForUI = true)
-        {
-            var teko = GameObject.Instantiate(TekoMediumFont);
-            teko.name = $"{TekoMediumFont.name} With Arial Fallback";
-            teko.hashCode = TMP_TextUtilities.GetSimpleHashCode(teko.name);
-
-            if (!FontManager.TryGetFont("Arial", out var ufont))
-            {
-                Logger.log.Warn("Cannot find system font Arial to use as a fallback!");
-                return teko;
-            }
-
-            var fallback = TMPFontFromUnityFont(ufont);
-            if (fixForUI)
-                fallback = CreateFixedUIFontClone(fallback);
-
-            teko.fallbackFontAssetTable.Add(fallback);
-            return teko;
         }
 
         public static TMP_FontAsset TMPFontFromUnityFont(Font font)

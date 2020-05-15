@@ -2556,7 +2556,7 @@
         </member>
         <member name="F:IPA.Logging.Logger.Level.Trace">
             <summary>
-            A trace message. These are ignored *incredibly* early.
+            A trace message. These are ignored <i>incredibly</i> early.
             </summary>
         </member>
         <member name="F:IPA.Logging.Logger.Level.Debug">
@@ -2686,7 +2686,7 @@
         <member name="M:IPA.Logging.Logger.Trace(System.String)">
             <summary>
             Sends a trace message.
-            Equivalent to `Log(Level.Trace, message);`
+            Equivalent to <c>Log(Level.Trace, message);</c>
             </summary>
             <seealso cref="M:IPA.Logging.Logger.Log(IPA.Logging.Logger.Level,System.String)"/>
             <param name="message">the message to log</param>
@@ -2694,7 +2694,7 @@
         <member name="M:IPA.Logging.Logger.Trace(System.Exception)">
             <summary>
             Sends an exception as a trace message.
-            Equivalent to `Log(Level.Trace, e);`
+            Equivalent to <c>Log(Level.Trace, e);</c>
             </summary>
             <seealso cref="M:IPA.Logging.Logger.Log(IPA.Logging.Logger.Level,System.Exception)"/>
             <param name="e">the exception to log</param>
@@ -2702,7 +2702,7 @@
         <member name="M:IPA.Logging.Logger.Debug(System.String)">
             <summary>
             Sends a debug message.
-            Equivalent to `Log(Level.Debug, message);`
+            Equivalent to <c>Log(Level.Debug, message);</c>
             </summary>
             <seealso cref="M:IPA.Logging.Logger.Log(IPA.Logging.Logger.Level,System.String)"/>
             <param name="message">the message to log</param>
@@ -2710,7 +2710,7 @@
         <member name="M:IPA.Logging.Logger.Debug(System.Exception)">
             <summary>
             Sends an exception as a debug message.
-            Equivalent to `Log(Level.Debug, e);`
+            Equivalent to <c>Log(Level.Debug, e);</c>
             </summary>
             <seealso cref="M:IPA.Logging.Logger.Log(IPA.Logging.Logger.Level,System.Exception)"/>
             <param name="e">the exception to log</param>
@@ -2718,7 +2718,7 @@
         <member name="M:IPA.Logging.Logger.Info(System.String)">
             <summary>
             Sends an info message.
-            Equivalent to `Log(Level.Info, message);`
+            Equivalent to <c>Log(Level.Info, message);</c>
             </summary>
             <seealso cref="M:IPA.Logging.Logger.Log(IPA.Logging.Logger.Level,System.String)"/>
             <param name="message">the message to log</param>
@@ -2726,7 +2726,7 @@
         <member name="M:IPA.Logging.Logger.Info(System.Exception)">
             <summary>
             Sends an exception as an info message.
-            Equivalent to `Log(Level.Info, e);`
+            Equivalent to <c>Log(Level.Info, e);</c>
             </summary>
             <seealso cref="M:IPA.Logging.Logger.Log(IPA.Logging.Logger.Level,System.Exception)"/>
             <param name="e">the exception to log</param>
@@ -2734,7 +2734,7 @@
         <member name="M:IPA.Logging.Logger.Notice(System.String)">
             <summary>
             Sends a notice message.
-            Equivalent to `Log(Level.Notice, message);`
+            Equivalent to <c>Log(Level.Notice, message);</c>
             </summary>
             <seealso cref="M:IPA.Logging.Logger.Log(IPA.Logging.Logger.Level,System.String)"/>
             <param name="message">the message to log</param>
@@ -2742,7 +2742,7 @@
         <member name="M:IPA.Logging.Logger.Notice(System.Exception)">
             <summary>
             Sends an exception as a notice message.
-            Equivalent to `Log(Level.Notice, e);`
+            Equivalent to <c>Log(Level.Notice, e);</c>
             </summary>
             <seealso cref="M:IPA.Logging.Logger.Log(IPA.Logging.Logger.Level,System.Exception)"/>
             <param name="e">the exception to log</param>
@@ -2750,7 +2750,7 @@
         <member name="M:IPA.Logging.Logger.Warn(System.String)">
             <summary>
             Sends a warning message.
-            Equivalent to `Log(Level.Warning, message);`
+            Equivalent to <c>Log(Level.Warning, message);</c>
             </summary>
             <seealso cref="M:IPA.Logging.Logger.Log(IPA.Logging.Logger.Level,System.String)"/>
             <param name="message">the message to log</param>
@@ -2758,7 +2758,7 @@
         <member name="M:IPA.Logging.Logger.Warn(System.Exception)">
             <summary>
             Sends an exception as a warning message.
-            Equivalent to `Log(Level.Warning, e);`
+            Equivalent to <c>Log(Level.Warning, e);</c>
             </summary>
             <seealso cref="M:IPA.Logging.Logger.Log(IPA.Logging.Logger.Level,System.Exception)"/>
             <param name="e">the exception to log</param>
@@ -2766,7 +2766,7 @@
         <member name="M:IPA.Logging.Logger.Error(System.String)">
             <summary>
             Sends an error message.
-            Equivalent to `Log(Level.Error, message);`
+            Equivalent to <c>Log(Level.Error, message);</c>
             </summary>
             <seealso cref="M:IPA.Logging.Logger.Log(IPA.Logging.Logger.Level,System.String)"/>
             <param name="message">the message to log</param>
@@ -2774,7 +2774,7 @@
         <member name="M:IPA.Logging.Logger.Error(System.Exception)">
             <summary>
             Sends an exception as an error message.
-            Equivalent to `Log(Level.Error, e);`
+            Equivalent to <c>Log(Level.Error, e);</c>
             </summary>
             <seealso cref="M:IPA.Logging.Logger.Log(IPA.Logging.Logger.Level,System.Exception)"/>
             <param name="e">the exception to log</param>
@@ -2782,7 +2782,7 @@
         <member name="M:IPA.Logging.Logger.Critical(System.String)">
             <summary>
             Sends a critical message.
-            Equivalent to `Log(Level.Critical, message);`
+            Equivalent to <c>Log(Level.Critical, message);</c>
             </summary>
             <seealso cref="M:IPA.Logging.Logger.Log(IPA.Logging.Logger.Level,System.String)"/>
             <param name="message">the message to log</param>
@@ -2790,7 +2790,7 @@
         <member name="M:IPA.Logging.Logger.Critical(System.Exception)">
             <summary>
             Sends an exception as a critical message.
-            Equivalent to `Log(Level.Critical, e);`
+            Equivalent to <c>Log(Level.Critical, e);</c>
             </summary>
             <seealso cref="M:IPA.Logging.Logger.Log(IPA.Logging.Logger.Level,System.Exception)"/>
             <param name="e">the exception to log</param>
@@ -3152,6 +3152,32 @@
             </summary>
             <param name="task">the <see cref="T:System.Threading.Tasks.Task"/> to wait for</param>
             <returns>a coroutine waiting for the given task</returns>
+        </member>
+        <member name="M:IPA.Utilities.Async.Coroutines.WaitForTask(System.Threading.Tasks.Task,System.Boolean)">
+            <summary>
+            Stalls the coroutine until <paramref name="task"/> completes, faults, or is canceled.
+            </summary>
+            <param name="task">the <see cref="T:System.Threading.Tasks.Task"/> to wait for</param>
+            <param name="throwOnFault">whether or not to throw if the task faulted</param>
+            <returns>a coroutine waiting for the given task</returns>
+        </member>
+        <member name="M:IPA.Utilities.Async.Coroutines.AsTask(System.Collections.IEnumerator)">
+            <summary>
+            Binds a <see cref="T:System.Threading.Tasks.Task"/> to a Unity coroutine, capturing exceptions as well as the coroutine call stack.
+            </summary>
+            <remarks>
+            <para>
+            This may be called off of the Unity main thread. If it is, the coroutine start will be scheduled using the default
+            <see cref="T:IPA.Utilities.Async.UnityMainThreadTaskScheduler"/> and will be run on the main thread as required by Unity.
+            </para>
+            <para>
+            Unity provides a handful of coroutine helpers that are not <see cref="T:System.Collections.IEnumerable"/>s. Most of these are not terribly
+            helpful on their own, however <see cref="T:UnityEngine.WaitForSeconds"/> may be. Instead, prefer to use the typical .NET
+            <see cref="M:System.Threading.Tasks.Task.Wait(System.TimeSpan)"/> or similar overloads, or use <see cref="T:UnityEngine.WaitForSecondsRealtime"/>.
+            </para>
+            </remarks>
+            <param name="coroutine">the coroutine to bind to a task</param>
+            <returns>a <see cref="T:System.Threading.Tasks.Task"/> that completes when <paramref name="coroutine"/> completes, and fails when it throws</returns>
         </member>
         <member name="T:IPA.Utilities.Async.SingleCreationValueCache`2">
             <summary>
