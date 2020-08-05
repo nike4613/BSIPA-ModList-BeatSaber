@@ -20,8 +20,8 @@ namespace IPA.ModList.BeatSaber
         public const string Version = Manifest.Version;
 
         public const int BuildYear = 2020;
-        public const int BuildMonth = 4;
-        public const int BuildDay = 9;
+        public const int BuildMonth = 8;
+        public const int BuildDay = 4;
 
         public static DateTime BuildDate => new DateTime(BuildYear, BuildMonth, BuildDay);
 

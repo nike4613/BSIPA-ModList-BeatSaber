@@ -133,6 +133,7 @@ namespace IPA.ModList.BeatSaber.UI
             NotifyPropertyChanged(nameof(HasHomeLink));
             NotifyPropertyChanged(nameof(HasDonateLink));
             NotifyPropertyChanged(nameof(DescriptionAnchorMinY));
+            NotifyPropertyChanged(nameof(DescriptionContentSizeDeltaY));
         }
 
         [UIAction(nameof(SourceLinkPressed))]

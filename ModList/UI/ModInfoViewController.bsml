@@ -53,9 +53,9 @@
         pivot-x='.5' pivot-y='1'>
       <scrollable-container id='DescriptionWindow' mask-overflow='true' size-delta-x='0'>
         <markdown link-pressed='OnDescLinkPressed' link-color='cyan'
-              anchor-min-x='0' anchor-min-y='0' autolink-color='red'
-              anchor-max-x='1' anchor-max-y='1' size-delta-x='0'
-              pivot-x='.5' pivot-y='1' text='~description' />
+                  anchor-min-x='0' anchor-min-y='0' autolink-color='red'
+                  anchor-max-x='1' anchor-max-y='1' size-delta-x='0'
+                  pivot-x='.5' pivot-y='1' text='~description' />
       </scrollable-container>
       <scroll-indicator tags='IndicatorFor:DescriptionWindow'
                         anchor-pos-x='.5' anchor-pos-y='0'
