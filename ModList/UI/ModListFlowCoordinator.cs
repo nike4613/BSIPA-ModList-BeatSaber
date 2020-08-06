@@ -14,6 +14,7 @@ namespace IPA.ModList.BeatSaber.UI
         private NavigationController naviController;
         private ModListViewController listController;
         private ModInfoViewController infoController;
+        private ModControlsViewController controlsController;
 
         public void Awake()
         {
@@ -22,6 +23,7 @@ namespace IPA.ModList.BeatSaber.UI
                 naviController = BeatSaberUI.CreateViewController<NavigationController>();
                 listController = BeatSaberUI.CreateViewController<ModListViewController>();
                 infoController = BeatSaberUI.CreateViewController<ModInfoViewController>();
+                controlsController = BeatSaberUI.CreateViewController<ModControlsViewController>();
             }
         }
 
@@ -35,7 +37,7 @@ namespace IPA.ModList.BeatSaber.UI
                     title = CompileConstants.Manifest.Name;
 
                     SetViewControllersToNavigationController(naviController, listController);
-                    ProvideInitialViewControllers(mainViewController: naviController);
+                    ProvideInitialViewControllers(mainViewController: naviController, bottomScreenViewController: controlsController);
                 }
 
                 listController.DidSelectPlugin += HandleSelectPlugin;

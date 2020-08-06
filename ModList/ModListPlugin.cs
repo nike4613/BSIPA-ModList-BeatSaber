@@ -48,7 +48,7 @@ namespace IPA.ModList.BeatSaber
             Logger.log.Debug("Disabled");
         }
 
-        private UI.ModListFlowCoordinator flowCoord;
+        private ModListFlowCoordinator flowCoord;
 
         private void PresentModList()
         {

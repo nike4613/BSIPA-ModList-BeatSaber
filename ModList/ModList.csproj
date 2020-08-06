@@ -142,6 +142,9 @@
     <Compile Include="UI\Markdig\RenderHelpers.cs" />
     <Compile Include="UI\Markdig\UnityRenderer.cs" />
     <Compile Include="UI\Markdig\UnityRendererBuilder.cs" />
+    <Compile Include="UI\ModControlsViewController.cs">
+      <DependentUpon>ModControlsViewController.bsml</DependentUpon>
+    </Compile>
     <Compile Include="UI\ModInfoViewController.cs">
       <DependentUpon>ModInfoViewController.bsml</DependentUpon>
     </Compile>
@@ -211,6 +214,9 @@
       <Value>@(Manifest)</Value>
       <Visible>false</Visible>
     </T4ParameterValues>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="UI\ModControlsViewController.bsml" />
   </ItemGroup>
   <Target Name="CustomPostTransform">
     <ItemGroup>
