@@ -64,7 +64,7 @@
     </vertical>
   </horizontal>
   <bg bg='round-rect-panel' active='~changing-mods'
-      size-delta-x='-20' size-delta-y='0'
+      size-delta-x='-15' size-delta-y='0'
       anchor-min-x='0' anchor-min-y='.25'
       anchor-max-x='1' anchor-max-y='.6'
       anchor-pos-x='0' anchor-pos-y='0'
@@ -80,9 +80,9 @@
         <text text='~changed-count' font-size='3'/>
         <text text='changes selected.' font-size='3'/>
       </horizontal>
-      <horizontal pivot-x='.5' child-align='UpperCenter' horizontal-fit='PreferredSize' active='false'
-                  child-control-width='true' child-expand-width='false' pref-width='45'>
-        <text text='A restart will be required to apply these changes.' active='~requires-restart'
+      <horizontal pivot-x='.5' child-align='UpperCenter' horizontal-fit='PreferredSize' active='~requires-restart'
+                  child-control-width='true' child-expand-width='true' pref-width='45'>
+        <text text='A restart will be required to apply these changes.'
               font-size='3' color='yellow' align='Top'/>
       </horizontal>
     </vertical>

@@ -72,6 +72,7 @@ namespace IPA.ModList.BeatSaber.UI
                 .Concat(PluginManager.IgnoredPlugins.Keys.AsInfos(PluginState.Ignored)) // ignored plugins should go *before* bare manifests
                 .Concat(PluginManager.EnabledPlugins .Where(m =>  m.IsBare).AsInfos(PluginState.Enabled))
                 .Concat(PluginManager.DisabledPlugins.Where(m =>  m.IsBare).AsInfos(PluginState.Disabled)));
+            PluginList.Sort((a, b) => a.Plugin.Name.CompareTo(b.Plugin.Name)); // nah, we're sorting them by name so they can more easily be found
             ReloadViewList();
         }
 

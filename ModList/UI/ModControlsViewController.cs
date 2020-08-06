@@ -3,6 +3,7 @@ using BeatSaberMarkupLanguage.Parser;
 using BeatSaberMarkupLanguage.ViewControllers;
 using IPA.Loader;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -14,6 +15,7 @@ namespace IPA.ModList.BeatSaber.UI
     public class ModControlsViewController : BSMLAutomaticViewController
     {
         private PluginInformation plugin = null;
+        private Dictionary<PluginInformation, PluginState> changedStates = new Dictionary<PluginInformation, PluginState>();
 
         internal void SetPlugin(PluginInformation info)
         {
@@ -27,6 +29,8 @@ namespace IPA.ModList.BeatSaber.UI
         {
             base.DidActivate(firstActivation, type);
 
+            ChangedCount = 0;
+
             RefreshChanges();
         }
 
@@ -34,6 +38,10 @@ namespace IPA.ModList.BeatSaber.UI
         {
             currentTransaction?.Dispose();
             currentTransaction = null;
+
+            foreach (var kvp in changedStates)
+                kvp.Key.State = kvp.Value;
+            changedStates.Clear();
 
             base.DidDeactivate(deactivationType);
 
@@ -117,9 +125,10 @@ namespace IPA.ModList.BeatSaber.UI
                 }
             }
 
+            if (!changedStates.ContainsKey(plugin))
+                changedStates.Add(plugin, plugin.State);
             plugin.State = PluginState.Enabled;
-            RefreshChanges();
-            RefreshEnabled();
+            StartCoroutine(RefreshOnModStateChange());
             RefreshList();
         }
 
@@ -150,10 +159,18 @@ namespace IPA.ModList.BeatSaber.UI
                 }
             }
 
+            if (!changedStates.ContainsKey(plugin))
+                changedStates.Add(plugin, plugin.State);
             plugin.State = PluginState.Disabled;
+            StartCoroutine(RefreshOnModStateChange());
+            RefreshList();
+        }
+
+        private IEnumerator RefreshOnModStateChange()
+        {
+            yield return null;
             RefreshChanges();
             RefreshEnabled();
-            RefreshList();
         }
 
         private StateTransitionTransaction StartOrGetTransaction()
