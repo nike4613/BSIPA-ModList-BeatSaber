@@ -13,6 +13,7 @@ namespace IPA.ModList.BeatSaber.UI
         public FlowCoordinator ParentFlowCoordinator { get; set; }
         private NavigationController naviController;
         private ModListViewController listController;
+        private ListModalPopupViewController modalsController;
         private ModInfoViewController infoController;
         private ModControlsViewController controlsController;
 
@@ -22,6 +23,7 @@ namespace IPA.ModList.BeatSaber.UI
             {
                 naviController = BeatSaberUI.CreateViewController<NavigationController>();
                 listController = BeatSaberUI.CreateViewController<ModListViewController>();
+                modalsController = BeatSaberUI.CreateViewController<ListModalPopupViewController>();
                 infoController = BeatSaberUI.CreateViewController<ModInfoViewController>();
                 controlsController = BeatSaberUI.CreateViewController<ModControlsViewController>();
             }
@@ -36,12 +38,13 @@ namespace IPA.ModList.BeatSaber.UI
                     showBackButton = true;
                     title = CompileConstants.Manifest.Name;
 
-                    SetViewControllersToNavigationController(naviController, listController);
+                    SetViewControllersToNavigationController(naviController, listController, modalsController);
                     ProvideInitialViewControllers(mainViewController: naviController, bottomScreenViewController: controlsController);
                 }
 
                 listController.DidSelectPlugin += HandleSelectPlugin;
                 controlsController.OnListNeedsRefresh += HandleListNeedsRefresh;
+                controlsController.OnChangeNeedsConfirmation += modalsController.QueueChange;                
             }
             catch (Exception e)
             {
@@ -52,6 +55,7 @@ namespace IPA.ModList.BeatSaber.UI
 
         protected override void DidDeactivate(DeactivationType deactivationType)
         {
+            controlsController.OnChangeNeedsConfirmation -= modalsController.QueueChange;
             controlsController.OnListNeedsRefresh -= HandleListNeedsRefresh;
             listController.DidSelectPlugin -= HandleSelectPlugin;
             base.DidDeactivate(deactivationType);

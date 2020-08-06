@@ -1,0 +1,15 @@
+﻿<bg xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
+    xsi:schemaLocation='https://monkeymanboy.github.io/BSML-Docs/ https://raw.githubusercontent.com/monkeymanboy/BSML-Docs/gh-pages/BSMLSchema.xsd'
+    size-delta-x='0' size-delta-y='0'
+    anchor-min-x='0' anchor-max-x='0'
+    anchor-min-y='0' anchor-max-y='0'>
+  <modal id='change-modal'
+         move-to-center='true' clickerino-offerino-closerino='false'
+         size-delta-x='70' size-delta-y='30'>
+    
+    <bottom-button-panel>
+      <button text='Confirm' interactable='true' on-click='ConfirmChange' />
+      <button text='Cancel' interactable='true' on-click='DenyChange' />
+    </bottom-button-panel>
+  </modal>
+</bg>

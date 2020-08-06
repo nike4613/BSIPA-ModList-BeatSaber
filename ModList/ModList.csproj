@@ -137,6 +137,9 @@
     <Compile Include="UI\Components\MarkdownText.cs" />
     <Compile Include="UI\Components\PositionSizeCopier.cs" />
     <Compile Include="UI\Components\TextMeshProUGUILinkBackgroundGenerator.cs" />
+    <Compile Include="UI\ListModalPopupViewController.cs">
+      <DependentUpon>ListModalPopupViewController.bsml</DependentUpon>
+    </Compile>
     <Compile Include="UI\Markdig\EmphasisFlags.cs" />
     <Compile Include="UI\Markdig\MarkdownExtensions.cs" />
     <Compile Include="UI\Markdig\RenderHelpers.cs" />
@@ -166,6 +169,7 @@
       <OutputFilePath>$(IntermediateOutputPath)</OutputFilePath>
       <LastGenOutput>CompileConstants.cs</LastGenOutput>
     </Content>
+    <None Include="UI\ListModalPopupViewController.bsml" />
     <EmbeddedResource Include="Resources\tiny-rounded-rect.png" />
     <EmbeddedResource Include="Resources\small-rounded-rect.png" />
     <EmbeddedResource Include="Resources\!.png" />
