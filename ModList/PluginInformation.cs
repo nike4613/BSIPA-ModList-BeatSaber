@@ -14,10 +14,10 @@ namespace IPA.ModList.BeatSaber
         Disabled,
         Ignored
     }
-    internal struct PluginInformation
+    internal class PluginInformation
     {
         public PluginMetadata Plugin { get; }
-        public PluginState State { get; }
+        public PluginState State { get; set; }
 
         private Texture2D icon;
         public Texture2D Icon => icon ??= Helpers.ReadPluginIcon(Plugin);

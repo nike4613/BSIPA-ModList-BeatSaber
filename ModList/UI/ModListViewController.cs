@@ -76,7 +76,7 @@ namespace IPA.ModList.BeatSaber.UI
         }
 
         // TODO: async preload and cache icons?
-        private void ReloadViewList()
+        internal void ReloadViewList()
         {
             ListValues.Clear();
             ListValues.AddRange(

@@ -3,7 +3,7 @@
     size-delta-x='0' size-delta-y='0'
     anchor-min-x='.32' anchor-max-x='.68'
     anchor-min-y='0' anchor-max-y='.95'>
-  <horizontal spacing='4' active='true'
+  <horizontal spacing='4' active='~panel-active'
               size-delta-x='0' size-delta-y='0'
               anchor-min-x='0' anchor-min-y='.65'
               anchor-max-x='1' anchor-max-y='1'
@@ -25,13 +25,13 @@
               anchor-max-x='1' anchor-max-y='1'
               anchor-pos-x='0' anchor-pos-y='0'
               align='BottomLeft'/>
-        <text text='ENABLED' color='lime' font-size='8' active='true'
+        <text text='ENABLED' color='lime' font-size='8' active='~mod-enabled'
               size-delta-x='0' size-delta-y='0'
               anchor-min-x='0' anchor-min-y='0'
               anchor-max-x='1' anchor-max-y='.5'
               anchor-pos-x='0' anchor-pos-y='3'
               align='TopLeft'/>
-        <text text='DISABLED' color='red' font-size='8' active='false'
+        <text text='DISABLED' color='red' font-size='8' active='~mod-disabled'
               size-delta-x='0' size-delta-y='0'
               anchor-min-x='0' anchor-min-y='0'
               anchor-max-x='1' anchor-max-y='.5'
@@ -44,17 +44,17 @@
               child-align='MiddleLeft' child-expand-width='true'
               pivot-x='0' pivot-y='.5'> <!-- this is a Vertical so that its a layoutelement -->
       <bg> <!-- this is so that i can lay out the content literally -->
-        <button text='Disable' face-color='red' on-click='DisableMod' active='true'
+        <button text='Disable' face-color='red' on-click='DisableMod' active='~mod-enabled'
               size-delta-x='0' size-delta-y='0'
               anchor-min-x='0' anchor-min-y='.5'
               anchor-max-x='1' anchor-max-y='.5'
               anchor-pos-x='0' anchor-pos-y='-2' />
-        <button text='Enable' face-color='lime' on-click='EnableMod' active='false'
+        <button text='Enable' face-color='lime' on-click='EnableMod' active='~mod-disabled'
               size-delta-x='0' size-delta-y='0'
               anchor-min-x='0' anchor-min-y='.5'
               anchor-max-x='1' anchor-max-y='.5'
               anchor-pos-x='0' anchor-pos-y='-2' />
-        <text text='Requires a game restart' color='yellow' active='true'
+        <text text='Requires a game restart' color='yellow' active='~mod-requires-restart'
               font-size='3' font-align='Top'
               size-delta-x='0' size-delta-y='0'
               anchor-min-x='0' anchor-min-y='.5'
@@ -63,7 +63,7 @@
       </bg>
     </vertical>
   </horizontal>
-  <bg bg='round-rect-panel' active='false'
+  <bg bg='round-rect-panel' active='~changing-mods'
       size-delta-x='-20' size-delta-y='0'
       anchor-min-x='0' anchor-min-y='.25'
       anchor-max-x='1' anchor-max-y='.6'
@@ -77,12 +77,12 @@
       <horizontal pivot-x='.5' child-align='LowerCenter' 
                   spacing='.5' horizontal-fit='PreferredSize'>
         <text text='There are' font-size='3'/>
-        <text text='#NUMBER' font-size='3'/>
+        <text text='~changed-count' font-size='3'/>
         <text text='changes selected.' font-size='3'/>
       </horizontal>
       <horizontal pivot-x='.5' child-align='UpperCenter' horizontal-fit='PreferredSize' active='false'
                   child-control-width='true' child-expand-width='false' pref-width='45'>
-        <text text='A restart will be required to apply these changes.' active='true'
+        <text text='A restart will be required to apply these changes.' active='~requires-restart'
               font-size='3' color='yellow' align='Top'/>
       </horizontal>
     </vertical>

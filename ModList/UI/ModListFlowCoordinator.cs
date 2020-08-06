@@ -41,6 +41,7 @@ namespace IPA.ModList.BeatSaber.UI
                 }
 
                 listController.DidSelectPlugin += HandleSelectPlugin;
+                controlsController.OnListNeedsRefresh += HandleListNeedsRefresh;
             }
             catch (Exception e)
             {
@@ -51,6 +52,7 @@ namespace IPA.ModList.BeatSaber.UI
 
         protected override void DidDeactivate(DeactivationType deactivationType)
         {
+            controlsController.OnListNeedsRefresh -= HandleListNeedsRefresh;
             listController.DidSelectPlugin -= HandleSelectPlugin;
             base.DidDeactivate(deactivationType);
         }
@@ -60,8 +62,14 @@ namespace IPA.ModList.BeatSaber.UI
             Logger.log.Info($"Mod list selected plugin {plugin.Plugin} ({plugin.State})");
 
             infoController.SetPlugin(plugin);
+            controlsController.SetPlugin(plugin);
             if (!infoController.Activated)
                 PushViewControllerToNavigationController(naviController, infoController);
+        }
+
+        private void HandleListNeedsRefresh()
+        {
+            listController.ReloadViewList();
         }
 
         protected override void BackButtonWasPressed(ViewController topViewController)
