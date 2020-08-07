@@ -27,20 +27,37 @@ namespace IPA.ModList.BeatSaber.UI
             (transform as RectTransform).anchorMax = new Vector2(0, 0);
         }
 
+        protected override void DidActivate(bool firstActivation, ActivationType type)
+        {
+            base.DidActivate(firstActivation, type);
+            Setup();
+        }
+
         private Queue<ChangeQueueItem> changeQueue = new Queue<ChangeQueueItem>();
 
         internal class ChangeQueueItem
         {
             public PluginInformation Plugin { get; }
 
-            [UIValue("plugin-name")]
-            internal string PluginName => Plugin.Plugin.Name;
-
-            [UIValue("change-type")]
             public string ChangeType { get; }
 
-            [UIValue("lines")]
+            [UIValue("pre-text")]
+            public string PreText
+                => $"To {ChangeType} {Plugin?.Plugin?.Name}, the following plugins must also be {ChangeType}d:";
+            [UIValue("post-text")]
+            public string PostText
+                => $"Are you sure you want to {ChangeType} this plugin?";
+
             public IReadOnlyList<string> LineEntries { get; }
+
+            [UIValue("lines")]
+            internal IEnumerable<LineItem> Lines => LineEntries?.Select(s => new LineItem { Value = s }) ?? Enumerable.Empty<LineItem>();
+
+            internal struct LineItem
+            {
+                [UIValue("value")]
+                public string Value;
+            }
 
             public Action<bool> OnCompletion { get; }
 
@@ -51,6 +68,8 @@ namespace IPA.ModList.BeatSaber.UI
                 LineEntries = lines.ToList();
                 OnCompletion = onComplete;
             }
+
+            internal ChangeQueueItem() { } // for the default value
         }
 
         public void QueueChange(PluginInformation plugin, string type, IEnumerable<string> lines, Action<bool> completion)
@@ -61,7 +80,7 @@ namespace IPA.ModList.BeatSaber.UI
         }
 
         [UIValue("current-change")]
-        internal ChangeQueueItem CurrentChange { get; private set; }
+        internal ChangeQueueItem CurrentChange { get; private set; } = new ChangeQueueItem();
 
         [UIComponent("change-modal")]
         internal ModalView ChangeModal;

@@ -98,6 +98,9 @@ namespace IPA.ModList.BeatSaber.UI
 
         private StateTransitionTransaction currentTransaction = null;
 
+        private const string EnableType = "enable";
+        private const string DisableType = "disable";
+
         internal delegate void ChangeNeedsConfirmationEvent(PluginInformation plugin, string type, IEnumerable<string> lines, Action<bool> completion);
         internal event ChangeNeedsConfirmationEvent OnChangeNeedsConfirmation;
 
@@ -120,7 +123,7 @@ namespace IPA.ModList.BeatSaber.UI
                         Logger.log.Debug($"needs {dep.Name}");
                     }
 
-                    OnChangeNeedsConfirmation(plugin, "enable", BuildMetadataLines(deps),
+                    OnChangeNeedsConfirmation(plugin, EnableType, BuildMetadataLines(deps),
                         GetEnableConfirmCallback(plugin, deps, transaction));
 
                     return;
@@ -131,11 +134,8 @@ namespace IPA.ModList.BeatSaber.UI
                 }
             }
 
-            if (!changedStates.ContainsKey(plugin))
-                changedStates.Add(plugin, plugin.State);
-            plugin.State = PluginState.Enabled;
+            UpdatePluginTo(plugin, PluginState.Enabled);
             StartCoroutine(RefreshOnModStateChange());
-            RefreshList();
         }
 
         private Action<bool> GetEnableConfirmCallback(PluginInformation plugin, IEnumerable<PluginMetadata> deps, StateTransitionTransaction transaction, Action afterConfirm = null)
@@ -151,12 +151,7 @@ namespace IPA.ModList.BeatSaber.UI
 
                     if (transaction.Enable(dep, out var depDeps))
                     {
-                        ChangedCount++;
-
-                        if (!changedStates.ContainsKey(depInfo))
-                            changedStates.Add(depInfo, depInfo.State);
-                        depInfo.State = PluginState.Enabled;
-                        RefreshList();
+                        UpdatePluginTo(depInfo, PluginState.Enabled);
                     }
                     else
                     {
@@ -166,7 +161,7 @@ namespace IPA.ModList.BeatSaber.UI
                         }
                         else
                         {
-                            yield return (depInfo, "enable", BuildMetadataLines(depDeps),
+                            yield return (depInfo, EnableType, BuildMetadataLines(depDeps),
                                 GetEnableConfirmCallback(depInfo, depDeps, transaction));
                         }
                     }
@@ -174,6 +169,7 @@ namespace IPA.ModList.BeatSaber.UI
 
                 // once we've processed everything, we're done, we can enable our thing now
                 transaction.Enable(plugin.Plugin, true);
+                UpdatePluginTo(plugin, PluginState.Enabled);
 
                 afterConfirm?.Invoke();
             }
@@ -200,6 +196,9 @@ namespace IPA.ModList.BeatSaber.UI
                         Logger.log.Debug($"needs {dep.Name}");
                     }
 
+                    OnChangeNeedsConfirmation(plugin, DisableType, BuildMetadataLines(users),
+                        GetEnableConfirmCallback(plugin, users, transaction));
+
                     return;
                 }
                 else
@@ -208,17 +207,63 @@ namespace IPA.ModList.BeatSaber.UI
                 }
             }
 
-            if (!changedStates.ContainsKey(plugin))
-                changedStates.Add(plugin, plugin.State);
-            plugin.State = PluginState.Disabled;
+            UpdatePluginTo(plugin, PluginState.Disabled);
             StartCoroutine(RefreshOnModStateChange());
-            RefreshList();
+        }
+
+        private Action<bool> GetDisableConfirmCallback(PluginInformation plugin, IEnumerable<PluginMetadata> deps, StateTransitionTransaction transaction, Action afterConfirm = null)
+        {
+            IEnumerator<(PluginInformation plugin, string type, IEnumerable<string> lines, Action<bool> completion)> StateMachine()
+            {
+                // this is first called *after* the initial confirmation
+                // here, we want to go throught the deps and try enabling or request a confirmation for it
+
+                foreach (var dep in deps)
+                {
+                    var depInfo = GetPluginInformation(dep);
+
+                    if (transaction.Disable(dep, out var depDeps))
+                    {
+                        UpdatePluginTo(depInfo, PluginState.Disabled);
+                    }
+                    else
+                    {
+                        if (depDeps == null)
+                        {
+                            Logger.log.Warn($"{dep.Name} is already enabled; how did we get here?");
+                        }
+                        else
+                        {
+                            yield return (depInfo, DisableType, BuildMetadataLines(depDeps),
+                                GetDisableConfirmCallback(depInfo, depDeps, transaction));
+                        }
+                    }
+                }
+
+                // once we've processed everything, we're done, we can enable our thing now
+                transaction.Disable(plugin.Plugin, true);
+                UpdatePluginTo(plugin, PluginState.Disabled);
+
+                afterConfirm?.Invoke();
+            }
+
+            return CreateConfirmationStateMachineExecutor(StateMachine());
         }
 
         private PluginInformation GetPluginInformation(PluginMetadata dep)
         {
             // TODO: implement this
             throw new NotImplementedException();
+        }
+
+        private void UpdatePluginTo(PluginInformation plugin, PluginState newState)
+        {
+            ChangedCount++;
+
+            if (!changedStates.ContainsKey(plugin))
+                changedStates.Add(plugin, plugin.State);
+            plugin.State = newState;
+            RefreshList();
         }
 
         private IEnumerable<string> BuildMetadataLines(IEnumerable<PluginMetadata> plugins)

@@ -38,7 +38,7 @@ namespace IPA.ModList.BeatSaber.UI
                     showBackButton = true;
                     title = CompileConstants.Manifest.Name;
 
-                    SetViewControllersToNavigationController(naviController, listController, modalsController);
+                    SetViewControllersToNavigationController(naviController, modalsController, listController);
                     ProvideInitialViewControllers(mainViewController: naviController, bottomScreenViewController: controlsController);
                 }
 

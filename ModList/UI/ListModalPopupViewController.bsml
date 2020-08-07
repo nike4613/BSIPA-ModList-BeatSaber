@@ -6,10 +6,20 @@
   <modal id='change-modal'
          move-to-center='true' clickerino-offerino-closerino='false'
          size-delta-x='70' size-delta-y='30'>
-    
+    <macro.as-host host='current-change'>
+      <vertical child-expand-height='true'>
+        <text text='~pre-text' />
+          <scroll-view child-control-width='true'>
+            <macro.for-each hosts='lines'>
+              <text text='~value' color='yellow' />
+            </macro.for-each>
+          </scroll-view>
+        <text text='~post-text' />
+      </vertical>
+    </macro.as-host>
     <bottom-button-panel>
-      <button text='Confirm' interactable='true' on-click='ConfirmChange' />
-      <button text='Cancel' interactable='true' on-click='DenyChange' />
+      <button text='Yes' interactable='true' on-click='ConfirmChange' />
+      <button text='No' interactable='true' on-click='DenyChange' />
     </bottom-button-panel>
   </modal>
 </bg>
