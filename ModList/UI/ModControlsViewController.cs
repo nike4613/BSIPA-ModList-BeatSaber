@@ -140,19 +140,45 @@ namespace IPA.ModList.BeatSaber.UI
 
         private Action<bool> GetEnableConfirmCallback(PluginInformation plugin, IEnumerable<PluginMetadata> deps, StateTransitionTransaction transaction, Action afterConfirm = null)
         {
-            IEnumerator<(PluginInformation plugin, string type, IEnumerable<string> lines)> StateMachine()
+            IEnumerator<(PluginInformation plugin, string type, IEnumerable<string> lines, Action<bool> completion)> StateMachine()
             {
                 // this is first called *after* the initial confirmation
+                // here, we want to go throught the deps and try enabling or request a confirmation for it
 
+                foreach (var dep in deps)
+                {
+                    var depInfo = GetPluginInformation(dep);
 
-                yield break;
-            }
+                    if (transaction.Enable(dep, out var depDeps))
+                    {
+                        ChangedCount++;
 
-            return CreateConfirmationStateMachineExecutor(StateMachine(), () =>
-            {
+                        if (!changedStates.ContainsKey(depInfo))
+                            changedStates.Add(depInfo, depInfo.State);
+                        depInfo.State = PluginState.Enabled;
+                        RefreshList();
+                    }
+                    else
+                    {
+                        if (depDeps == null)
+                        {
+                            Logger.log.Warn($"{dep.Name} is already enabled; how did we get here?");
+                        }
+                        else
+                        {
+                            yield return (depInfo, "enable", BuildMetadataLines(depDeps),
+                                GetEnableConfirmCallback(depInfo, depDeps, transaction));
+                        }
+                    }
+                }
+
+                // once we've processed everything, we're done, we can enable our thing now
+                transaction.Enable(plugin.Plugin, true);
 
                 afterConfirm?.Invoke();
-            });
+            }
+
+            return CreateConfirmationStateMachineExecutor(StateMachine());
         }
 
         [UIAction(nameof(DisableMod))]
@@ -189,6 +215,12 @@ namespace IPA.ModList.BeatSaber.UI
             RefreshList();
         }
 
+        private PluginInformation GetPluginInformation(PluginMetadata dep)
+        {
+            // TODO: implement this
+            throw new NotImplementedException();
+        }
+
         private IEnumerable<string> BuildMetadataLines(IEnumerable<PluginMetadata> plugins)
         {
             foreach (var plugin in plugins)
@@ -197,7 +229,7 @@ namespace IPA.ModList.BeatSaber.UI
             }
         }
 
-        private Action<bool> CreateConfirmationStateMachineExecutor(IEnumerator<(PluginInformation plugin, string type, IEnumerable<string> lines)> stateMachine, Action finished = null)
+        private Action<bool> CreateConfirmationStateMachineExecutor(IEnumerator<(PluginInformation plugin, string type, IEnumerable<string> lines, Action<bool> completion)> stateMachine, Action finished = null)
         {
             void ContinueAction(bool confirmed)
             {
@@ -212,7 +244,12 @@ namespace IPA.ModList.BeatSaber.UI
                     if (stateMachine.MoveNext())
                     {
                         var nextInvocation = stateMachine.Current;
-                        OnChangeNeedsConfirmation(nextInvocation.plugin, nextInvocation.type, nextInvocation.lines, ContinueAction);
+                        var completion = nextInvocation.completion;
+                        OnChangeNeedsConfirmation(nextInvocation.plugin, nextInvocation.type, nextInvocation.lines, succ => 
+                        {
+                            completion?.Invoke(succ);
+                            ContinueAction(succ);
+                        });
                         return; // once we queue the confirmation, we want to exit
                     }
                 }
