@@ -38,13 +38,15 @@ namespace IPA.ModList.BeatSaber.UI
                     showBackButton = true;
                     title = CompileConstants.Manifest.Name;
 
-                    SetViewControllersToNavigationController(naviController, modalsController, listController);
+                    SetViewControllersToNavigationController(naviController, listController);
                     ProvideInitialViewControllers(mainViewController: naviController, bottomScreenViewController: controlsController);
                 }
 
                 listController.DidSelectPlugin += HandleSelectPlugin;
                 controlsController.OnListNeedsRefresh += HandleListNeedsRefresh;
-                controlsController.OnChangeNeedsConfirmation += modalsController.QueueChange;                
+                controlsController.OnChangeNeedsConfirmation += modalsController.QueueChange;
+
+                PushViewControllerToNavigationController(naviController, modalsController, immediately: true);
             }
             catch (Exception e)
             {

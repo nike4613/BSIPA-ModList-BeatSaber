@@ -3,6 +3,7 @@ using BeatSaberMarkupLanguage.Parser;
 using BeatSaberMarkupLanguage.ViewControllers;
 using HMUI;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
@@ -25,12 +26,15 @@ namespace IPA.ModList.BeatSaber.UI
             (transform as RectTransform).sizeDelta = new Vector2(0, 0);
             (transform as RectTransform).anchorMin = new Vector2(0, 0);
             (transform as RectTransform).anchorMax = new Vector2(0, 0);
+            (transform as RectTransform).localScale = new Vector2(0, 0);
         }
 
         protected override void DidActivate(bool firstActivation, ActivationType type)
         {
             base.DidActivate(firstActivation, type);
             Setup();
+
+            CurrentChange = null;
         }
 
         private Queue<ChangeQueueItem> changeQueue = new Queue<ChangeQueueItem>();
@@ -51,7 +55,7 @@ namespace IPA.ModList.BeatSaber.UI
             public IReadOnlyList<string> LineEntries { get; }
 
             [UIValue("lines")]
-            internal IEnumerable<LineItem> Lines => LineEntries?.Select(s => new LineItem { Value = s }) ?? Enumerable.Empty<LineItem>();
+            internal IEnumerable<LineItem> Lines => LineEntries?.Select(s => new LineItem { Value = s });
 
             internal struct LineItem
             {
@@ -68,8 +72,6 @@ namespace IPA.ModList.BeatSaber.UI
                 LineEntries = lines.ToList();
                 OnCompletion = onComplete;
             }
-
-            internal ChangeQueueItem() { } // for the default value
         }
 
         public void QueueChange(PluginInformation plugin, string type, IEnumerable<string> lines, Action<bool> completion)
@@ -80,14 +82,31 @@ namespace IPA.ModList.BeatSaber.UI
         }
 
         [UIValue("current-change")]
-        internal ChangeQueueItem CurrentChange { get; private set; } = new ChangeQueueItem();
+        internal ChangeQueueItem CurrentChange { get; private set; } = null;
+
+        [UIValue("current-change-pre-text")]
+        internal string CurrentChangePreText => CurrentChange?.PreText;
+        [UIValue("current-change-post-text")]
+        internal string CurrentChangePostText => CurrentChange?.PostText;
+        [UIValue("current-change-lines")]
+        internal IEnumerable<ChangeQueueItem.LineItem> CurrentChangeLines 
+            => CurrentChange?.Lines ?? Enumerable.Empty<ChangeQueueItem.LineItem>();
 
         [UIComponent("change-modal")]
         internal ModalView ChangeModal;
 
         private void RefreshChangeItem()
         {
-            NotifyPropertyChanged(nameof(CurrentChange));
+            IEnumerator Coro()
+            {
+                yield return null;
+                NotifyPropertyChanged(nameof(CurrentChange));
+                NotifyPropertyChanged(nameof(CurrentChangePreText));
+                NotifyPropertyChanged(nameof(CurrentChangePostText));
+                NotifyPropertyChanged(nameof(CurrentChangeLines));
+            }
+
+            StartCoroutine(Coro());
         }
 
         [UIAction(nameof(ConfirmChange))]

@@ -197,7 +197,7 @@ namespace IPA.ModList.BeatSaber.UI
                     }
 
                     OnChangeNeedsConfirmation(plugin, DisableType, BuildMetadataLines(users),
-                        GetEnableConfirmCallback(plugin, users, transaction));
+                        GetDisableConfirmCallback(plugin, users, transaction));
 
                     return;
                 }
