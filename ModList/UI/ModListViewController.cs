@@ -26,9 +26,9 @@ namespace IPA.ModList.BeatSaber.UI
 
         private List<PluginInformation> PluginList { get; } = new List<PluginInformation>();
 
-        protected override void DidActivate(bool firstActivation, ActivationType type)
+        protected override void DidActivate(bool firstActivation, bool addedToHierarchy, bool screenSystemEnabling)
         {
-            base.DidActivate(firstActivation, type);
+            base.DidActivate(firstActivation, addedToHierarchy, screenSystemEnabling);
 
             Logger.log.Debug("Test VC activated");
 
@@ -77,6 +77,7 @@ namespace IPA.ModList.BeatSaber.UI
         }
 
         // TODO: async preload and cache icons?
+        // TODO: Fix showing multiple sprite icons, probably needs an even more custom cell
         internal void ReloadViewList()
         {
             ListValues.Clear();
@@ -85,13 +86,13 @@ namespace IPA.ModList.BeatSaber.UI
                     new CustomListTableData.CustomCellInfo(
                         p.Plugin.Name,
                         $"{p.Plugin.Author} <size=80%>{p.Plugin.Version}</size>",
-                        p.Icon,
+                        p.Icon.AsSprite()/*,
                         Enumerable.Empty<Sprite>()
                             .AppendIf(p.Plugin.IsBare, Helpers.LibrarySprite)
                             .AppendIf(p.State == PluginState.Disabled, Helpers.XSprite)
                             .AppendIf(p.State == PluginState.Enabled
                                       && p.Plugin.RuntimeOptions == RuntimeOptions.DynamicInit, Helpers.OSprite)
-                            .AppendIf(p.State == PluginState.Ignored, Helpers.WarnSprite))));
+                            .AppendIf(p.State == PluginState.Ignored, Helpers.WarnSprite)*/)));
 
             customListTableData?.tableView?.ReloadData();
         }

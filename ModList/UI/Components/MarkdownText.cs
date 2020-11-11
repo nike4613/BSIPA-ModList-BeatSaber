@@ -296,7 +296,7 @@ namespace IPA.ModList.BeatSaber.UI.Components
             public HoverHintController Controller
             {
                 get => _hoverHintController;
-                set => _hoverHintController = value;
+                set => this.SetField("_hoverHintController", value);
             }
 
             internal void Start()

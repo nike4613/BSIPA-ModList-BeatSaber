@@ -25,16 +25,16 @@ namespace IPA.ModList.BeatSaber.UI
             RefreshModInfo();
         }
 
-        protected override void DidActivate(bool firstActivation, ActivationType type)
+        protected override void DidActivate(bool firstActivation, bool addedToHierarchy, bool screenSystemEnabling)
         {
-            base.DidActivate(firstActivation, type);
+            base.DidActivate(firstActivation, addedToHierarchy, screenSystemEnabling);
 
             ChangedCount = 0;
 
             RefreshChanges();
         }
 
-        protected override void DidDeactivate(DeactivationType deactivationType)
+        protected override void DidDeactivate(bool removedFromHierarchy, bool screenSystemDisabling)
         {
             currentTransaction?.Dispose();
             currentTransaction = null;
@@ -43,7 +43,7 @@ namespace IPA.ModList.BeatSaber.UI
                 kvp.Key.State = kvp.Value;
             changedStates.Clear();
 
-            base.DidDeactivate(deactivationType);
+            base.DidDeactivate(removedFromHierarchy, screenSystemDisabling);
 
             PanelActive = false;
         }

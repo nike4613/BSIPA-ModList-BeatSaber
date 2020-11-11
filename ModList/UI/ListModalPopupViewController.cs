@@ -29,9 +29,10 @@ namespace IPA.ModList.BeatSaber.UI
             (transform as RectTransform).localScale = new Vector2(0, 0);
         }
 
-        protected override void DidActivate(bool firstActivation, ActivationType type)
+        protected override void DidActivate(bool firstActivation, bool addedToHierarchy, bool screenSystemEnabling)
         {
-            base.DidActivate(firstActivation, type);
+            base.DidActivate(firstActivation, addedToHierarchy, screenSystemEnabling);
+            
             Setup();
 
             CurrentChange = null;
@@ -141,11 +142,11 @@ namespace IPA.ModList.BeatSaber.UI
         private bool TryProcessNextChange()
         {
             if (CurrentChange != null) return false;
-            if (!changeQueue.TryDequeue(out var item)) return false;
+            if (changeQueue.Peek() == null) return false;
 
             Logger.log.Debug("Presenting change");
 
-            CurrentChange = item;
+            CurrentChange = changeQueue.Dequeue();
             RefreshChangeItem();
             ChangeModal.Show(true);
             return true;

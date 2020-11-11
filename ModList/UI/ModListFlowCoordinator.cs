@@ -29,14 +29,14 @@ namespace IPA.ModList.BeatSaber.UI
             }
         }
 
-        protected override void DidActivate(bool firstActivation, ActivationType activationType)
+        protected override void DidActivate(bool firstActivation, bool addedToHierarchy, bool screenSystemEnabling)
         {
             try
             {
                 if (firstActivation)
                 {
                     showBackButton = true;
-                    title = CompileConstants.Manifest.Name;
+                    SetTitle(CompileConstants.Manifest.Name);
 
                     SetViewControllersToNavigationController(naviController, listController);
                     ProvideInitialViewControllers(mainViewController: naviController, bottomScreenViewController: controlsController);
@@ -52,15 +52,15 @@ namespace IPA.ModList.BeatSaber.UI
             {
                 Logger.log.Error("Error activating TestFlowCoordinator");
                 Logger.log.Error(e);
-            }
-        }
+            }        }
 
-        protected override void DidDeactivate(DeactivationType deactivationType)
+        protected override void DidDeactivate(bool removedFromHierarchy, bool screenSystemDisabling)
         {
             controlsController.OnChangeNeedsConfirmation -= modalsController.QueueChange;
             controlsController.OnListNeedsRefresh -= HandleListNeedsRefresh;
             listController.DidSelectPlugin -= HandleSelectPlugin;
-            base.DidDeactivate(deactivationType);
+
+            base.DidDeactivate(removedFromHierarchy, screenSystemDisabling);
         }
 
         private void HandleSelectPlugin(PluginInformation plugin)
