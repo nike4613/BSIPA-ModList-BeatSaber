@@ -160,8 +160,10 @@
   <ItemGroup>
     <Manifest Include="manifest.json" />
     <EmbeddedResource Include="description.md" />
-    <EmbeddedResource Include="UI\ModListViewController.bsml" />
+    <EmbeddedResource Include="UI\ListModalPopupViewController.bsml" />
+    <EmbeddedResource Include="UI\ModControlsViewController.bsml" />
     <EmbeddedResource Include="UI\ModInfoViewController.bsml" />
+    <EmbeddedResource Include="UI\ModListViewController.bsml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="CompileConstants.tt">
@@ -169,7 +171,6 @@
       <OutputFilePath>$(IntermediateOutputPath)</OutputFilePath>
       <LastGenOutput>CompileConstants.cs</LastGenOutput>
     </Content>
-    <None Include="UI\ListModalPopupViewController.bsml" />
     <EmbeddedResource Include="Resources\tiny-rounded-rect.png" />
     <EmbeddedResource Include="Resources\small-rounded-rect.png" />
     <EmbeddedResource Include="Resources\!.png" />
@@ -218,9 +219,6 @@
       <Value>@(Manifest)</Value>
       <Visible>false</Visible>
     </T4ParameterValues>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="UI\ModControlsViewController.bsml" />
   </ItemGroup>
   <Target Name="CustomPostTransform">
     <ItemGroup>
