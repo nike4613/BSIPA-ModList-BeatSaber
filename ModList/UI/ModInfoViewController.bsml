@@ -77,13 +77,13 @@
                  pref-width='8' pref-height='8'
                  pivot-x='0' pivot-y='0' />
   </bg>
-  <bottom-button-panel id='LinkPanel' size-delta-x='1.5' active='~has_links'>
+  <horizontal id='LinkPanel' size-delta-x='1.5' active='~has_links'>
     <button text='' interactable='false' pref-width='0' active='~show_pad_links' />
     <button text='Source' on-click='SourceLinkPressed'  active='~has_source_link' />
     <button text='Home'   on-click='HomeLinkPressed'    active='~has_home_link' />
     <button text='Donate' on-click='DonateLinkPressed'  active='~has_donate_link' />
     <button text='' interactable='false' pref-width='0' active='~show_pad_links' />
-  </bottom-button-panel>
+  </horizontal>
   <modal show-event='ShowLinkModal' hide-event='HideLinkModal'
          move-to-center='true' clickerino-offerino-closerino='false'
          size-delta-x='70' size-delta-y='30'>
@@ -98,11 +98,11 @@
       <text text='~link_url' rich-text='false' font-align='Center'
             word-wrapping='false' overflow-mode='Ellipsis' color='red'/>
     </vertical>
-    <bottom-button-panel>
+    <horizontal>
       <button text='Open Link' interactable='true'
               click-event='HideLinkModal' on-click='ConfirmOpenLink' />
       <button text='Cancel' interactable='true'
               click-event='HideLinkModal' />
-    </bottom-button-panel>
+    </horizontal>
   </modal>
 </bg>

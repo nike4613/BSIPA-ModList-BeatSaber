@@ -17,9 +17,9 @@
         <text text='~current-change-post-text' font-size='4' />
       </vertical>
     <!--</macro.as-host>-->
-    <bottom-button-panel>
+    <horizontal>
       <button text='Yes' interactable='true' on-click='ConfirmChange' />
       <button text='No' interactable='true' on-click='DenyChange' />
-    </bottom-button-panel>
+    </horizontal>
   </modal>
 </bg>
