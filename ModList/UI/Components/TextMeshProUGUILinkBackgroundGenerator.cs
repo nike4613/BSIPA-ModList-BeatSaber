@@ -4,13 +4,14 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using HMUI;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
 namespace IPA.ModList.BeatSaber.UI.Components
 {
-    [RequireComponent(typeof(TextMeshProUGUI), typeof(RectTransform))]
+    [RequireComponent(typeof(CurvedTextMeshPro), typeof(RectTransform))]
     public class TextMeshProUGUILinkBackgroundGenerator : MonoBehaviour
     {
         public TextMeshProUGUI TextMeshPro => GetComponent<TextMeshProUGUI>();

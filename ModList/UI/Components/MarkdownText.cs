@@ -176,7 +176,7 @@ namespace IPA.ModList.BeatSaber.UI.Components
                 .Code.Inline.UsePadding(padding)
                 .UseObjectRenderedCallback((obj, go) =>
                 {
-                    var tmp = go?.GetComponent<TextMeshProUGUI>();
+                    var tmp = go?.GetComponent<CurvedTextMeshPro>();
                     if (tmp != null) // explicitly disable TMP raycasting on TMP objects
                         tmp.raycastTarget = false;
                 })

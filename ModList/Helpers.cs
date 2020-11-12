@@ -7,6 +7,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using HMUI;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -119,12 +120,12 @@ namespace IPA.ModList.BeatSaber
             return icon ?? DefaultPluginIcon;
         }
 
-        public static TextMeshProUGUI CreateText(/*RectTransform parent, */string text, Vector2 anchoredPosition, Vector2 sizeDelta)
+        public static CurvedTextMeshPro CreateText(/*RectTransform parent, */string text, Vector2 anchoredPosition, Vector2 sizeDelta)
         {
             var gameObj = new GameObject("TextElement");
             gameObj.SetActive(false);
 
-            var textMesh = gameObj.AddComponent<TextMeshProUGUI>();
+            var textMesh = gameObj.AddComponent<CurvedTextMeshPro>();
             textMesh.font = BeatSaberUI.MainTextFont;
             //textMesh.rectTransform.SetParent(parent, false);
             textMesh.text = text;

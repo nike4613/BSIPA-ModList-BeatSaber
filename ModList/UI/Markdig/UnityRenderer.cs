@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using HMUI;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -197,7 +198,7 @@ namespace IPA.ModList.BeatSaber.UI.Markdig
             var transform = go.AddComponent<RectTransform>();
             Helpers.Zero(transform);
 
-            var img = go.AddComponent<Image>();
+            var img = go.AddComponent<ImageView>();
             img.color = UIColor;
             // TODO: figure out a good way of making this not rely on a *new* sprite
             img.sprite = Sprite.Create(Texture2D.whiteTexture, new Rect(Vector2.zero, Vector2.one), Vector2.zero);
@@ -221,7 +222,7 @@ namespace IPA.ModList.BeatSaber.UI.Markdig
 
             var go = transform.gameObject;
 
-            var img = go.AddComponent<Image>();
+            var img = go.AddComponent<ImageView>();
             img.color = QuoteColor;
             img.sprite = QuoteBackground;
             img.type = QuoteBackgroundType;
@@ -260,7 +261,7 @@ namespace IPA.ModList.BeatSaber.UI.Markdig
 
             var go = transform.gameObject;
 
-            var img = go.AddComponent<Image>();
+            var img = go.AddComponent<ImageView>();
             img.color = CodeBackgroundColor;
             img.sprite = CodeBackground;
             img.type = CodeBackgroundType;
