@@ -1,0 +1,46 @@
+﻿<bg xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
+    xsi:noNamespaceSchemaLocation='https://raw.githubusercontent.com/monkeymanboy/BSML-Docs/gh-pages/BSMLSchema.xsd'
+    size-delta-x='0' size-delta-y='0'
+    anchor-min-x='0' anchor-max-x='1'
+    anchor-min-y='0.65' anchor-max-y='.95'>
+    <horizontal spacing='4' active='~panel-active'
+                child-expand-height='true'
+                child-expand-width='false'
+                child-align='MiddleCenter'
+                vertical-fit='Unconstrained'
+                horizontal-fit='PreferredSize'>
+        <vertical id='left-box' bg='panel-top'
+                  min-width='32' preferred-height="15" pad='3' spacing="-2" child-expand-height='false' vertical-fit="PreferredSize"
+                  child-align='MiddleLeft' child-expand-width='true'> <!-- this is a Vertical so that its a layoutelement -->
+            <text text='This mod is'
+                  align='BottomLeft'/>
+            <text text='ENABLED' color='lime' font-size='8' active='~mod-enabled'
+                  align='TopLeft'/>
+            <text text='DISABLED' color='red' font-size='8' active='~mod-disabled'
+                  align='TopLeft'/>
+        </vertical>
+        <vertical id='right-box' bg='panel-top' vertical-fit="PreferredSize"
+                  min-width='30' preferred-height="15" pad='3' child-expand-height='true'
+                  child-align='MiddleLeft' child-expand-width='true'> <!-- this is a Vertical so that its a layoutelement -->
+            <text text='Requires a game restart' color='yellow' active='~mod-requires-restart'
+                  font-size='3' font-align='Top'/>
+            <button text='Disable' face-color='red' on-click='DisableMod' active='~mod-enabled'/>
+            <button text='Enable' face-color='lime' on-click='EnableMod' active='~mod-disabled'/>
+
+        </vertical>
+        <vertical bg='panel-top' active='~changing-mods' vertical-fit="PreferredSize" horizontal-fit="PreferredSize" child-expand-width='true'
+                  child-expand-height='true' preferred-height="15" preferred-width="45" pad="3">
+            <!-- using this in place of being able to do actual text substitution -->
+            <horizontal child-align='LowerCenter' spacing='.5' horizontal-fit='PreferredSize'>
+                <text text='There are' font-size='3'/>
+                <text text='~changed-count' font-size='3'/>
+                <text text='changes selected.' font-size='3'/>
+            </horizontal>
+            <horizontal child-align='UpperCenter' horizontal-fit='PreferredSize' active='~requires-restart'
+                        child-control-width='true' child-expand-width='true' pref-width='30'>
+                <text text='A restart will be required to apply these changes.'
+                      font-size='3' color='yellow' align='Top' word-wrapping="true"/>
+            </horizontal>
+        </vertical>
+    </horizontal>
+</bg>

@@ -1,19 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using UnityEngine;
 using Markdig;
-using Markdig.Renderers;
-using Markdig.Syntax;
 using IPA.ModList.BeatSaber.UI.Markdig;
 using Markdig.Extensions.EmphasisExtras;
 using BSMLUtils = BeatSaberMarkupLanguage.Utilities;
 using HMUI;
 using TMPro;
-using IPA.Utilities.Async;
-using System.Collections;
 using UnityEngine.TextCore;
 using IPA.Utilities;
 using UnityEngine.UI;
@@ -29,20 +22,22 @@ namespace IPA.ModList.BeatSaber.UI.Components
         public RectTransform RectTransform => gameObject.GetComponent<RectTransform>();
 
         private bool resetRenderer = true;
-        public bool IsDirty { get; private set; } = false;
+        public bool IsDirty { get; private set; }
 
         private string text = null;
-        public string Text 
-        { 
+
+        public string Text
+        {
             get => text;
             set
             {
                 text = value;
                 IsDirty = true;
-            } 
+            }
         }
 
         private Color linkColor = Color.cyan;
+
         public Color LinkColor
         {
             get => linkColor;
@@ -55,6 +50,7 @@ namespace IPA.ModList.BeatSaber.UI.Components
         }
 
         private Color autolinkColor = Color.red;
+
         public Color AutolinkColor
         {
             get => autolinkColor;
@@ -66,9 +62,9 @@ namespace IPA.ModList.BeatSaber.UI.Components
             }
         }
 
-        internal void Update() 
+        internal void Update()
         {
-            if (resetRenderer) renderer = null;
+            if (resetRenderer) _renderer = null;
             if (IsDirty && text != null)
             {
                 Clear();
@@ -80,18 +76,19 @@ namespace IPA.ModList.BeatSaber.UI.Components
         internal void OnDestroy()
             => Clear();
 
-        private static MarkdownPipeline pipeline = null;
-        public static MarkdownPipeline Pipeline 
-            => pipeline ??= new MarkdownPipelineBuilder()
-                    .UseAutoLinks().UseListExtras().UsePreciseSourceLocation()
-                    // the renderer treats the Subscript `~` as underline
-                    .UseEmphasisExtras(EmphasisExtraOptions.Strikethrough | EmphasisExtraOptions.Subscript)
-                    .WithLogger(Logger.md)
-                    .Build();
+        private static MarkdownPipeline? _pipeline = null;
 
-        private UnityRenderer renderer = null;
-        public UnityRenderer Renderer 
-            => renderer ??= CreateRenderer();
+        public static MarkdownPipeline Pipeline
+            => _pipeline ??= new MarkdownPipelineBuilder()
+                .UseAutoLinks().UseListExtras().UsePreciseSourceLocation()
+                // the renderer treats the Subscript `~` as underline
+                .UseEmphasisExtras(EmphasisExtraOptions.Strikethrough | EmphasisExtraOptions.Subscript)
+                // TODO: Inject logger for this
+                // .WithLogger(Logger.md)
+                .Build();
+
+        private UnityRenderer? _renderer = null;
+        public UnityRenderer Renderer => _renderer ??= CreateRenderer();
 
         private const uint UnicodePrivateUseStart = 0xE000;
         private const uint UnicodePrivateUseEnd = 0xF8FF;
@@ -101,26 +98,31 @@ namespace IPA.ModList.BeatSaber.UI.Components
 
         private (TMP_FontAsset font, string padding) LoadConfigFont(ModListConfig config)
         {
-            TMP_FontAsset asset = null;
+            TMP_FontAsset? asset = null;
             if (config.MonospaceFontPath != null)
             {
                 if (!File.Exists(config.MonospaceFontPath))
-                    Logger.md.Warn($"File '{config.MonospaceFontPath}' does not exist");
+                {
+                    // TODO: Inject logger for this
+                    // Logger.md.Warn($"File '{config.MonospaceFontPath}' does not exist");
+                }
                 else
                 {
-                    var ufont = new Font(config.MonospaceFontPath);
-                    asset = Helpers.TMPFontFromUnityFont(ufont);
+                    var uFont = new Font(config.MonospaceFontPath);
+                    asset = Helpers.Helpers.TMPFontFromUnityFont(uFont);
                 }
             }
+
             if (asset == null)
             {
-                if (!FontManager.TryGetTMPFontByFullName(config.MonospaceFontName, out asset, setupOsFallbacks: false)
-                 && !FontManager.TryGetTMPFontByFamily(config.MonospaceFontName, out asset, setupOsFallbacks: false))
+                if (!FontManager.TryGetTMPFontByFullName(config.MonospaceFontName, out asset, setupOsFallbacks: false) &&
+                    !FontManager.TryGetTMPFontByFamily(config.MonospaceFontName, out asset, setupOsFallbacks: false))
                 {
-                    Logger.md.Warn($"Could not locate font '{config.MonospaceFontName}'");
+                    // TODO: Inject logger for this
+                    // Logger.md.Warn($"Could not locate font '{config.MonospaceFontName}'");
                     if (!FontManager.TryGetTMPFontByFullName("Consolas", out asset, setupOsFallbacks: false))
                     {
-                        Logger.md.Error("Could not locate monospace font that is usable");
+                        // Logger.md.Error("Could not locate monospace font that is usable");
                     }
                 }
             }
@@ -131,31 +133,34 @@ namespace IPA.ModList.BeatSaber.UI.Components
             asset.ReadFontAssetDefinition(); // this likely won't be necessary if/when BSML stops caching TMP fonts
 
             var paddingChar = UnicodePrivateUseStart;
-            var TryAddCharacterInternal = MethodAccessor<TMP_FontAsset, TryAddCharacterInternalDelegate>
-                .GetDelegate("TryAddCharacterInternal");
+            var TryAddCharacterInternal = MethodAccessor<TMP_FontAsset, TryAddCharacterInternalDelegate>.GetDelegate("TryAddCharacterInternal");
 
             while (TryAddCharacterInternal(asset, paddingChar, out _) && paddingChar <= UnicodePrivateUseEnd)
+            {
                 paddingChar++;
+            }
 
             if (paddingChar > UnicodePrivateUseEnd)
             {
-                Logger.md.Error("Could not find open character in private use segment");
+                // TODO: Inject logger for this
+                // Logger.md.Error("Could not find open character in private use segment");
                 paddingChar = ' '; // fall back to a space
             }
             else
             {
-                Logger.md.Debug($"Using unicode codepoint {paddingChar:X}");
+                // TODO: Inject logger for this
+                // Logger.md.Debug($"Using unicode codepoint {paddingChar:X}");
                 var glyph = new Glyph(paddingChar,
-                        new GlyphMetrics(InlineCodePadding, 1f, 0, 0, InlineCodePadding),
-                        new GlyphRect(Rect.zero)
-                    );
+                    new GlyphMetrics(InlineCodePadding, 1f, 0, 0, InlineCodePadding),
+                    new GlyphRect(Rect.zero)
+                );
                 var character = new TMP_Character(paddingChar, glyph);
                 asset.glyphTable.Add(glyph);
                 asset.characterTable.Add(character);
                 asset.characterLookupTable.Add(paddingChar, character);
             }
 
-            return (asset, char.ConvertFromUtf32((int)paddingChar));
+            return (asset, char.ConvertFromUtf32((int) paddingChar));
         }
 
         private UnityRenderer CreateRenderer()
@@ -166,12 +171,12 @@ namespace IPA.ModList.BeatSaber.UI.Components
                 .UI.Font(BeatSaberUI.MainTextFont)
                 .Link.UseColor(LinkColor)
                 .Link.UseAutoColor(AutolinkColor)
-                .Quote.UseBackground(Helpers.SmallRoundedRectSprite, Image.Type.Sliced)
+                .Quote.UseBackground(Helpers.Helpers.SmallRoundedRectSprite, Image.Type.Sliced)
                 .Quote.UseColor(new Color(30f / 255, 109f / 255, 178f / 255, .25f))
-                .Code.UseBackground(Helpers.SmallRoundedRectSprite, Image.Type.Sliced)
+                .Code.UseBackground(Helpers.Helpers.SmallRoundedRectSprite, Image.Type.Sliced)
                 .Code.UseColor(new Color(135f / 255, 135f / 255, 135f / 255, .25f))
                 .Code.UseFont(font)
-                .Code.Inline.UseBackground(Helpers.TinyRoundedRectSprite, Image.Type.Sliced)
+                .Code.Inline.UseBackground(Helpers.Helpers.TinyRoundedRectSprite, Image.Type.Sliced)
                 .Code.Inline.UseColor(new Color(135f / 255, 135f / 255, 135f / 255, .1f))
                 .Code.Inline.UsePadding(padding)
                 .UseObjectRenderedCallback((obj, go) =>
@@ -186,7 +191,8 @@ namespace IPA.ModList.BeatSaber.UI.Components
 
         private void Render()
         {
-            Logger.md.Debug($"Rendering markdown:\n{string.Join("\n", Text.Split('\n').Select(s => "| " + s))}");
+            // TODO: Inject logger for this
+            // Logger.md.Debug($"Rendering markdown:\n{string.Join("\n", Text.Split('\n').Select(s => "| " + s))}");
             var root = Markdown.Convert(Text, Renderer, Pipeline) as RectTransform;
             root.SetParent(RectTransform, false);
             root.anchorMin = new Vector2(0, 1);
@@ -212,7 +218,9 @@ namespace IPA.ModList.BeatSaber.UI.Components
         }
 
         #region Links
+
         public delegate void LinkPressed(string url, string title);
+
         public event LinkPressed OnLinkPressed;
 
         private void OnLinkRendered(IEnumerable<GameObject> hoverableGOs, GameObject fullBgGO, string url, string title)
@@ -234,7 +242,7 @@ namespace IPA.ModList.BeatSaber.UI.Components
 
         private void InvokeLinkPressed(string url, string title)
             => OnLinkPressed?.Invoke(url, title);
-        
+
         [RequireComponent(typeof(LinkHoverHint))]
         private class LinkHoverManager : MonoBehaviour
         {
@@ -267,7 +275,7 @@ namespace IPA.ModList.BeatSaber.UI.Components
             }
         }
 
-        private class LinkPartHover : Graphic, 
+        private class LinkPartHover : Graphic,
             IPointerEnterHandler,
             IPointerExitHandler,
             IPointerClickHandler,
@@ -283,12 +291,12 @@ namespace IPA.ModList.BeatSaber.UI.Components
 
             public void OnPointerExit(PointerEventData eventData)
                 => Manager.EndHover();
+
             public void OnPointerClick(PointerEventData eventData)
                 => Manager.Click();
 
             protected override void UpdateMaterial() { }
             protected override void UpdateGeometry() { }
-
         }
 
         private class LinkHoverHint : HoverHint
@@ -305,6 +313,7 @@ namespace IPA.ModList.BeatSaber.UI.Components
             internal void Update()
                 => enabled = false;
         }
+
         #endregion
     }
 }

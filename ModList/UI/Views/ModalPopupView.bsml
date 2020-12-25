@@ -1,0 +1,46 @@
+﻿<modal xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
+       xsi:noNamespaceSchemaLocation='https://raw.githubusercontent.com/monkeymanboy/BSML-Docs/gh-pages/BSMLSchema.xsd'
+       id='change-modal'
+       size-delta-x='70'
+       size-delta-y='50'
+       move-to-center='true'
+       clickerino-offerino-closerino='false'>
+
+    <vertical pref-width="70" pref-height="50" child-expand-height='false' child-expand-width="false" child-align="LowerCenter" pad="2">
+        <horizontal child-expand-height="true"
+                    child-control-height="true"
+                    child-expand-width="true"
+                    child-control-width="true"
+                    min-height="20"
+                    preferred-width="70"
+                    preferred-height="40"
+                    size-delta-x="70">
+            <scrollable-container id="ScrollableText"
+                                  child-control-width="true"
+                                  child-expand-width="false"
+                                  child-control-height="true"
+                                  child-expand-height="false"
+                                  size-delta-x="0" anchor-min-x="0" anchor-max-x="0.9">
+                <text text='~current-change-pre-text' font-size="4" word-wrapping="true"/>
+                <text text='~current-change-lines' color='yellow' font-size='4' active="~has-current-change-lines"/>
+                <text text='~current-change-post-text' font-size='4' word-wrapping="true"/>
+            </scrollable-container>
+        </horizontal>
+
+        <vertical ignore-layout="true"
+                  preferred-height="60"
+                  preferred-width="1.6"
+                  size-delta-x="0" anchor-min-x="0.95" anchor-max-x="0.95"
+                  size-delta-y="0" anchor-min-y="0" anchor-max-y="0.85" child-expand-width="false" child-align="MiddleCenter">
+            <page-button direction='Up' tags='PageUpFor:ScrollableText' preferred-width="5"/>
+            <vertical-scroll-indicator tags='IndicatorFor:ScrollableText'/>
+            <page-button direction='Down' tags='PageDownFor:ScrollableText' preferred-width="5"/>
+        </vertical>
+
+        <horizontal child-control-height="true" child-expand-height='false'>
+            <button text='Yes' interactable='true' on-click='ConfirmChange'/>
+            <button text='No' interactable='true' on-click='DenyChange'/>
+        </horizontal>
+    </vertical>
+
+</modal>

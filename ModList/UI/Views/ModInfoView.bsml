@@ -1,0 +1,89 @@
+﻿<bg xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
+    xsi:noNamespaceSchemaLocation='https://raw.githubusercontent.com/monkeymanboy/BSML-Docs/gh-pages/BSMLSchema.xsd'>
+
+    <stack anchor-max-x="0.5">
+        <vertical child-align="MiddleCenter" child-control-height="true" child-expand-height="false" active="~show-select-plugin-text">
+            <text text="Please select a mod first" font-size="8" word-wrapping="true"/>
+        </vertical>
+        <vertical spacing="2" child-align="UpperLeft" child-control-height="true" child-expand-height="false" preferred-width="80" active="~plugin-selected">
+            <horizontal
+                    id="mod-header"
+                    background="panel-fade-gradient"
+                    background-color="#FF69B4"
+                    child-align="MiddleCenter"
+                    child-expand-height="false"
+                    child-expand-width="false"
+                    pad="1">
+                <image id="IconImage" preferred-width="14" preferred-height="14" preserve-aspect="true"/>
+                <vertical child-align="MiddleLeft" child-control-width="true" child-expand-width="true" child-expand-height="false" horizontal-fit="Unconstrained" spacing="-2">
+                    <text text="~name" italics="true" overflow-mode='Ellipsis' font-align='BottomLeft' font-size="5"/>
+                    <text text="~author" rich-text="true" italics="true" overflow-mode='Ellipsis' font-align="Left" font-size="4" font-color="lightblue"/>
+                </vertical>
+            </horizontal>
+
+            <horizontal
+                    id="mod-description-panel"
+                    child-expand-height="true"
+                    child-control-height="true"
+                    child-expand-width="true"
+                    child-control-width="true"
+                    child-align="MiddleRight"
+                    preferred-height="~description-panel-height"
+                    preferred-width="60" spacing="-2"
+                    size-delta-x="60">
+                <scrollable-container id="DescriptionWindow"
+                                      child-control-width="true"
+                                      child-expand-width="false"
+                                      child-control-height="true"
+                                      child-expand-height="false"
+                                      size-delta-x="0" active="~plugin-selected">
+                    <markdown link-pressed='OnDescLinkPressed' link-color='cyan'
+                              autolink-color='red' text='~description'/>
+                </scrollable-container>
+            </horizontal>
+
+            <vertical ignore-layout="true"
+                      preferred-height="~description-panel-height"
+                      preferred-width="1.6"
+                      size-delta-x="0" anchor-min-x="1.1" anchor-max-x="1.1"
+                      size-delta-y="0" anchor-min-y="0" anchor-max-y="0.85" active="~plugin-selected" child-expand-width="false" child-align="MiddleCenter">
+                <page-button direction='Up' tags='PageUpFor:DescriptionWindow' preferred-width="5" active="~plugin-selected"/>
+                <vertical-scroll-indicator tags='IndicatorFor:DescriptionWindow' active="~plugin-selected" />
+                <page-button direction='Down' tags='PageDownFor:DescriptionWindow' preferred-width="5" active="~plugin-selected"/>
+            </vertical>
+
+            <horizontal id='LinkPanel'
+                        active='~has_links'
+                        vertical-fit='MinSize'
+                        child-expand-height='false'
+                        spacing="2"
+                        child-control-height='false'
+                        child-expand-width="false"
+                        child-align="MiddleCenter">
+                <button text='Source' on-click='SourceLinkPressed' active='~has_source_link'/>
+                <button text='Home' on-click='HomeLinkPressed' active='~has_home_link'/>
+                <button text='Donate' on-click='DonateLinkPressed' active='~has_donate_link'/>
+            </horizontal>
+        </vertical>
+        <modal show-event='ShowLinkModal' hide-event='HideLinkModal'
+               move-to-center='true' clickerino-offerino-closerino='false'
+               size-delta-x='70' size-delta-y='30'>
+            <vertical child-align='MiddleCenter' horizontal-fit='Unconstrained'
+                      child-expand-width='true' child-expand-height='false' spacing='0' pad="1">
+                <text text='Do you want to open this link?' font-align='Center'/>
+                <text text='~link_title' rich-text='false' font-align='Center' active='~link_has_title'
+                      word-wrapping='false' overflow-mode='Ellipsis' color='cyan'/>
+                <text text='~link_url' rich-text='false' font-align='Center'
+                      word-wrapping='false' overflow-mode='Ellipsis' color='red'/>
+
+                <horizontal vertical-fit='MinSize' child-expand-height='false' child-control-height='true'>
+                    <button text='Open Link' interactable='true'
+                            click-event='HideLinkModal' on-click='ConfirmOpenLink'/>
+                    <button text='Cancel' interactable='true'
+                            click-event='HideLinkModal'/>
+                </horizontal>
+            </vertical>
+
+        </modal>
+    </stack>
+</bg>

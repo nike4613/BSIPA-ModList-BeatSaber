@@ -6,8 +6,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using HMUI;
+using IPA.ModList.BeatSaber.Helpers;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -33,7 +33,7 @@ namespace IPA.ModList.BeatSaber.UI.Markdig
         public TMP_FontAsset CodeFont { get; set; }
         public string InlineCodePaddingText { get; set; } = "";
 
-        public UnityRenderer(Material uiMat, TMP_FontAsset uiFont, 
+        public UnityRenderer(Material uiMat, TMP_FontAsset uiFont,
             Color linkColor, Color autolinkColor,
             Sprite quoteBg, Image.Type bgType, Color quoteColor,
             Sprite codeBg, Image.Type codeBgType, Color codeColor,
@@ -59,19 +59,26 @@ namespace IPA.ModList.BeatSaber.UI.Markdig
 
         ObjectRendererCollection IMarkdownRenderer.ObjectRenderers { get; } = new ObjectRendererCollection();
 
-        event Action<IMarkdownRenderer, MarkdownObject> IMarkdownRenderer.ObjectWriteBefore { add { } remove { } }
+        event Action<IMarkdownRenderer, MarkdownObject> IMarkdownRenderer.ObjectWriteBefore
+        {
+            add { }
+            remove { }
+        }
 
-        event Action<IMarkdownRenderer, MarkdownObject> IMarkdownRenderer.ObjectWriteAfter { add { } remove { } }
+        event Action<IMarkdownRenderer, MarkdownObject> IMarkdownRenderer.ObjectWriteAfter
+        {
+            add { }
+            remove { }
+        }
 
         public event Action<MarkdownObject, GameObject> AfterObjectRendered;
 
-        object IMarkdownRenderer.Render(MarkdownObject obj)
-            => obj switch
-            {
-                Block block => RenderBlock(block).First(),
-                Inline inline => RenderInline(inline, ParagraphFontSize),
-                _ => throw new NotImplementedException("Unknown markdown object type")
-            };
+        object IMarkdownRenderer.Render(MarkdownObject obj) => obj switch
+        {
+            Block block => RenderBlock(block).First(),
+            Inline inline => RenderInline(inline, ParagraphFontSize),
+            _ => throw new NotImplementedException("Unknown markdown object type")
+        };
 
         private const float ParagraphFontSize = 3.5f;
         private const float CodeFontSize = ParagraphFontSize - .5f;
@@ -85,6 +92,7 @@ namespace IPA.ModList.BeatSaber.UI.Markdig
         private const float InlineCodePaddingSize = .4f;
 
         #region Blocks
+
         private IEnumerable<RectTransform> RenderBlock(Block obj)
             => obj switch
             {
@@ -107,10 +115,11 @@ namespace IPA.ModList.BeatSaber.UI.Markdig
         {
             var go = new GameObject(name);
             var transform = go.AddComponent<RectTransform>();
-            Helpers.Zero(transform);
+            Helpers.Helpers.Zero(transform);
 
-            var layout = vertical ? go.AddComponent<VerticalLayoutGroup>() as HorizontalOrVerticalLayoutGroup
-                                  : go.AddComponent<HorizontalLayoutGroup>();
+            var layout = vertical
+                ? go.AddComponent<VerticalLayoutGroup>() as HorizontalOrVerticalLayoutGroup
+                : go.AddComponent<HorizontalLayoutGroup>();
 
             layout.childControlHeight = layout.childControlWidth = true;
             layout.childForceExpandHeight = layout.childForceExpandWidth = false;
@@ -143,7 +152,9 @@ namespace IPA.ModList.BeatSaber.UI.Markdig
             {
                 var children = RenderBlock(block);
                 foreach (var child in children)
+                {
                     child.SetParent(transform, false);
+                }
             }
 
             AfterObjectRendered?.Invoke(doc, transform.gameObject);
@@ -160,12 +171,14 @@ namespace IPA.ModList.BeatSaber.UI.Markdig
             {
                 var inline = RenderInline(para.Inline, ParagraphFontSize);
                 foreach (var child in inline)
+                {
                     child.SetParent(transform, false);
+                }
             }
 
             AfterObjectRendered?.Invoke(para, transform.gameObject);
 
-            return Helpers.SingleEnumerable(transform).Append(Spacer(1.5f));
+            return transform.SingleEnumerable().Append(Spacer(1.5f));
         }
 
         private IEnumerable<RectTransform> RenderHeading(HeadingBlock heading)
@@ -173,44 +186,53 @@ namespace IPA.ModList.BeatSaber.UI.Markdig
             var (transform, layout) = Block("Heading", .1f, false);
             layout.padding = new RectOffset(ParagraphInset, ParagraphInset, 0, 0);
             if (heading.Level < 2)
+            {
                 layout.childAlignment = TextAnchor.UpperCenter;
+            }
 
             if (heading.Inline != null)
             {
-                var inline = RenderInline(heading.Inline, 
+                var inline = RenderInline(heading.Inline,
                     fontSize: H1FontSize - (HeaderLevelFontDecrease * (heading.Level - 1)),
                     center: heading.Level < 2);
                 foreach (var child in inline)
+                {
                     child.SetParent(transform, false);
+                }
             }
 
             AfterObjectRendered?.Invoke(heading, transform.gameObject);
 
-            var result = Helpers.SingleEnumerable(transform);
+            var result = transform.SingleEnumerable();
             if (heading.Level <= 2)
                 result = result.Concat(RenderThematicBreak(null, spacing: 2f));
             return result;
         }
 
-        private IEnumerable<RectTransform> RenderThematicBreak(ThematicBreakBlock block, float spacing = 1.5f)
+        private IEnumerable<RectTransform> RenderThematicBreak(ThematicBreakBlock? block, float spacing = 1.5f)
         {
             var go = new GameObject("ThematicBreak");
             var transform = go.AddComponent<RectTransform>();
-            Helpers.Zero(transform);
+            Helpers.Helpers.Zero(transform);
 
             var img = go.AddComponent<ImageView>();
             img.color = UIColor;
             // TODO: figure out a good way of making this not rely on a *new* sprite
             img.sprite = Sprite.Create(Texture2D.whiteTexture, new Rect(Vector2.zero, Vector2.one), Vector2.zero);
-            if (UIMaterial != null) img.material = UIMaterial;
+            if (UIMaterial != null)
+            {
+                img.material = UIMaterial;
+            }
 
             var layout = go.AddComponent<LayoutElement>();
             layout.minHeight = layout.preferredHeight = ThematicBreakHeight;
 
             if (block != null)
+            {
                 AfterObjectRendered?.Invoke(block, transform.gameObject);
+            }
 
-            return Helpers.SingleEnumerable(transform).Append(Spacer(spacing));
+            return transform.SingleEnumerable().Append(Spacer(spacing));
         }
 
         private IEnumerable<RectTransform> RenderQuote(QuoteBlock quote)
@@ -228,24 +250,24 @@ namespace IPA.ModList.BeatSaber.UI.Markdig
             img.type = QuoteBackgroundType;
             img.material = UIMaterial;
 
-            foreach (var block in quote)
+            foreach (var child in quote.Select(block => RenderBlock(block)).SelectMany(children => children))
             {
-                var children = RenderBlock(block);
-                foreach (var child in children)
-                    child.SetParent(transform, false);
+                child.SetParent(transform, false);
             }
 
             AfterObjectRendered?.Invoke(quote, go);
 
-            return Helpers.SingleEnumerable(transform).Append(Spacer(1.5f));
+            return transform.SingleEnumerable().Append(Spacer(1.5f));
         }
 
         private IEnumerable<RectTransform> RenderHtmlBlock(HtmlBlock html)
         {
-            Logger.md.Warn("Found HtmlBlock when rendering Markdown document, cannot process");
+            // TODO: Inject logger for this
+
+            /*Logger.md.Warn("Found HtmlBlock when rendering Markdown document, cannot process");
 
             Logger.md.Debug($"Block type: {html.Type}");
-            Logger.md.Debug($"Content: {(html.Inline == null ? "null" : RenderInlineToText(html.Inline, new StringBuilder()).ToString())}");
+            Logger.md.Debug($"Content: {(html.Inline == null ? "null" : RenderInlineToText(html.Inline, new StringBuilder()).ToString())}");*/
 
             AfterObjectRendered?.Invoke(html, null);
 
@@ -268,12 +290,16 @@ namespace IPA.ModList.BeatSaber.UI.Markdig
             img.material = UIMaterial;
 
             var tmp = CreateText($"<noparse>{code.Lines}</noparse>", CodeFontSize, center: false);
-            if (CodeFont != null) tmp.font = CodeFont;
+            if (CodeFont != null)
+            {
+                tmp.font = CodeFont;
+            }
+
             tmp.transform.SetParent(transform, false);
 
             AfterObjectRendered?.Invoke(code, go);
 
-            return Helpers.SingleEnumerable(transform).Append(Spacer(1.5f));
+            return transform.SingleEnumerable().Append(Spacer(1.5f));
         }
 
         private const float ListBulletRegionSize = 5f;
@@ -288,7 +314,8 @@ namespace IPA.ModList.BeatSaber.UI.Markdig
             {
                 if (!(block is ListItemBlock item))
                 {
-                    Logger.md.Warn("Block in list not a list item");
+                    // TODO: Inject logger for this
+                    // Logger.md.Warn("Block in list not a list item");
                 }
                 else
                 {
@@ -300,7 +327,7 @@ namespace IPA.ModList.BeatSaber.UI.Markdig
 
             AfterObjectRendered?.Invoke(list, transform.gameObject);
 
-            return Helpers.SingleEnumerable(transform).Append(Spacer(1.5f));
+            return transform.SingleEnumerable().Append(Spacer(1.5f));
         }
 
         private IEnumerable<RectTransform> RenderListItem(ListItemBlock item, bool isLoose, bool ordered, char orderedDelim, char bulletType)
@@ -336,19 +363,18 @@ namespace IPA.ModList.BeatSaber.UI.Markdig
                 }
                 else
                 {
-                    if (block is ParagraphBlock para && para.Inline != null)
-                        children = RenderInline(para.Inline, ParagraphFontSize);
-                    else
-                        children = RenderBlock(block);
+                    children = block is ParagraphBlock {Inline: { }} para ? RenderInline(para.Inline, ParagraphFontSize) : RenderBlock(block);
                 }
 
                 foreach (var child in children)
+                {
                     child.SetParent(content, false);
+                }
             }
 
             AfterObjectRendered?.Invoke(item, transform.gameObject);
 
-            return Helpers.SingleEnumerable(transform);
+            return transform.SingleEnumerable();
         }
 
         private IEnumerable<RectTransform> RenderLinkReferenceGroup(LinkReferenceDefinitionGroup _)
@@ -362,9 +388,11 @@ namespace IPA.ModList.BeatSaber.UI.Markdig
             // do nothing, because these are hidden
             return Enumerable.Empty<RectTransform>();
         }
+
         #endregion
 
         #region Inlines
+
         private IEnumerable<RectTransform> RenderInline(Inline inline, float fontSize, bool center = false)
         {
             codeRegionLinkPostfix = 0;
@@ -372,7 +400,8 @@ namespace IPA.ModList.BeatSaber.UI.Markdig
 
             var text = RenderInlineToText(inline, new StringBuilder(inline.Span.Length * 2)).ToString();
 #if DEBUG
-            Logger.md.Debug($"Inline rendered to '{text}'");
+            // TODO: Inject logger for this
+            // Logger.md.Debug($"Inline rendered to '{text}'");
 #endif
             var tmp = CreateText(text, fontSize, center);
 
@@ -381,7 +410,7 @@ namespace IPA.ModList.BeatSaber.UI.Markdig
 
             var highlights = new GameObject("CodeBackgrounds");
             var highlightTransform = highlights.AddComponent<RectTransform>();
-            Helpers.Zero(highlightTransform);
+            Helpers.Helpers.Zero(highlightTransform);
             var highlightCopier = highlights.AddComponent<PositionSizeCopier>();
             highlightCopier.CopyFrom = tmp.rectTransform;
             var highlightLayout = highlights.AddComponent<LayoutElement>();
@@ -404,78 +433,77 @@ namespace IPA.ModList.BeatSaber.UI.Markdig
 
             AfterObjectRendered?.Invoke(inline, tmp.gameObject);
 
-            return Helpers.SingleEnumerable(highlightTransform).Append(tmp.rectTransform);
+            return highlightTransform.SingleEnumerable().Append(tmp.rectTransform);
         }
 
-        private StringBuilder RenderInlineToText(Inline inline, StringBuilder builder)
-            => inline switch
-            {
-                LiteralInline lit => RenderLiteralToText(lit, builder),
-                EmphasisInline em => RenderEmphasisToText(em, builder),
-                LineBreakInline lb => RenderLineBreakInlineToText(lb, builder),
-                CodeInline code => RenderCodeInlineToText(code, builder),
-                AutolinkInline link => RenderAutolinkInlineToText(link, builder),
-                LinkInline link => RenderLinkInlineToText(link, builder),
-                HtmlInline tag => RenderHtmlInlineToText(tag, builder),
-                HtmlEntityInline entity => RenderHtmlEntityToText(entity, builder),
+        private StringBuilder RenderInlineToText(Inline inline, StringBuilder builder) => inline switch
+        {
+            LiteralInline lit => RenderLiteralToText(lit, builder),
+            EmphasisInline em => RenderEmphasisToText(em, builder),
+            LineBreakInline lb => RenderLineBreakInlineToText(lb, builder),
+            CodeInline code => RenderCodeInlineToText(code, builder),
+            AutolinkInline link => RenderAutolinkInlineToText(link, builder),
+            LinkInline link => RenderLinkInlineToText(link, builder),
+            HtmlInline tag => RenderHtmlInlineToText(tag, builder),
+            HtmlEntityInline entity => RenderHtmlEntityToText(entity, builder),
 
-                ContainerInline container => RenderContainerInlineToText(container, builder),
-                _ => throw new NotImplementedException($"Unknown inline type {inline.GetType()}")
-            };
+            ContainerInline container => RenderContainerInlineToText(container, builder),
+            _ => throw new NotImplementedException($"Unknown inline type {inline.GetType()}")
+        };
 
         private StringBuilder RenderContainerInlineToText(ContainerInline container, StringBuilder builder)
         {
-            foreach (var inline in container)
-                builder = RenderInlineToText(inline, builder);
-            return builder;
+            return container.Aggregate(builder, (current, inline) => RenderInlineToText(inline, current));
         }
 
-        private StringBuilder RenderLiteralToText(LiteralInline lit, StringBuilder builder)
-            => builder.Append("<noparse>").AppendSlice(lit.Content).Append("</noparse>");
+        private StringBuilder RenderLiteralToText(LiteralInline lit, StringBuilder builder) => builder.Append("<noparse>").AppendSlice(lit.Content).Append("</noparse>");
 
         private StringBuilder RenderLineBreakInlineToText(LineBreakInline lb, StringBuilder builder)
             => builder.Append(lb.IsHard ? "\n" : " ");
 
         private const string CodeRegionLinkIdStart = "__CodeInline__";
         private int codeRegionLinkPostfix = 0;
+
         private StringBuilder RenderCodeInlineToText(CodeInline code, StringBuilder builder)
             => builder.Append(CodeFont == null ? "" : $"<font=\"{CodeFont.name}\">")
-                      .Append("<size=80%>")
-                      .Append($"<link=\"{CodeRegionLinkIdStart}{codeRegionLinkPostfix++}\">")
-                      .Append(InlineCodePaddingText)
-                      .Append("<noparse>")
-                      .Append(code.Content)
-                      .Append("</noparse>")
-                      .Append(InlineCodePaddingText)
-                      .Append("</link></size>")
-                      .Append(CodeFont == null ? "" : "</font>");
+                .Append("<size=80%>")
+                .Append($"<link=\"{CodeRegionLinkIdStart}{codeRegionLinkPostfix++}\">")
+                .Append(InlineCodePaddingText)
+                .Append("<noparse>")
+                .Append(code.Content)
+                .Append("</noparse>")
+                .Append(InlineCodePaddingText)
+                .Append("</link></size>")
+                .Append(CodeFont == null ? "" : "</font>");
 
-        private StringBuilder RenderHtmlInlineToText(HtmlInline tag, StringBuilder builder)
-            => builder.Append(tag.Tag);
+        private StringBuilder RenderHtmlInlineToText(HtmlInline tag, StringBuilder builder) => builder.Append(tag.Tag);
 
-        private StringBuilder RenderHtmlEntityToText(HtmlEntityInline entity, StringBuilder builder)
-            => builder.AppendSlice(entity.Transcoded);
+        private StringBuilder RenderHtmlEntityToText(HtmlEntityInline entity, StringBuilder builder) => builder.AppendSlice(entity.Transcoded);
 
         private StringBuilder RenderEmphasisToText(EmphasisInline em, StringBuilder builder)
         {
             var flags = RenderHelpers.GetEmphasisFlags(em);
             builder.AppendEmOpenTags(flags);
             return RenderContainerInlineToText(em, builder)
-                   .AppendEmCloseTags(flags);
+                .AppendEmCloseTags(flags);
         }
+
         #endregion
 
         #region Links
+
         private const string LinkIdStart = "__Link__";
         private Dictionary<string, LinkInfo> linkDict;
+
         private StringBuilder RenderLinkInlineToText(LinkInline link, StringBuilder builder)
-        { // link inlines can also be images
+        {
+            // link inlines can also be images
             if (link.IsImage)
             {
                 // TODO: implement images
                 builder.Append("[<noparse>")
-                       .Append(link.Title)
-                       .Append("</noparse>]");
+                    .Append(link.Title)
+                    .Append("</noparse>]");
 
                 return builder;
             }
@@ -484,7 +512,7 @@ namespace IPA.ModList.BeatSaber.UI.Markdig
             var linkName = AddLinkToDict(linkInfo);
 
             builder.Append($"<link=\"{linkName}\">")
-                   .Append("<color=#").AppendColorHex(LinkColor).Append(">");
+                .Append("<color=#").AppendColorHex(LinkColor).Append(">");
             return RenderContainerInlineToText(link, builder)
                 .Append("</color>")
                 .Append("</link>");
@@ -496,16 +524,17 @@ namespace IPA.ModList.BeatSaber.UI.Markdig
             var linkName = AddLinkToDict(linkInfo);
 
             return builder
-                    .Append($"<link=\"{linkName}\">")
-                    .Append("<color=#").AppendColorHex(AutolinkColor).Append(">")
-                    .Append(link.Url)
-                    .Append("</color>")
-                    .Append("</link>");
+                .Append($"<link=\"{linkName}\">")
+                .Append("<color=#").AppendColorHex(AutolinkColor).Append(">")
+                .Append(link.Url)
+                .Append("</color>")
+                .Append("</link>");
         }
 
         private string AddLinkToDict(LinkInfo linkInfo)
         {
-            Logger.md.Debug($"Rendering inline link to {linkInfo.Url} ({linkInfo.Title})");
+            // TODO: Inject logger for this
+            // Logger.md.Debug($"Rendering inline link to {linkInfo.Url} ({linkInfo.Title})");
             var linkName = LinkIdStart + linkDict.Count;
             linkDict.Add(linkName, linkInfo);
             return linkName;
@@ -544,16 +573,20 @@ namespace IPA.ModList.BeatSaber.UI.Markdig
 
             OnLinkRendered?.Invoke(linkInfo.SelectableObjects, gameObject, linkInfo.Url, linkInfo.Title);
         }
+
         #endregion
 
         private TextMeshProUGUI CreateText(string text, float fontSize, bool center)
         {
-            var tmp = Helpers.CreateText(text, Vector2.zero, new Vector2(60f, 10f));
+            var tmp = Helpers.Helpers.CreateText(text, Vector2.zero, new Vector2(60f, 10f));
             tmp.enableWordWrapping = true;
             tmp.font = UIFont;
             tmp.fontSize = fontSize;
             tmp.color = UIColor;
-            if (center) tmp.alignment = TextAlignmentOptions.Center;
+            if (center)
+            {
+                tmp.alignment = TextAlignmentOptions.Center;
+            }
 
             return tmp;
         }

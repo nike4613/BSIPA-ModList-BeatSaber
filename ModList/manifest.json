@@ -1,28 +1,28 @@
 ﻿{
-  "$schema": "https://raw.githubusercontent.com/beat-saber-modding-group/BSIPA-MetadataFileSchema/master/Schema.json",
-  "author": "DaNike",
-  "description": [
-    "#![IPA.ModList.BeatSaber.description.md]",
-    "The mod list viewer for Beat Saber."
-  ],
-  "gameVersion": "1.12.2",
-  "id": "ModList",
-  "name": "Mod List",
-  "version": "0.1.0",
-  "icon": "IPA.ModList.BeatSaber.Resources.icon.png",
-  "links": {
-    "project-source": "https://github.com/nike4613/BSIPA-ModList-BeatSaber",
-    "donate": "https://ko-fi.com/danike"
-  },
-  "files": [
-    "Libs/Markdig.dll"
-  ],
-  "misc": {
-    "plugin-hint": "IPA.ModList.BeatSaber.Plugin"
-  },
-  "dependsOn": {
-    "BeatSaberMarkupLanguage": "^1.4.1",
-    "BS Utils": "^1.6.2",
-    "BSIPA": "^4.1.2"
-  }
+    "$schema": "https://raw.githubusercontent.com/beat-saber-modding-group/BSIPA-MetadataFileSchema/master/Schema.json",
+    "author": "DaNike",
+    "description": [
+        "#![IPA.ModList.BeatSaber.description.md]",
+        "The mod list viewer for Beat Saber."
+    ],
+    "gameVersion": "1.12.2",
+    "id": "ModList",
+    "name": "Mod List",
+    "version": "0.2.0",
+    "icon": "IPA.ModList.BeatSaber.Resources.icon.png",
+    "links": {
+        "project-source": "https://github.com/nike4613/BSIPA-ModList-BeatSaber",
+        "donate": "https://ko-fi.com/danike"
+    },
+    "files": [
+        "Libs/Markdig.dll"
+    ],
+    "misc": {
+        "plugin-hint": "IPA.ModList.BeatSaber.Plugin"
+    },
+    "dependsOn": {
+        "BSIPA": "^4.1.3",
+        "BeatSaberMarkupLanguage": "^1.4.2",
+        "SiraUtil": "^2.3.0"
+    }
 }

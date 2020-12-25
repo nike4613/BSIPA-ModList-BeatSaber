@@ -12,14 +12,6 @@
 """""dll
 """""xml?optional
 """"Engine.
-"""""dll
-"""""xml?optional
-"""""UnityWebRequestModule.
-""""""dll
-""""""xml?optional
-"""""AssetBundleModule.
-""""""dll
-""""""xml?optional
 """""CoreModule.
 """"""dll
 """"""xml?optional
@@ -34,9 +26,13 @@
 """""".
 """""""dll
 """""""xml?optional
-""""""Module.
-"""""""dll
-"""""""xml?optional
+"""Zenject
+"""".
+"""""dll
+"""""xml?optional
+""""-usage.
+"""""dll
+"""""xml?optional
 "::resolveInHere Libs/
 ""SemVer.
 """dll
@@ -46,6 +42,6 @@
 """ML.
 """"dll
 """"xml?optional
-"""_Utils.
-""""dll
-""""xml?optional
+""SiraUtil.
+"""dll
+"""xml?optional

@@ -1,10 +1,6 @@
 ﻿using Markdig;
-using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using IPALogger = IPA.Logging.Logger;
 
 namespace IPA.ModList.BeatSaber.UI.Markdig
@@ -33,36 +29,34 @@ namespace IPA.ModList.BeatSaber.UI.Markdig
 
             public override Encoding Encoding => Encoding.Default;
 
-            private readonly StringBuilder builder = new StringBuilder();
+            private readonly StringBuilder _builder = new StringBuilder();
 
             public override void Write(char value)
             {
-                if ((value == '\n' || value == '\r') && builder.Length > 0)
+                if ((value == '\n' || value == '\r') && _builder.Length > 0)
                 {
                     Flush();
                 }
                 else
                 {
-                    builder.Append(value);
+                    _builder.Append(value);
                 }
             }
 
-            public override void Write(string value)
-                => builder.Append(value);
+            public override void Write(string value) => _builder.Append(value);
 
-            public override void WriteLine()
-                => Flush();
+            public override void WriteLine() => Flush();
 
             public override void WriteLine(string value)
             {
-                builder.Append(value);
+                _builder.Append(value);
                 Flush();
             }
 
             public override void Flush()
             {
-                logger.Log(level, builder.ToString());
-                builder.Clear();
+                logger.Log(level, _builder.ToString());
+                _builder.Clear();
             }
         }
     }

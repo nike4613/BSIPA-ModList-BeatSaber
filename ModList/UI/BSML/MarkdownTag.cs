@@ -2,10 +2,6 @@
 using BeatSaberMarkupLanguage.Tags;
 using IPA.ModList.BeatSaber.UI.Components;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -22,17 +18,23 @@ namespace IPA.ModList.BeatSaber.UI.BSML
             }
             catch (Exception e)
             {
-                Logger.md.Warn("Error when registering markdown tag:");
-                Logger.md.Warn(e);
+                // TODO: Inject logger for this
+                /*Logger.md.Warn("Error when registering markdown tag:");
+                Logger.md.Warn(e);*/
             }
         }
 
         internal static void Unregister()
         {
-            Logger.md.Warn("Cannot correctly unregister because BSML does not yet support it!");
+            // TODO: Inject logger for this
+            // Logger.md.Warn("Cannot correctly unregister because BSML does not yet support it!");
         }
 
-        public override string[] Aliases { get; } = new[] { "markdown", "md" };
+        public override string[] Aliases { get; } =
+        {
+            "markdown",
+            "md"
+        };
 
         public override bool AddChildren => false;
 

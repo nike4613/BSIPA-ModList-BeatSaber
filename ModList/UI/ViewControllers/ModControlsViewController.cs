@@ -1,25 +1,42 @@
-﻿using BeatSaberMarkupLanguage.Attributes;
-using BeatSaberMarkupLanguage.Parser;
-using BeatSaberMarkupLanguage.ViewControllers;
-using IPA.Loader;
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using BeatSaberMarkupLanguage.Attributes;
+using BeatSaberMarkupLanguage.Parser;
+using BeatSaberMarkupLanguage.ViewControllers;
+using IPA.Loader;
+using IPA.ModList.BeatSaber.Models;
+using IPA.ModList.BeatSaber.Services;
+using ModestTree;
+using SiraUtil.Tools;
+using Zenject;
 
-namespace IPA.ModList.BeatSaber.UI
+namespace IPA.ModList.BeatSaber.UI.ViewControllers
 {
-    [HotReload(PathMap = new[] { "C:\\", CompileConstants.SolutionDirectory })]
-    public class ModControlsViewController : BSMLAutomaticViewController
+    [HotReload(RelativePathToLayout = @"..\Views\ModControlsView.bsml")]
+    [ViewDefinition("IPA.ModList.BeatSaber.UI.Views.ModControlsView.bsml")]
+    internal class ModControlsViewController : BSMLAutomaticViewController
     {
-        private PluginInformation plugin = null;
-        private Dictionary<PluginInformation, PluginState> changedStates = new Dictionary<PluginInformation, PluginState>();
+        private PluginInformation? _plugin;
+        private readonly Dictionary<PluginInformation, PluginState> _changedStates = new Dictionary<PluginInformation, PluginState>();
+
+        private SiraLog _siraLog = null!;
+        private ModProviderService _modProviderService = null!;
+
+        internal StateTransitionTransaction? CurrentTransaction { get; set; }
+
+
+        [Inject]
+        internal void Construct(SiraLog siraLog, ModProviderService modProviderService)
+        {
+            _modProviderService = modProviderService;
+            _siraLog = siraLog;
+        }
 
         internal void SetPlugin(PluginInformation info)
         {
-            plugin = info;
+            _plugin = info;
             PanelActive = info.State != PluginState.Ignored;
 
             RefreshModInfo();
@@ -29,19 +46,15 @@ namespace IPA.ModList.BeatSaber.UI
         {
             base.DidActivate(firstActivation, addedToHierarchy, screenSystemEnabling);
 
-            ChangedCount = 0;
-
             RefreshChanges();
         }
 
         protected override void DidDeactivate(bool removedFromHierarchy, bool screenSystemDisabling)
         {
-            currentTransaction?.Dispose();
-            currentTransaction = null;
+            CurrentTransaction?.Dispose();
+            CurrentTransaction = null;
 
-            foreach (var kvp in changedStates)
-                kvp.Key.State = kvp.Value;
-            changedStates.Clear();
+            _changedStates.Clear();
 
             base.DidDeactivate(removedFromHierarchy, screenSystemDisabling);
 
@@ -49,13 +62,13 @@ namespace IPA.ModList.BeatSaber.UI
         }
 
         [UIParams]
-        internal BSMLParserParams ParserParams;
+        internal BSMLParserParams ParserParams = null!;
 
         [UIValue("panel-active")]
         internal bool PanelActive { get; private set; } = false;
 
         [UIValue("mod-requires-restart")]
-        internal bool ModRequiresRestart => plugin?.Plugin?.RuntimeOptions != RuntimeOptions.DynamicInit;
+        internal bool ModRequiresRestart => _plugin?.Plugin?.RuntimeOptions != RuntimeOptions.DynamicInit;
 
         private void RefreshModInfo()
         {
@@ -66,7 +79,8 @@ namespace IPA.ModList.BeatSaber.UI
         }
 
         [UIValue("mod-enabled")]
-        internal bool ModEnabled => plugin?.State == PluginState.Enabled;
+        internal bool ModEnabled => _plugin?.State == PluginState.Enabled;
+
         [UIValue("mod-disabled")]
         internal bool ModDisabled => !ModEnabled;
 
@@ -76,18 +90,18 @@ namespace IPA.ModList.BeatSaber.UI
             NotifyPropertyChanged(nameof(ModDisabled));
         }
 
-        internal event Action OnListNeedsRefresh;
+        internal event Action? OnListNeedsRefresh;
         private void RefreshList() => OnListNeedsRefresh?.Invoke();
 
 
         [UIValue("changing-mods")]
-        internal bool ChangingMods => currentTransaction != null;
+        internal bool ChangingMods => CurrentTransaction != null;
 
         [UIValue("changed-count")]
-        internal int ChangedCount { get; private set; } = 0;
+        internal int ChangedCount => _changedStates.Count;
 
         [UIValue("requires-restart")]
-        internal bool ChangesRequireRestart => currentTransaction?.WillNeedRestart ?? true;
+        internal bool ChangesRequireRestart => CurrentTransaction?.WillNeedRestart ?? true;
 
         private void RefreshChanges()
         {
@@ -96,49 +110,48 @@ namespace IPA.ModList.BeatSaber.UI
             NotifyPropertyChanged(nameof(ChangesRequireRestart));
         }
 
-        private StateTransitionTransaction currentTransaction = null;
-
         private const string EnableType = "enable";
         private const string DisableType = "disable";
 
         internal delegate void ChangeNeedsConfirmationEvent(PluginInformation plugin, string type, IEnumerable<string> lines, Action<bool> completion);
-        internal event ChangeNeedsConfirmationEvent OnChangeNeedsConfirmation;
+
+        internal event ChangeNeedsConfirmationEvent? OnChangeNeedsConfirmation;
 
         [UIAction(nameof(EnableMod))]
         public void EnableMod()
         {
             var transaction = StartOrGetTransaction();
 
-            if (transaction.Enable(plugin.Plugin, out var deps))
+            if (transaction.Enable(_plugin!.Plugin, out var deps))
             {
-                ChangedCount++;
+                // ChangedCount++;
             }
             else
-            { // this should only happen when we need to turn on deps
+            {
+                // this should only happen when we need to turn on deps
                 if (deps != null)
-                { // we have deps that need to be processed
-                     // TODO: send this off somewhere to present to the user
+                {
+                    // we have deps that need to be processed
+                    // TODO: send this off somewhere to present to the user
                     foreach (var dep in deps)
                     {
-                        Logger.log.Debug($"needs {dep.Name}");
+                        _siraLog.Debug($"needs {dep.Name}");
                     }
 
-                    OnChangeNeedsConfirmation(plugin, EnableType, BuildMetadataLines(deps),
-                        GetEnableConfirmCallback(plugin, deps, transaction));
+                    OnChangeNeedsConfirmation?.Invoke(_plugin, EnableType, BuildMetadataLines(deps),
+                        GetEnableConfirmCallback(_plugin, deps, transaction, () => StartCoroutine(RefreshOnModStateChange())));
 
                     return;
                 }
-                else
-                {
-                    Logger.log.Notice($"{plugin.Plugin.Name} already enabled");
-                }
+
+                _siraLog.Debug($"{_plugin.Plugin.Name} already enabled");
             }
 
-            UpdatePluginTo(plugin, PluginState.Enabled);
+            UpdatePluginTo(_plugin, PluginState.Enabled);
             StartCoroutine(RefreshOnModStateChange());
         }
 
-        private Action<bool> GetEnableConfirmCallback(PluginInformation plugin, IEnumerable<PluginMetadata> deps, StateTransitionTransaction transaction, Action afterConfirm = null)
+        private Action<bool> GetEnableConfirmCallback(PluginInformation plugin, IEnumerable<PluginMetadata> deps, StateTransitionTransaction transaction, Action? afterConfirm = null)
         {
             IEnumerator<(PluginInformation plugin, string type, IEnumerable<string> lines, Action<bool> completion)> StateMachine()
             {
@@ -157,12 +170,11 @@ namespace IPA.ModList.BeatSaber.UI
                     {
                         if (depDeps == null)
                         {
-                            Logger.log.Warn($"{dep.Name} is already enabled; how did we get here?");
+                            _siraLog.Warning($"{dep.Name} is already enabled; how did we get here?");
                         }
                         else
                         {
-                            yield return (depInfo, EnableType, BuildMetadataLines(depDeps),
-                                GetEnableConfirmCallback(depInfo, depDeps, transaction));
+                            yield return (depInfo, EnableType, BuildMetadataLines(depDeps), GetEnableConfirmCallback(depInfo, depDeps, transaction));
                         }
                     }
                 }
@@ -182,36 +194,35 @@ namespace IPA.ModList.BeatSaber.UI
         {
             var transaction = StartOrGetTransaction();
 
-            if (transaction.Disable(plugin.Plugin, out var users))
+            if (transaction.Disable(_plugin!.Plugin, out var users))
             {
-                ChangedCount++;
+                // ChangedCount++;
             }
             else
-            { // this should only happen when we need to turn off users
+            {
+                // this should only happen when we need to turn off users
                 if (users != null)
                 {
                     // TODO: send this off somewhere to present to the user
                     foreach (var dep in users)
                     {
-                        Logger.log.Debug($"needs {dep.Name}");
+                        _siraLog.Debug($"needs {dep.Name}");
                     }
 
-                    OnChangeNeedsConfirmation(plugin, DisableType, BuildMetadataLines(users),
-                        GetDisableConfirmCallback(plugin, users, transaction));
+                    OnChangeNeedsConfirmation?.Invoke(_plugin, DisableType, BuildMetadataLines(users),
+                        GetDisableConfirmCallback(_plugin, users, transaction, () => StartCoroutine(RefreshOnModStateChange())));
 
                     return;
                 }
-                else
-                {
-                    Logger.log.Notice($"{plugin.Plugin.Name} already disabled");
-                }
+
+                _siraLog.Logger.Notice($"{_plugin.Plugin.Name} already disabled");
             }
 
-            UpdatePluginTo(plugin, PluginState.Disabled);
+            UpdatePluginTo(_plugin, PluginState.Disabled);
             StartCoroutine(RefreshOnModStateChange());
         }
 
-        private Action<bool> GetDisableConfirmCallback(PluginInformation plugin, IEnumerable<PluginMetadata> deps, StateTransitionTransaction transaction, Action afterConfirm = null)
+        private Action<bool> GetDisableConfirmCallback(PluginInformation plugin, IEnumerable<PluginMetadata> deps, StateTransitionTransaction transaction, Action? afterConfirm = null)
         {
             IEnumerator<(PluginInformation plugin, string type, IEnumerable<string> lines, Action<bool> completion)> StateMachine()
             {
@@ -230,12 +241,11 @@ namespace IPA.ModList.BeatSaber.UI
                     {
                         if (depDeps == null)
                         {
-                            Logger.log.Warn($"{dep.Name} is already enabled; how did we get here?");
+                            _siraLog.Warning($"{dep.Name} is already enabled; how did we get here?");
                         }
                         else
                         {
-                            yield return (depInfo, DisableType, BuildMetadataLines(depDeps),
-                                GetDisableConfirmCallback(depInfo, depDeps, transaction));
+                            yield return (depInfo, DisableType, BuildMetadataLines(depDeps), GetDisableConfirmCallback(depInfo, depDeps, transaction));
                         }
                     }
                 }
@@ -252,29 +262,43 @@ namespace IPA.ModList.BeatSaber.UI
 
         private PluginInformation GetPluginInformation(PluginMetadata dep)
         {
-            // TODO: implement this
-            throw new NotImplementedException();
+            return _modProviderService.PluginList.First(x => x.Plugin.Id == dep.Id);
         }
 
         private void UpdatePluginTo(PluginInformation plugin, PluginState newState)
         {
-            ChangedCount++;
+            /*ChangedCount++;
 
-            if (!changedStates.ContainsKey(plugin))
-                changedStates.Add(plugin, plugin.State);
+            if (!_changedStates.ContainsKey(plugin))
+            {
+                _changedStates.Add(plugin, plugin.State);
+            }*/
+
+            if (_changedStates.TryGetValue(plugin, out var originalState))
+            {
+                if (originalState == newState)
+                {
+                    _changedStates.Remove(plugin);
+                }
+            }
+            else
+            {
+                _changedStates.Add(plugin, plugin.State);
+            }
+
             plugin.State = newState;
+
+            Assert.IsEqual(plugin.State, _modProviderService.PluginList.First(x => x.Plugin.Id == plugin.Plugin.Id).State);
             RefreshList();
         }
 
         private IEnumerable<string> BuildMetadataLines(IEnumerable<PluginMetadata> plugins)
         {
-            foreach (var plugin in plugins)
-            {
-                yield return plugin.Name;
-            }
+            return plugins.Select(plugin => plugin.Name);
         }
 
-        private Action<bool> CreateConfirmationStateMachineExecutor(IEnumerator<(PluginInformation plugin, string type, IEnumerable<string> lines, Action<bool> completion)> stateMachine, Action finished = null)
+        private Action<bool> CreateConfirmationStateMachineExecutor(IEnumerator<(PluginInformation plugin, string type, IEnumerable<string> lines, Action<bool> completion)> stateMachine,
+            Action? finished = null)
         {
             void ContinueAction(bool confirmed)
             {
@@ -288,13 +312,13 @@ namespace IPA.ModList.BeatSaber.UI
                 {
                     if (stateMachine.MoveNext())
                     {
-                        var nextInvocation = stateMachine.Current;
-                        var completion = nextInvocation.completion;
-                        OnChangeNeedsConfirmation(nextInvocation.plugin, nextInvocation.type, nextInvocation.lines, succ => 
+                        var (plugin, type, lines, completion) = stateMachine.Current;
+                        OnChangeNeedsConfirmation?.Invoke(plugin, type, lines, succ =>
                         {
                             completion?.Invoke(succ);
                             ContinueAction(succ);
                         });
+
                         return; // once we queue the confirmation, we want to exit
                     }
                 }
@@ -308,7 +332,7 @@ namespace IPA.ModList.BeatSaber.UI
                 // we've finished, so we can dispose stateMachine and invoke the finished callback
                 finished?.Invoke();
                 stateMachine.Dispose();
-            };
+            }
 
             return ContinueAction;
         }
@@ -321,10 +345,10 @@ namespace IPA.ModList.BeatSaber.UI
         }
 
         private StateTransitionTransaction StartOrGetTransaction()
-        {   
-            currentTransaction ??= PluginManager.PluginStateTransaction();
+        {
+            CurrentTransaction ??= PluginManager.PluginStateTransaction();
             RefreshChanges();
-            return currentTransaction;
+            return CurrentTransaction;
         }
     }
 }

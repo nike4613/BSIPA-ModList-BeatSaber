@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
 using HMUI;
 using TMPro;
 using UnityEngine;
@@ -22,25 +20,27 @@ namespace IPA.ModList.BeatSaber.UI.Components
         /// </summary>
         public Transform BackgroundParent { get; set; }
 
-        private bool useLineHeight = false;
+        private bool _useLineHeight = false;
+
         public bool UseLineHeight
         {
-            get => useLineHeight;
+            get => _useLineHeight;
             set
             {
-                useLineHeight = value;
-                needsRerender = true;
+                _useLineHeight = value;
+                _needsRerender = true;
             }
         }
 
-        private bool createSingleObjectForLinks = true;
+        private bool _createSingleObjectForLinks = true;
+
         public bool CreateSingleObjectForLinks
         {
-            get => createSingleObjectForLinks;
+            get => _createSingleObjectForLinks;
             set
             {
-                createSingleObjectForLinks = value;
-                needsRerender = true;
+                _createSingleObjectForLinks = value;
+                _needsRerender = true;
             }
         }
 
@@ -52,6 +52,7 @@ namespace IPA.ModList.BeatSaber.UI.Components
             linkTypes.Add(type);
             IsDirty = true;
         }
+
         public void RemoveLinkType(LinkType type)
         {
             linkTypes.Remove(type);
@@ -84,6 +85,7 @@ namespace IPA.ModList.BeatSaber.UI.Components
 
             public override bool Equals(object other)
                 => other is LinkType link && Equals(link);
+
             public bool Equals(LinkType other)
                 => Selector.Equals(other.Selector);
 
@@ -95,18 +97,18 @@ namespace IPA.ModList.BeatSaber.UI.Components
 
         public delegate void BackgroundObjectRendered(TMP_LinkInfo link, GameObject gameObject, object linkData);
 
-        public event BackgroundObjectRendered OnLinkSingleObjectRendered;
-        public event BackgroundObjectRendered OnLinkBackgroundRendered;
+        public event BackgroundObjectRendered? OnLinkSingleObjectRendered;
+        public event BackgroundObjectRendered? OnLinkBackgroundRendered;
 
         public bool IsDirty { get; set; } = false;
 
-        private bool needsRerender = false;
-        private readonly List<GameObject> createdObjects = new List<GameObject>();
+        private bool _needsRerender = false;
+        private readonly List<GameObject> _createdObjects = new List<GameObject>();
 
-        private struct LinkInfo
+        private readonly struct LinkInfo
         {
-            public TMP_LinkInfo Link;
-            public LinkType Type;
+            public readonly TMP_LinkInfo Link;
+            public readonly LinkType Type;
 
             public LinkInfo(TMP_LinkInfo link, LinkType type)
             {
@@ -131,7 +133,7 @@ namespace IPA.ModList.BeatSaber.UI.Components
         {
             if (IsDirty)
             {
-                needsRerender = true;
+                _needsRerender = true;
 
                 var tmp = TextMeshPro;
                 var allLinks = tmp.textInfo.linkInfo.Take(tmp.textInfo.linkCount);
@@ -140,16 +142,16 @@ namespace IPA.ModList.BeatSaber.UI.Components
 
                 IsDirty = false;
             }
-            if (needsRerender && renderedLinks != null)
+
+            if (_needsRerender && renderedLinks != null)
             {
                 Clear();
                 Render(renderedLinks);
-                needsRerender = false;
+                _needsRerender = false;
             }
         }
 
-        internal void OnDestroy()
-            => Clear(true);
+        internal void OnDestroy() => Clear(true);
 
         private struct LinkRenderInfo
         {
@@ -178,11 +180,11 @@ namespace IPA.ModList.BeatSaber.UI.Components
                     fullExt.min = new Vector2(Math.Min(fullExt.min.x, region.min.x), Math.Min(fullExt.min.y, region.min.y));
                     fullExt.max = new Vector2(Math.Max(fullExt.max.x, region.max.x), Math.Max(fullExt.max.y, region.max.y));
                 }
+
                 FullExtents = fullExt;
             }
 
-            public override string ToString()
-                => $"{string.Join(":", HighlightRegions?.Select(r => r.ToString()) ?? Enumerable.Empty<string>())} over {FullExtents}";
+            public override string ToString() => $"{string.Join(":", HighlightRegions?.Select(r => r.ToString()) ?? Enumerable.Empty<string>())} over {FullExtents}";
         }
 
         private void Render(IEnumerable<LinkInfo> linkInfos)
@@ -204,13 +206,15 @@ namespace IPA.ModList.BeatSaber.UI.Components
             var lineExtent = currentLine.lineExtents;
 
             Extents GetZeroedExtents(Extents lineExtent)
-                => UseLineHeight ? new Extents(new Vector2(0, lineExtent.min.y), new Vector2(0, lineExtent.max.y))
-                                 : new Extents(new Vector2(0, float.MaxValue), new Vector2(0, float.MinValue));
+                => UseLineHeight
+                    ? new Extents(new Vector2(0, lineExtent.min.y), new Vector2(0, lineExtent.max.y))
+                    : new Extents(new Vector2(0, float.MaxValue), new Vector2(0, float.MinValue));
+
             static Extents PadExtents(Extents extent, Vector4 padding)
                 => new Extents( // x = left, y = right, z = top, w = bottom
-                        new Vector2(extent.min.x - padding.x, extent.min.y - padding.w),
-                        new Vector2(extent.max.x + padding.y, extent.max.y + padding.z)
-                    );
+                    new Vector2(extent.min.x - padding.x, extent.min.y - padding.w),
+                    new Vector2(extent.max.x + padding.y, extent.max.y + padding.z)
+                );
 
             var currentExtent = GetZeroedExtents(lineExtent);
 
@@ -242,11 +246,15 @@ namespace IPA.ModList.BeatSaber.UI.Components
             }
 
             if (currentLineIndex != endLineIndex)
-                Logger.log.Warn("While calculating regions to highlight, ending line " +
-                    $"{currentLineIndex} was not the expected end line {endLineIndex}");
+            {
+                // TODO: Inject logger for this
+                // Logger.log.Warn($"While calculating regions to highlight, ending line {currentLineIndex} was not the expected end line {endLineIndex}");
+            }
 
             if (ExtentWidth(currentExtent) > 0f)
+            {
                 yield return PadExtents(currentExtent, type.Padding);
+            }
         }
 
         private IEnumerable<LinkRenderInfo> CalculateHighlightedRegions(IEnumerable<LinkInfo> links)
@@ -261,8 +269,8 @@ namespace IPA.ModList.BeatSaber.UI.Components
             else
             {
                 foreach (var link in links)
-                    foreach (var ext in FindExtentsForLink(tmp, link.Type, link.Link))
-                        yield return new LinkRenderInfo(link.Link, ext, link.Type);
+                foreach (var ext in FindExtentsForLink(tmp, link.Type, link.Link))
+                    yield return new LinkRenderInfo(link.Link, ext, link.Type);
             }
         }
 
@@ -285,7 +293,7 @@ namespace IPA.ModList.BeatSaber.UI.Components
                 img.type = type.BackgroundImageType;
             }
 
-            createdObjects.Add(go);
+            _createdObjects.Add(go);
 
             return go;
         }
@@ -302,6 +310,7 @@ namespace IPA.ModList.BeatSaber.UI.Components
                         var go = CreateObjectForExtent(ext, link.Type, true);
                         OnLinkBackgroundRendered?.Invoke(link.Link, go, link.Type.Data);
                     }
+
                     OnLinkSingleObjectRendered?.Invoke(link.Link, bigGo, link.Type.Data);
                 }
             }
@@ -346,6 +355,7 @@ namespace IPA.ModList.BeatSaber.UI.Components
                 if (info.firstCharacterIndex <= charIdx && info.lastCharacterIndex >= charIdx)
                     return i;
             }
+
             return -1;
         }
 
@@ -362,13 +372,14 @@ namespace IPA.ModList.BeatSaber.UI.Components
         private void Clear(bool destroying = false)
         {
             if (!destroying) gameObject.SetActive(false);
-            foreach (var go in createdObjects)
+            foreach (var go in _createdObjects)
             {
                 if (go == null) continue;
                 ClearObject(go.transform);
                 Destroy(go);
             }
-            createdObjects.Clear();
+
+            _createdObjects.Clear();
             if (!destroying) gameObject.SetActive(true);
         }
     }

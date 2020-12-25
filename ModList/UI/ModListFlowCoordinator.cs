@@ -1,32 +1,42 @@
-﻿using BeatSaberMarkupLanguage;
-using HMUI;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using BeatSaberMarkupLanguage;
+using HMUI;
+using IPA.Loader;
+using IPA.ModList.BeatSaber.Models;
+using IPA.ModList.BeatSaber.UI.ViewControllers;
+using SiraUtil.Tools;
+using Zenject;
 
 namespace IPA.ModList.BeatSaber.UI
 {
-    internal class ModListFlowCoordinator : FlowCoordinator
+    public class ModListFlowCoordinator : FlowCoordinator
     {
-        public FlowCoordinator ParentFlowCoordinator { get; set; }
-        private NavigationController naviController;
-        private ModListViewController listController;
-        private ListModalPopupViewController modalsController;
-        private ModInfoViewController infoController;
-        private ModControlsViewController controlsController;
+        private SiraLog _siraLog = null!;
+        private string _name = string.Empty;
 
-        public void Awake()
+        private MenuTransitionsHelper _menuTransitionsHelper = null!;
+
+        private ModListNavigationController _navigationController = null!;
+        private ModListViewController _modListViewController = null!;
+        private ModInfoViewController _modInfoViewController = null!;
+        private ModControlsViewController _modControlsViewController = null!;
+        private ModalPopupViewController _modalPopupViewController = null!;
+
+        [Inject]
+        internal void Construct(SiraLog siraLog, [Inject(Id = "name")] string modName, ModListNavigationController navigationController, ModListViewController modListViewController,
+            ModInfoViewController modInfoViewController, ModControlsViewController modControlsViewController, ModalPopupViewController modalPopupViewController,
+            MenuTransitionsHelper menuTransitionsHelper)
         {
-            if (naviController == null)
-            {
-                naviController = BeatSaberUI.CreateViewController<NavigationController>();
-                listController = BeatSaberUI.CreateViewController<ModListViewController>();
-                modalsController = BeatSaberUI.CreateViewController<ListModalPopupViewController>();
-                infoController = BeatSaberUI.CreateViewController<ModInfoViewController>();
-                controlsController = BeatSaberUI.CreateViewController<ModControlsViewController>();
-            }
+            _menuTransitionsHelper = menuTransitionsHelper;
+            _modControlsViewController = modControlsViewController;
+            _siraLog = siraLog;
+            _name = modName;
+
+            _navigationController = navigationController;
+            _modListViewController = modListViewController;
+            _modInfoViewController = modInfoViewController;
+            _modalPopupViewController = modalPopupViewController;
         }
 
         protected override void DidActivate(bool firstActivation, bool addedToHierarchy, bool screenSystemEnabling)
@@ -35,53 +45,76 @@ namespace IPA.ModList.BeatSaber.UI
             {
                 if (firstActivation)
                 {
+                    SetTitle(_name);
                     showBackButton = true;
-                    SetTitle(CompileConstants.Manifest.Name);
+                    SetViewControllersToNavigationController(_navigationController, _modListViewController, _modInfoViewController);
+                    ProvideInitialViewControllers(_navigationController, bottomScreenViewController: _modControlsViewController);
 
-                    SetViewControllersToNavigationController(naviController, listController);
-                    ProvideInitialViewControllers(mainViewController: naviController, bottomScreenViewController: controlsController);
+                    _modalPopupViewController.SetData(_navigationController.gameObject);
                 }
 
-                listController.DidSelectPlugin += HandleSelectPlugin;
-                controlsController.OnListNeedsRefresh += HandleListNeedsRefresh;
-                controlsController.OnChangeNeedsConfirmation += modalsController.QueueChange;
-
-                PushViewControllerToNavigationController(naviController, modalsController, immediately: true);
+                _modListViewController.DidSelectPlugin += HandleSelectPlugin;
+                _modControlsViewController.OnListNeedsRefresh += HandleListNeedsRefresh;
+                _modControlsViewController.OnChangeNeedsConfirmation += _modalPopupViewController.QueueChange;
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                Logger.log.Error("Error activating TestFlowCoordinator");
-                Logger.log.Error(e);
-            }        }
+                _siraLog.Error(ex);
+            }
+        }
 
         protected override void DidDeactivate(bool removedFromHierarchy, bool screenSystemDisabling)
         {
-            controlsController.OnChangeNeedsConfirmation -= modalsController.QueueChange;
-            controlsController.OnListNeedsRefresh -= HandleListNeedsRefresh;
-            listController.DidSelectPlugin -= HandleSelectPlugin;
+            _modControlsViewController.OnChangeNeedsConfirmation -= _modalPopupViewController.QueueChange;
+            _modControlsViewController.OnListNeedsRefresh -= HandleListNeedsRefresh;
+            _modListViewController.DidSelectPlugin -= HandleSelectPlugin;
 
             base.DidDeactivate(removedFromHierarchy, screenSystemDisabling);
         }
 
         private void HandleSelectPlugin(PluginInformation plugin)
         {
-            Logger.log.Info($"Mod list selected plugin {plugin.Plugin} ({plugin.State})");
-
-            infoController.SetPlugin(plugin);
-            controlsController.SetPlugin(plugin);
-            if (!infoController.Activated)
-                PushViewControllerToNavigationController(naviController, infoController);
+            _siraLog.Info($"Mod list selected plugin {plugin.Plugin} ({plugin.State})");
+            _modInfoViewController.SetPlugin(plugin);
+            _modControlsViewController.SetPlugin(plugin);
         }
 
         private void HandleListNeedsRefresh()
         {
-            listController.ReloadViewList();
+            _modListViewController.ReloadViewList();
         }
 
-        protected override void BackButtonWasPressed(ViewController topViewController)
+        protected override void BackButtonWasPressed(ViewController _)
         {
-            base.BackButtonWasPressed(topViewController);
-            ParentFlowCoordinator.DismissFlowCoordinator(this);
+            // Check whether there's a transaction going on and commit :eyes:
+            // TODO: Guess it's a good idea to add a confirmation here as well...
+            if (_modControlsViewController.CurrentTransaction != null && _modControlsViewController.ChangedCount > 0)
+            {
+                _modControlsViewController.CurrentTransaction
+                    .Commit()
+                    .ContinueWith(t =>
+                    {
+                        if (t.IsFaulted)
+                        {
+                            _siraLog.Error(t.Exception);
+                        }
+
+                        _modControlsViewController.CurrentTransaction = null;
+
+                        // No need to dismiss ourselves as the scene will be restarted "automagically".
+                        // That is if BS_Utils is installed and enabled... however... some people might wanna disable it for one reason or another.
+                        // So in that case, we'll restart the scene ourselves... less "automagically" though...
+                        if (PluginManager.EnabledPlugins.All(x => x.Id != "BS Utils"))
+                        {
+                            _menuTransitionsHelper.RestartGame();
+                        }
+                    });
+            }
+            else
+            {
+                // Dismiss ourselves
+                BeatSaberUI.MainFlowCoordinator.DismissFlowCoordinator(this);
+            }
         }
     }
 }
