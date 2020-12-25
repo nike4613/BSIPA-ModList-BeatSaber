@@ -18,11 +18,11 @@ namespace IPA.ModList.BeatSaber.UI.ViewControllers
 {
     internal class ModalPopupViewController : INotifyPropertyChanged
     {
-        private readonly SiraLog _siraLog;
+        private readonly SiraLog siraLog;
 
         internal ModalPopupViewController(SiraLog siraLog)
         {
-            _siraLog = siraLog;
+            this.siraLog = siraLog;
         }
 
         internal void SetData(GameObject parentGo)
@@ -67,7 +67,7 @@ namespace IPA.ModList.BeatSaber.UI.ViewControllers
 
         public void QueueChange(PluginInformation plugin, string type, IEnumerable<string> lines, Action<bool> completion)
         {
-            _siraLog.Debug($"Change queued: {plugin.Plugin.Name} {type} {string.Join(",", lines)}");
+            siraLog.Debug($"Change queued: {plugin.Plugin.Name} {type} {string.Join(",", lines)}");
             _changeQueue.Enqueue(new ChangeQueueItem(plugin, type, lines, completion));
             TryProcessNextChange();
         }
@@ -103,7 +103,7 @@ namespace IPA.ModList.BeatSaber.UI.ViewControllers
         [SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "BSML calls this")]
         private void ConfirmChange()
         {
-            _siraLog.Debug("Confirmed");
+            siraLog.Debug("Confirmed");
             CurrentChange?.OnCompletion?.Invoke(true);
 
             FinishCurrentChange();
@@ -113,7 +113,7 @@ namespace IPA.ModList.BeatSaber.UI.ViewControllers
         [SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "BSML calls this")]
         private void DenyChange()
         {
-            _siraLog.Debug("Declined");
+            siraLog.Debug("Declined");
             CurrentChange?.OnCompletion?.Invoke(false);
 
             FinishCurrentChange();
@@ -123,7 +123,7 @@ namespace IPA.ModList.BeatSaber.UI.ViewControllers
         {
             ChangeModal.Hide(true, () =>
             {
-                _siraLog.Debug("Hiding change");
+                siraLog.Debug("Hiding change");
 
                 CurrentChange = null;
                 TryProcessNextChange();
@@ -137,14 +137,14 @@ namespace IPA.ModList.BeatSaber.UI.ViewControllers
                 return;
             }
 
-            _siraLog.Debug("Presenting change");
+            siraLog.Debug("Presenting change");
 
             CurrentChange = _changeQueue.Dequeue();
             RefreshChangeItem();
 
             // Why are Unity and/or modals like this D:
             // Setting the animated parameter to true, prevents it from appearing a second time...
-            ChangeModal.Show(false, true, () => _siraLog.Debug("Change is being presented"));
+            ChangeModal.Show(false, true, () => siraLog.Debug("Change is being presented"));
         }
 
         public event PropertyChangedEventHandler? PropertyChanged;

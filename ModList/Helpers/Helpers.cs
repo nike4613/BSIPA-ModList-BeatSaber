@@ -15,54 +15,51 @@ namespace IPA.ModList.BeatSaber.Helpers
     // TODO: Split this class up some Sprite cache and other util methods are separated.
     internal static class Helpers
     {
-        private const string ResourcePrefix = "IPA.ModList.BeatSaber.Resources.";
+        private const string RESOURCE_PREFIX = "IPA.ModList.BeatSaber.Resources.";
 
-        private const string DefaultPluginIconResourcePath = ResourcePrefix + "mod_bsipa.png";
-        private static Sprite? _defaultPluginIcon;
-        public static Sprite DefaultPluginIcon => _defaultPluginIcon ??= ReadImageFromSelf(DefaultPluginIconResourcePath).AsSprite()!;
+        private const string DEFAULT_PLUGIN_ICON_RESOURCE_PATH = RESOURCE_PREFIX + "mod_bsipa.png";
+        private static Sprite? defaultPluginIcon;
+        public static Sprite DefaultPluginIcon => defaultPluginIcon ??= ReadImageFromSelf(DEFAULT_PLUGIN_ICON_RESOURCE_PATH).AsSprite()!;
 
-        private const string LegacyPluginIconResourcePath = ResourcePrefix + "mod_ipa.png";
-        private static Sprite? _legacyPluginIcon;
-        public static Sprite LegacyPluginIcon => _legacyPluginIcon ??= ReadImageFromSelf(LegacyPluginIconResourcePath).AsSprite()!;
+        private const string LEGACY_PLUGIN_ICON_RESOURCE_PATH = RESOURCE_PREFIX + "mod_ipa.png";
+        private static Sprite? legacyPluginIcon;
+        public static Sprite LegacyPluginIcon => legacyPluginIcon ??= ReadImageFromSelf(LEGACY_PLUGIN_ICON_RESOURCE_PATH).AsSprite()!;
 
-        private const string LibraryIconResourcePath = ResourcePrefix + "library.png";
-        private static Sprite? _libraryIcon;
-        public static Sprite LibraryIcon => _libraryIcon ??= ReadImageFromSelf(LibraryIconResourcePath).AsSprite()!;
+        private const string LIBRARY_ICON_RESOURCE_PATH = RESOURCE_PREFIX + "library.png";
+        private static Sprite? libraryIcon;
+        public static Sprite LibraryIcon => libraryIcon ??= ReadImageFromSelf(LIBRARY_ICON_RESOURCE_PATH).AsSprite()!;
 
-        private static string BareManifestIconResourcePath => LibraryIconResourcePath;
+        private static string BareManifestIconResourcePath => LIBRARY_ICON_RESOURCE_PATH;
         public static Sprite BareManifestIcon => LibraryIcon;
 
-        private static Sprite? _librarySprite;
-        public static Sprite LibrarySprite => _librarySprite ??= LibraryIcon;
+        private static Sprite? librarySprite;
+        public static Sprite LibrarySprite => librarySprite ??= LibraryIcon;
 
-        private const string XSpriteResourcePath = ResourcePrefix + "x.png";
-        private static Sprite? _xSprite;
-        public static Sprite XSprite => _xSprite ??= ReadImageFromSelf(XSpriteResourcePath).AsSprite()!;
+        private const string X_SPRITE_RESOURCE_PATH = RESOURCE_PREFIX + "x.png";
+        private static Sprite? xSprite;
+        public static Sprite XSprite => xSprite ??= ReadImageFromSelf(X_SPRITE_RESOURCE_PATH).AsSprite()!;
 
-        private const string OSpriteResourcePath = ResourcePrefix + "o.png";
-        private static Sprite? _oSprite;
-        public static Sprite OSprite => _oSprite ??= ReadImageFromSelf(ResourcePrefix + "o.png").AsSprite()!;
+        private const string O_SPRITE_RESOURCE_PATH = RESOURCE_PREFIX + "o.png";
+        private static Sprite? oSprite;
+        public static Sprite OSprite => oSprite ??= ReadImageFromSelf(RESOURCE_PREFIX + "o.png").AsSprite()!;
 
-        private const string WarnSpriteResourcePath = ResourcePrefix + "!.png";
-        private static Sprite? _warnSprite;
-        public static Sprite WarnSprite => _warnSprite ??= ReadImageFromSelf(ResourcePrefix + "!.png").AsSprite()!;
+        private const string WARN_SPRITE_RESOURCE_PATH = RESOURCE_PREFIX + "!.png";
+        private static Sprite? warnSprite;
+        public static Sprite WarnSprite => warnSprite ??= ReadImageFromSelf(RESOURCE_PREFIX + "!.png").AsSprite()!;
 
-        private static Sprite? _roundedBackgroundSprite;
+        private static Sprite? roundedBackgroundSprite;
 
-        public static Sprite RoundedBackgroundSprite => _roundedBackgroundSprite ??=
+        public static Sprite RoundedBackgroundSprite => roundedBackgroundSprite ??=
             Resources.FindObjectsOfTypeAll<Image>().Last(x => x.gameObject.name == "MinScoreInfo" && x.sprite != null && x.sprite.name == "RoundRectPanel").sprite;
 
-        private static Sprite? _smallRoundedRectSprite;
+        private static Sprite? smallRoundedRectSprite;
+        public static Sprite SmallRoundedRectSprite => smallRoundedRectSprite ??= LoadSmallRoundedRectSprite(false);
 
-        public static Sprite SmallRoundedRectSprite => _smallRoundedRectSprite ??= LoadSmallRoundedRectSprite(false);
+        private static Sprite? smallRoundedRectFlatSprite;
+        public static Sprite SmallRoundedRectFlatSprite => smallRoundedRectFlatSprite ??= LoadSmallRoundedRectSprite(true);
 
-        private static Sprite? _smallRoundedRectFlatSprite;
-
-        public static Sprite SmallRoundedRectFlatSprite => _smallRoundedRectFlatSprite ??= LoadSmallRoundedRectSprite(true);
-
-        private static Sprite? _tinyRoundedRectSprite;
-
-        public static Sprite TinyRoundedRectSprite => _tinyRoundedRectSprite ??= LoadTinyRoundedRectSprite();
+        private static Sprite? tinyRoundedRectSprite;
+        public static Sprite TinyRoundedRectSprite => tinyRoundedRectSprite ??= LoadTinyRoundedRectSprite();
 
         public static Texture2D? ReadImageFromSelf(string name) => ReadImageFromAssembly(typeof(Helpers).Assembly, name);
 
@@ -93,7 +90,7 @@ namespace IPA.ModList.BeatSaber.Helpers
 
         private static Sprite LoadSmallRoundedRectSprite(bool flatBottom = false)
         {
-            var tex = ReadImageFromSelf(ResourcePrefix + "small-rounded-rect.png")!;
+            var tex = ReadImageFromSelf(RESOURCE_PREFIX + "small-rounded-rect.png")!;
             return Sprite.Create(tex, new Rect(0, (flatBottom ? 32 : 0), tex.width, tex.height - (flatBottom ? 32 : 0)),
                 pivot: Vector2.zero,
                 border: new Vector4(32, flatBottom ? 1 : 32, 32, 32),
@@ -104,7 +101,7 @@ namespace IPA.ModList.BeatSaber.Helpers
 
         private static Sprite LoadTinyRoundedRectSprite()
         {
-            var tex = ReadImageFromSelf(ResourcePrefix + "tiny-rounded-rect.png")!;
+            var tex = ReadImageFromSelf(RESOURCE_PREFIX + "tiny-rounded-rect.png")!;
             return Sprite.Create(tex, new Rect(0, 0, tex.width, tex.height),
                 pivot: Vector2.zero,
                 border: new Vector4(8, 8, 8, 8),

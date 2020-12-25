@@ -14,47 +14,47 @@ namespace IPA.ModList.BeatSaber.UI.ViewControllers
     [ViewDefinition("IPA.ModList.BeatSaber.UI.Views.ModInfoView.bsml")]
     internal class ModInfoViewController : BSMLAutomaticViewController
     {
-        private SiraLog _siraLog = null!;
+        private SiraLog siraLog = null!;
 
-        private PluginInformation? _pluginInfo;
+        private PluginInformation? pluginInfo;
 
         internal bool Activated { get; private set; }
 
         [Inject]
         internal void Construct(SiraLog siraLog)
         {
-            _siraLog = siraLog;
+            this.siraLog = siraLog;
         }
 
         [UIParams]
         internal BSMLParserParams ParserParams = null!;
 
-        public Sprite? PluginIcon => _pluginInfo?.Icon;
+        public Sprite? PluginIcon => pluginInfo?.Icon;
 
         [UIValue("show-select-plugin-text")]
-        public bool ShowSelectPlugin => _pluginInfo == null;
+        public bool ShowSelectPlugin => pluginInfo == null;
 
         [UIValue("plugin-selected")]
-        public bool PluginSelected => _pluginInfo != null;
+        public bool PluginSelected => pluginInfo != null;
 
         [UIValue("name")]
-        public string PluginName => _pluginInfo?.Plugin.Name ?? string.Empty;
+        public string PluginName => pluginInfo?.Plugin.Name ?? string.Empty;
 
         [UIValue("version")]
-        public string PluginVersion => _pluginInfo?.Plugin.Version.ToString() ?? string.Empty;
+        public string PluginVersion => pluginInfo?.Plugin.Version.ToString() ?? string.Empty;
 
         [UIValue("author")]
-        public string PluginAuthor => _pluginInfo?.Plugin.Author ?? string.Empty;
+        public string PluginAuthor => pluginInfo?.Plugin.Author ?? string.Empty;
 
         [UIValue("description")]
-        public string PluginDescription => _pluginInfo?.Plugin.Description ?? string.Empty;
+        public string PluginDescription => pluginInfo?.Plugin.Description ?? string.Empty;
 
         [UIComponent("IconImage")]
         internal ImageView IconImage = null!;
 
         public void SetPlugin(PluginInformation plugin)
         {
-            _pluginInfo = plugin;
+            pluginInfo = plugin;
             NotifyPluginChanged();
         }
 
@@ -62,7 +62,7 @@ namespace IPA.ModList.BeatSaber.UI.ViewControllers
         [SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "BSML calls this")]
         private void OnDescriptionLinkPressed(string url, string title)
         {
-            _siraLog.Debug($"Link to {url} ({title}) has been clicked");
+            siraLog.Debug($"Link to {url} ({title}) has been clicked");
 
             OpenLink(url, title);
         }
@@ -75,9 +75,9 @@ namespace IPA.ModList.BeatSaber.UI.ViewControllers
         [UIValue("description-panel-height")]
         internal int PreferredDescriptionPanelHeight => HasLinks ? 50 : 60;
 
-        private string? SourceLink => _pluginInfo?.Plugin.PluginSourceLink?.ToString();
-        private string? HomeLink => _pluginInfo?.Plugin.PluginHomeLink?.ToString();
-        private string? DonateLink => _pluginInfo?.Plugin.DonateLink?.ToString();
+        private string? SourceLink => pluginInfo?.Plugin.PluginSourceLink?.ToString();
+        private string? HomeLink => pluginInfo?.Plugin.PluginHomeLink?.ToString();
+        private string? DonateLink => pluginInfo?.Plugin.DonateLink?.ToString();
 
         [UIValue("has_source_link")]
         internal bool HasSourceLink => SourceLink != null;
@@ -137,7 +137,7 @@ namespace IPA.ModList.BeatSaber.UI.ViewControllers
         [SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "BSML calls this")]
         private void OpenLink()
         {
-            _siraLog.Debug($"Link to {CurrentLinkUrl} ({CurrentLinkTitle}) has been confirmed");
+            siraLog.Debug($"Link to {CurrentLinkUrl} ({CurrentLinkTitle}) has been confirmed");
 
             Application.OpenURL(CurrentLinkUrl);
         }

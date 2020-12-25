@@ -9,29 +9,29 @@ namespace IPA.ModList.BeatSaber.Installers
 {
     public class AppInstaller : Installer<Logger, Config.Config, string, Version, AppInstaller>
     {
-        private readonly Logger _logger;
-        private readonly Config.Config _config;
-        private readonly string _name;
-        private readonly Version _version;
+        private readonly Logger logger;
+        private readonly Config.Config config;
+        private readonly string name;
+        private readonly Version version;
 
         public AppInstaller(Logger logger, Config.Config config, string name, Version version)
         {
-            _logger = logger;
-            _config = config;
-            _name = name;
-            _version = version;
+            this.logger = logger;
+            this.config = config;
+            this.name = name;
+            this.version = version;
         }
 
         public override void InstallBindings()
         {
-            Container.BindInstance(_name).WithId("name").AsSingle();
-            Container.BindInstance(_version).WithId("version").AsSingle();
+            Container.BindInstance(name).WithId("name").AsSingle();
+            Container.BindInstance(version).WithId("version").AsSingle();
 
-            _logger.Debug("Binding logger");
-            Container.BindLoggerAsSiraLogger(_logger);
+            logger.Debug("Binding logger");
+            Container.BindLoggerAsSiraLogger(logger);
 
-            _logger.Debug($"Binding {nameof(ModListConfig)}");
-            ModListConfig.Instance ??= _config.Generated<ModListConfig>();
+            logger.Debug($"Binding {nameof(ModListConfig)}");
+            ModListConfig.Instance ??= config.Generated<ModListConfig>();
             Container.BindInstance(ModListConfig.Instance).AsSingle();
 
             Container.BindInterfacesAndSelfTo<ModProviderService>().AsSingle().Lazy();

@@ -12,31 +12,31 @@ namespace IPA.ModList.BeatSaber.UI
 {
     public class ModListFlowCoordinator : FlowCoordinator
     {
-        private SiraLog _siraLog = null!;
-        private string _name = string.Empty;
+        private SiraLog siraLog = null!;
+        private string modName = string.Empty;
 
-        private MenuTransitionsHelper _menuTransitionsHelper = null!;
+        private MenuTransitionsHelper menuTransitionsHelper = null!;
 
-        private ModListNavigationController _navigationController = null!;
-        private ModListViewController _modListViewController = null!;
-        private ModInfoViewController _modInfoViewController = null!;
-        private ModControlsViewController _modControlsViewController = null!;
-        private ModalPopupViewController _modalPopupViewController = null!;
+        private ModListNavigationController navigationController = null!;
+        private ModListViewController modListViewController = null!;
+        private ModInfoViewController modInfoViewController = null!;
+        private ModControlsViewController modControlsViewController = null!;
+        private ModalPopupViewController modalPopupViewController = null!;
 
         [Inject]
         internal void Construct(SiraLog siraLog, [Inject(Id = "name")] string modName, ModListNavigationController navigationController, ModListViewController modListViewController,
             ModInfoViewController modInfoViewController, ModControlsViewController modControlsViewController, ModalPopupViewController modalPopupViewController,
             MenuTransitionsHelper menuTransitionsHelper)
         {
-            _menuTransitionsHelper = menuTransitionsHelper;
-            _modControlsViewController = modControlsViewController;
-            _siraLog = siraLog;
-            _name = modName;
+            this.menuTransitionsHelper = menuTransitionsHelper;
+            this.modControlsViewController = modControlsViewController;
+            this.siraLog = siraLog;
+            this.modName = modName;
 
-            _navigationController = navigationController;
-            _modListViewController = modListViewController;
-            _modInfoViewController = modInfoViewController;
-            _modalPopupViewController = modalPopupViewController;
+            this.navigationController = navigationController;
+            this.modListViewController = modListViewController;
+            this.modInfoViewController = modInfoViewController;
+            this.modalPopupViewController = modalPopupViewController;
         }
 
         protected override void DidActivate(bool firstActivation, bool addedToHierarchy, bool screenSystemEnabling)
@@ -45,68 +45,68 @@ namespace IPA.ModList.BeatSaber.UI
             {
                 if (firstActivation)
                 {
-                    SetTitle(_name);
+                    SetTitle(modName);
                     showBackButton = true;
-                    SetViewControllersToNavigationController(_navigationController, _modListViewController, _modInfoViewController);
-                    ProvideInitialViewControllers(_navigationController, bottomScreenViewController: _modControlsViewController);
+                    SetViewControllersToNavigationController(navigationController, modListViewController, modInfoViewController);
+                    ProvideInitialViewControllers(navigationController, bottomScreenViewController: modControlsViewController);
 
-                    _modalPopupViewController.SetData(_navigationController.gameObject);
+                    modalPopupViewController.SetData(navigationController.gameObject);
                 }
 
-                _modListViewController.DidSelectPlugin += HandleSelectPlugin;
-                _modControlsViewController.OnListNeedsRefresh += HandleListNeedsRefresh;
-                _modControlsViewController.OnChangeNeedsConfirmation += _modalPopupViewController.QueueChange;
+                modListViewController.DidSelectPlugin += HandleSelectPlugin;
+                modControlsViewController.OnListNeedsRefresh += HandleListNeedsRefresh;
+                modControlsViewController.OnChangeNeedsConfirmation += modalPopupViewController.QueueChange;
             }
             catch (Exception ex)
             {
-                _siraLog.Error(ex);
+                siraLog.Error(ex);
             }
         }
 
         protected override void DidDeactivate(bool removedFromHierarchy, bool screenSystemDisabling)
         {
-            _modControlsViewController.OnChangeNeedsConfirmation -= _modalPopupViewController.QueueChange;
-            _modControlsViewController.OnListNeedsRefresh -= HandleListNeedsRefresh;
-            _modListViewController.DidSelectPlugin -= HandleSelectPlugin;
+            modControlsViewController.OnChangeNeedsConfirmation -= modalPopupViewController.QueueChange;
+            modControlsViewController.OnListNeedsRefresh -= HandleListNeedsRefresh;
+            modListViewController.DidSelectPlugin -= HandleSelectPlugin;
 
             base.DidDeactivate(removedFromHierarchy, screenSystemDisabling);
         }
 
         private void HandleSelectPlugin(PluginInformation plugin)
         {
-            _siraLog.Info($"Mod list selected plugin {plugin.Plugin} ({plugin.State})");
-            _modInfoViewController.SetPlugin(plugin);
-            _modControlsViewController.SetPlugin(plugin);
+            siraLog.Info($"Mod list selected plugin {plugin.Plugin} ({plugin.State})");
+            modInfoViewController.SetPlugin(plugin);
+            modControlsViewController.SetPlugin(plugin);
         }
 
         private void HandleListNeedsRefresh()
         {
-            _modListViewController.ReloadViewList();
+            modListViewController.ReloadViewList();
         }
 
         protected override void BackButtonWasPressed(ViewController _)
         {
             // Check whether there's a transaction going on and commit :eyes:
             // TODO: Guess it's a good idea to add a confirmation here as well...
-            if (_modControlsViewController.CurrentTransaction != null && _modControlsViewController.ChangedCount > 0)
+            if (modControlsViewController.CurrentTransaction != null && modControlsViewController.ChangedCount > 0)
             {
-                _modControlsViewController.CurrentTransaction
+                modControlsViewController.CurrentTransaction
                     .Commit()
                     .ContinueWith(t =>
                     {
                         if (t.IsFaulted)
                         {
-                            _siraLog.Error(t.Exception);
+                            siraLog.Error(t.Exception);
                         }
 
-                        _modControlsViewController.CurrentTransaction = null;
+                        modControlsViewController.CurrentTransaction = null;
 
                         // No need to dismiss ourselves as the scene will be restarted "automagically".
                         // That is if BS_Utils is installed and enabled... however... some people might wanna disable it for one reason or another.
                         // So in that case, we'll restart the scene ourselves... less "automagically" though...
                         if (PluginManager.EnabledPlugins.All(x => x.Id != "BS Utils"))
                         {
-                            _menuTransitionsHelper.RestartGame();
+                            menuTransitionsHelper.RestartGame();
                         }
                     });
             }

@@ -1,5 +1,4 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using System.Reflection;
+﻿using System.Reflection;
 using IPA.Loader;
 using IPA.Logging;
 using IPA.ModList.BeatSaber.Installers;

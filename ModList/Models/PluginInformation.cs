@@ -6,11 +6,11 @@ namespace IPA.ModList.BeatSaber.Models
 {
     internal class PluginInformation
     {
-        private Sprite? _icon;
+        private Sprite? icon;
 
         public PluginMetadata Plugin { get; }
         public PluginState State { get; set; }
-        public Sprite Icon => _icon ??= Plugin.ReadPluginIcon();
+        public Sprite Icon => icon ??= Plugin.ReadPluginIcon();
 
         public PluginInformation(PluginMetadata meta, PluginState state)
         {

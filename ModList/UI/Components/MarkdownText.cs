@@ -64,7 +64,11 @@ namespace IPA.ModList.BeatSaber.UI.Components
 
         internal void Update()
         {
-            if (resetRenderer) _renderer = null;
+            if (resetRenderer)
+            {
+                renderer = null;
+            }
+
             if (IsDirty && text != null)
             {
                 Clear();
@@ -73,13 +77,12 @@ namespace IPA.ModList.BeatSaber.UI.Components
             }
         }
 
-        internal void OnDestroy()
-            => Clear();
+        internal void OnDestroy() => Clear();
 
-        private static MarkdownPipeline? _pipeline = null;
+        private static MarkdownPipeline? pipeline = null;
 
         public static MarkdownPipeline Pipeline
-            => _pipeline ??= new MarkdownPipelineBuilder()
+            => pipeline ??= new MarkdownPipelineBuilder()
                 .UseAutoLinks().UseListExtras().UsePreciseSourceLocation()
                 // the renderer treats the Subscript `~` as underline
                 .UseEmphasisExtras(EmphasisExtraOptions.Strikethrough | EmphasisExtraOptions.Subscript)
@@ -87,8 +90,8 @@ namespace IPA.ModList.BeatSaber.UI.Components
                 // .WithLogger(Logger.md)
                 .Build();
 
-        private UnityRenderer? _renderer = null;
-        public UnityRenderer Renderer => _renderer ??= CreateRenderer();
+        private UnityRenderer? renderer = null;
+        public UnityRenderer Renderer => renderer ??= CreateRenderer();
 
         private const uint UnicodePrivateUseStart = 0xE000;
         private const uint UnicodePrivateUseEnd = 0xF8FF;

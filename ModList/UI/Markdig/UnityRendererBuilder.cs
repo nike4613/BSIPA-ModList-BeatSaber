@@ -12,26 +12,26 @@ namespace IPA.ModList.BeatSaber.UI.Markdig
         UnityRendererBuilder.IQuoteRendererBuilder,
         UnityRendererBuilder.ICodeRendererBuilder,
         UnityRendererBuilder.IInlineCodeRendererBuilder,
-        UnityRendererBuilder.IUIRendererBuidler
+        UnityRendererBuilder.IuiRendererBuidler
     {
-        private Material _uiMat = null;
-        private TMP_FontAsset _uiFont = null;
-        private Color _uiColor = Color.white;
-        private Color _linkColor = Color.cyan;
-        private Color? _autolinkColor = null;
+        private Material uiMat = null;
+        private TMP_FontAsset uiFont = null;
+        private Color uiColor = Color.white;
+        private Color linkColor = Color.cyan;
+        private Color? autolinkColor = null;
 
-        private Color? _quoteColor = null;
-        private Sprite _quoteBg = null;
-        private Image.Type _quoteBgType;
+        private Color? quoteColor = null;
+        private Sprite quoteBg = null;
+        private Image.Type quoteBgType;
 
-        private Color? _codeColor = null;
-        private Sprite _codeBg = null;
-        private Image.Type? _codeBgType = null;
-        private Color? _codeInlineColor = null;
-        private Sprite _codeInlineBg = null;
-        private Image.Type? _codeInlineBgType = null;
-        private TMP_FontAsset _codeFont = null;
-        private string _codeInlinePadding = "";
+        private Color? codeColor = null;
+        private Sprite codeBg = null;
+        private Image.Type? codeBgType = null;
+        private Color? codeInlineColor = null;
+        private Sprite codeInlineBg = null;
+        private Image.Type? codeInlineBgType = null;
+        private TMP_FontAsset codeFont = null;
+        private string codeInlinePadding = "";
 
         private event Action<MarkdownObject, GameObject> ObjRenderCallback;
         private event UnityRenderer.LinkRendered LinkRenderCallback;
@@ -66,7 +66,7 @@ namespace IPA.ModList.BeatSaber.UI.Markdig
             UnityRendererBuilder Builder { get; }
         }
 
-        public interface IUIRendererBuidler
+        public interface IuiRendererBuidler
         {
             UnityRendererBuilder Material(Material mat);
             UnityRendererBuilder Color(Color col);
@@ -79,7 +79,7 @@ namespace IPA.ModList.BeatSaber.UI.Markdig
             get => this;
         }
 
-        public IUIRendererBuidler UI
+        public IuiRendererBuidler UI
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => this;
@@ -113,66 +113,66 @@ namespace IPA.ModList.BeatSaber.UI.Markdig
 
         public UnityRenderer Build()
         {
-            if (_uiMat == null) throw new ArgumentNullException(nameof(UnityRenderer.UIMaterial));
-            if (_uiFont == null) throw new ArgumentNullException(nameof(UnityRenderer.UIFont));
-            if (_quoteColor == null) throw new ArgumentNullException(nameof(UnityRenderer.QuoteColor));
-            if (_quoteBg == null) throw new ArgumentNullException(nameof(UnityRenderer.QuoteBackground));
+            if (uiMat == null) throw new ArgumentNullException(nameof(UnityRenderer.UIMaterial));
+            if (uiFont == null) throw new ArgumentNullException(nameof(UnityRenderer.UIFont));
+            if (quoteColor == null) throw new ArgumentNullException(nameof(UnityRenderer.QuoteColor));
+            if (quoteBg == null) throw new ArgumentNullException(nameof(UnityRenderer.QuoteBackground));
 
-            var codeBg = _codeBg ?? _quoteBg;
-            var codeBgType = _codeBgType ?? _quoteBgType;
-            var codeColor = _codeColor ?? _quoteColor.Value;
-            var inlineCodeBg = _codeInlineBg ?? codeBg;
-            var inlineCodeBgType = _codeInlineBgType ?? codeBgType;
-            var inlineCodeColor = _codeInlineColor ?? codeColor;
+            var codeBg = this.codeBg ?? quoteBg;
+            var codeBgType = this.codeBgType ?? quoteBgType;
+            var codeColor = this.codeColor ?? quoteColor.Value;
+            var inlineCodeBg = codeInlineBg ?? codeBg;
+            var inlineCodeBgType = codeInlineBgType ?? codeBgType;
+            var inlineCodeColor = codeInlineColor ?? codeColor;
 
-            var render = new UnityRenderer(_uiMat, _uiFont,
-                _linkColor, _autolinkColor ?? _linkColor,
-                _quoteBg, _quoteBgType, _quoteColor.Value,
+            var render = new UnityRenderer(uiMat, uiFont,
+                linkColor, autolinkColor ?? linkColor,
+                quoteBg, quoteBgType, quoteColor.Value,
                 codeBg, codeBgType, codeColor,
-                inlineCodeBg, inlineCodeBgType, inlineCodeColor) {UIColor = _uiColor, CodeFont = _codeFont, InlineCodePaddingText = _codeInlinePadding,};
+                inlineCodeBg, inlineCodeBgType, inlineCodeColor) {UIColor = uiColor, CodeFont = codeFont, InlineCodePaddingText = codeInlinePadding,};
             render.AfterObjectRendered += ObjRenderCallback;
             render.OnLinkRendered += LinkRenderCallback;
             return render;
         }
 
-        UnityRendererBuilder ILinkRendererBuilder.UseColor(Color col) => Do(_linkColor = col);
-        UnityRendererBuilder ILinkRendererBuilder.UseAutoColor(Color col) => Do(_autolinkColor = col);
+        UnityRendererBuilder ILinkRendererBuilder.UseColor(Color col) => Do(linkColor = col);
+        UnityRendererBuilder ILinkRendererBuilder.UseAutoColor(Color col) => Do(autolinkColor = col);
 
-        UnityRendererBuilder IUIRendererBuidler.Color(Color col) => Do(_uiColor = col);
+        UnityRendererBuilder IuiRendererBuidler.Color(Color col) => Do(uiColor = col);
 
-        UnityRendererBuilder IUIRendererBuidler.Material(Material mat) => Do(_uiMat = mat);
+        UnityRendererBuilder IuiRendererBuidler.Material(Material mat) => Do(uiMat = mat);
 
-        UnityRendererBuilder IUIRendererBuidler.Font(TMP_FontAsset font) => Do(_uiFont = font);
+        UnityRendererBuilder IuiRendererBuidler.Font(TMP_FontAsset font) => Do(uiFont = font);
 
-        UnityRendererBuilder IQuoteRendererBuilder.UseColor(Color col) => Do(_quoteColor = col);
+        UnityRendererBuilder IQuoteRendererBuilder.UseColor(Color col) => Do(quoteColor = col);
 
         UnityRendererBuilder IQuoteRendererBuilder.UseBackground(Sprite bg, Image.Type type)
         {
-            _quoteBg = bg;
-            _quoteBgType = type;
+            quoteBg = bg;
+            quoteBgType = type;
             return this;
         }
 
-        UnityRendererBuilder ICodeRendererBuilder.UseColor(Color col) => Do(_codeColor = col);
+        UnityRendererBuilder ICodeRendererBuilder.UseColor(Color col) => Do(codeColor = col);
 
         UnityRendererBuilder ICodeRendererBuilder.UseBackground(Sprite bg, Image.Type type)
         {
-            _codeBg = bg;
-            _codeBgType = type;
+            codeBg = bg;
+            codeBgType = type;
             return this;
         }
 
-        UnityRendererBuilder ICodeRendererBuilder.UseFont(TMP_FontAsset font) => Do(_codeFont = font);
+        UnityRendererBuilder ICodeRendererBuilder.UseFont(TMP_FontAsset font) => Do(codeFont = font);
 
         UnityRendererBuilder IInlineCodeRendererBuilder.UseBackground(Sprite bg, Image.Type type)
         {
-            _codeInlineBg = bg;
-            _codeInlineBgType = type;
+            codeInlineBg = bg;
+            codeInlineBgType = type;
             return this;
         }
 
-        UnityRendererBuilder IInlineCodeRendererBuilder.UseColor(Color col) => Do(_codeInlineColor = col);
-        UnityRendererBuilder IInlineCodeRendererBuilder.UsePadding(string padding) => Do(_codeInlinePadding = padding);
+        UnityRendererBuilder IInlineCodeRendererBuilder.UseColor(Color col) => Do(codeInlineColor = col);
+        UnityRendererBuilder IInlineCodeRendererBuilder.UsePadding(string padding) => Do(codeInlinePadding = padding);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private UnityRendererBuilder Do<T>(T _) => this;

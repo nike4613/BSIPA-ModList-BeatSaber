@@ -8,16 +8,16 @@ namespace IPA.ModList.BeatSaber.Installers
 {
     public class MenuInstaller : Installer<MenuInstaller>
     {
-        private readonly SiraLog _siraLog;
+        private readonly SiraLog siraLog;
 
         public MenuInstaller(SiraLog siraLog)
         {
-            _siraLog = siraLog;
+            this.siraLog = siraLog;
         }
 
         public override void InstallBindings()
         {
-            _siraLog.Debug($"Running {nameof(InstallBindings)} of {nameof(MenuInstaller)}");
+            siraLog.Debug($"Running {nameof(InstallBindings)} of {nameof(MenuInstaller)}");
 
             Container.Bind<ModListNavigationController>().FromNewComponentAsViewController().AsSingle();
             Container.Bind<ModListViewController>().FromNewComponentAsViewController().AsSingle();

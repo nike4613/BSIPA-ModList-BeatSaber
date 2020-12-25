@@ -19,8 +19,8 @@ namespace IPA.ModList.BeatSaber.UI.ViewControllers
     [ViewDefinition("IPA.ModList.BeatSaber.UI.Views.ModListView.bsml")]
     internal class ModListViewController : BSMLAutomaticViewController
     {
-        private SiraLog _siraLog = null!;
-        private ModProviderService _modProviderService = null!;
+        private SiraLog siraLog = null!;
+        private ModProviderService modProviderService = null!;
 
         private List<object> ListValues { get; } = new List<object>();
 
@@ -28,14 +28,14 @@ namespace IPA.ModList.BeatSaber.UI.ViewControllers
         [Inject]
         internal void Construct(SiraLog siraLog, ModProviderService modProviderService)
         {
-            _siraLog = siraLog;
-            _modProviderService = modProviderService;
+            this.siraLog = siraLog;
+            this.modProviderService = modProviderService;
         }
 
         internal event Action<PluginInformation>? DidSelectPlugin;
 
         [UIComponent("list")]
-        internal CustomCellListTableData customListTableData = null!;
+        internal CustomCellListTableData CustomListTableData = null!;
 
         [UIAction("list-select")]
         [SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "BSML calls this")]
@@ -43,7 +43,7 @@ namespace IPA.ModList.BeatSaber.UI.ViewControllers
         {
             var index = ListValues.IndexOf(@object);
 
-            DidSelectPlugin?.Invoke(_modProviderService.PluginList[index]);
+            DidSelectPlugin?.Invoke(modProviderService.PluginList[index]);
         }
 
         [UIAction("#post-parse")]
@@ -53,20 +53,20 @@ namespace IPA.ModList.BeatSaber.UI.ViewControllers
             var stoppyWatch = new System.Diagnostics.Stopwatch();
             stoppyWatch.Start();
 
-            if (customListTableData != null)
+            if (CustomListTableData != null)
             {
-                customListTableData.data = ListValues;
+                CustomListTableData.data = ListValues;
             }
 
             stoppyWatch.Stop();
-            _siraLog.Warning($"ModListViewController post-parse setup took {stoppyWatch.Elapsed:c}");
+            siraLog.Warning($"ModListViewController post-parse setup took {stoppyWatch.Elapsed:c}");
         }
 
         protected override void DidActivate(bool firstActivation, bool addedToHierarchy, bool screenSystemEnabling)
         {
             base.DidActivate(firstActivation, addedToHierarchy, screenSystemEnabling);
 
-            if (customListTableData != null && customListTableData.data?.Count != _modProviderService.PluginList.Count)
+            if (CustomListTableData != null && CustomListTableData.data?.Count != modProviderService.PluginList.Count)
             {
                 ReloadViewList();
             }
@@ -75,7 +75,7 @@ namespace IPA.ModList.BeatSaber.UI.ViewControllers
         internal void ReloadViewList()
         {
             ListValues.Clear();
-            ListValues.AddRange(_modProviderService.PluginList.Select(p =>
+            ListValues.AddRange(modProviderService.PluginList.Select(p =>
                 new PluginCellViewController(
                     p.Plugin.Name,
                     $"{p.Plugin.Author} <size=80%>{p.Plugin.Version}</size>",
@@ -85,20 +85,10 @@ namespace IPA.ModList.BeatSaber.UI.ViewControllers
                         .AppendIf(p.State == PluginState.Disabled, Helpers.Helpers.XSprite)
                         .AppendIf(p.State == PluginState.Enabled && p.Plugin.RuntimeOptions == RuntimeOptions.DynamicInit, Helpers.Helpers.OSprite)
                         .AppendIf(p.State == PluginState.Ignored, Helpers.Helpers.WarnSprite))));
-            /*PluginList.Select(p =>
-                new CustomListTableData.CustomCellInfo(
-                    p.Plugin.Name,
-                    $"{p.Plugin.Author} <size=80%>{p.Plugin.Version}</size>",
-                    p.Icon.AsSprite(),
-                    Enumerable.Empty<Sprite>()
-                        .AppendIf(p.Plugin.IsBare, Helpers.LibrarySprite)
-                        .AppendIf(p.State == PluginState.Disabled, Helpers.XSprite)
-                        .AppendIf(p.State == PluginState.Enabled && p.Plugin.RuntimeOptions == RuntimeOptions.DynamicInit, Helpers.OSprite)
-                        .AppendIf(p.State == PluginState.Ignored, Helpers.WarnSprite))));*/
 
-            if (customListTableData != null && customListTableData.tableView != null)
+            if (CustomListTableData != null && CustomListTableData.tableView != null)
             {
-                customListTableData.tableView.ReloadData();
+                CustomListTableData.tableView.ReloadData();
             }
         }
     }

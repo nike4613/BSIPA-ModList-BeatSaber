@@ -7,44 +7,44 @@ namespace IPA.ModList.BeatSaber.UI
 {
     internal class ModListButtonManager : IInitializable, IDisposable
     {
-        private readonly ModListFlowCoordinator _modListFlowCoordinator;
-        private MenuButton? _modListButton;
+        private readonly ModListFlowCoordinator modListFlowCoordinator;
+        private MenuButton? modListButton;
 
         [Inject]
-        public ModListButtonManager(ModListFlowCoordinator modListFlowCoordinator, [Inject(Id = "name")] string name)
+        public ModListButtonManager(ModListFlowCoordinator flowCoordinator, [Inject(Id = "name")] string name)
         {
-            _modListFlowCoordinator = modListFlowCoordinator;
-            _modListButton = new MenuButton(name, "Select the config you want.", OnClick);
+            modListFlowCoordinator = flowCoordinator;
+            modListButton = new MenuButton(name, "Select the config you want.", OnClick);
         }
 
         public void Initialize()
         {
-            MenuButtons.instance.RegisterButton(_modListButton);
+            MenuButtons.instance.RegisterButton(modListButton);
         }
 
         private void OnClick()
         {
-            if (_modListFlowCoordinator == null)
+            if (modListFlowCoordinator == null)
             {
                 return;
             }
 
-            BeatSaberUI.MainFlowCoordinator.PresentFlowCoordinator(_modListFlowCoordinator);
+            BeatSaberUI.MainFlowCoordinator.PresentFlowCoordinator(modListFlowCoordinator);
         }
 
         public void Dispose()
         {
-            if (_modListButton == null)
+            if (modListButton == null)
             {
                 return;
             }
 
             if (MenuButtons.IsSingletonAvailable)
             {
-                MenuButtons.instance.UnregisterButton(_modListButton);
+                MenuButtons.instance.UnregisterButton(modListButton);
             }
 
-            _modListButton = null!;
+            modListButton = null!;
         }
     }
 }

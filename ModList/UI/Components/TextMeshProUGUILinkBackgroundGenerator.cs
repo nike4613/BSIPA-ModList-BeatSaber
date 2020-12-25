@@ -20,26 +20,26 @@ namespace IPA.ModList.BeatSaber.UI.Components
         /// </summary>
         public Transform BackgroundParent { get; set; }
 
-        private bool _useLineHeight = false;
+        private bool useLineHeight = false;
 
         public bool UseLineHeight
         {
-            get => _useLineHeight;
+            get => useLineHeight;
             set
             {
-                _useLineHeight = value;
+                useLineHeight = value;
                 _needsRerender = true;
             }
         }
 
-        private bool _createSingleObjectForLinks = true;
+        private bool createSingleObjectForLinks = true;
 
         public bool CreateSingleObjectForLinks
         {
-            get => _createSingleObjectForLinks;
+            get => createSingleObjectForLinks;
             set
             {
-                _createSingleObjectForLinks = value;
+                createSingleObjectForLinks = value;
                 _needsRerender = true;
             }
         }
