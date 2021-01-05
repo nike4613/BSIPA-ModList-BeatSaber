@@ -24,7 +24,7 @@ namespace IPA.ModList.BeatSaber.UI
         private ModalPopupViewController modalPopupViewController = null!;
 
         [Inject]
-        internal void Construct(SiraLog siraLog, [Inject(Id = "name")] string modName, ModListNavigationController navigationController, ModListViewController modListViewController,
+        internal void Construct(SiraLog siraLog, [Inject(Id = "modListName")] string modName, ModListNavigationController navigationController, ModListViewController modListViewController,
             ModInfoViewController modInfoViewController, ModControlsViewController modControlsViewController, ModalPopupViewController modalPopupViewController,
             MenuTransitionsHelper menuTransitionsHelper)
         {

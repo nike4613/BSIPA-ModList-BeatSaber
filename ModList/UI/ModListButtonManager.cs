@@ -11,7 +11,7 @@ namespace IPA.ModList.BeatSaber.UI
         private MenuButton? modListButton;
 
         [Inject]
-        public ModListButtonManager(ModListFlowCoordinator flowCoordinator, [Inject(Id = "name")] string name)
+        public ModListButtonManager(ModListFlowCoordinator flowCoordinator, [Inject(Id = "modListName")] string name)
         {
             modListFlowCoordinator = flowCoordinator;
             modListButton = new MenuButton(name, "Select the config you want.", OnClick);

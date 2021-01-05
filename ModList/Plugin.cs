@@ -2,7 +2,6 @@
 using IPA.Loader;
 using IPA.Logging;
 using IPA.ModList.BeatSaber.Installers;
-using SemVer;
 using SiraUtil.Zenject;
 
 namespace IPA.ModList.BeatSaber
@@ -17,9 +16,7 @@ namespace IPA.ModList.BeatSaber
         {
             Logger = log;
 
-            zenject.OnApp<AppInstaller>().WithParameters(log, config,
-                pluginMetadata.Name ?? Assembly.GetExecutingAssembly().GetName().Name,
-                pluginMetadata.Version ?? new Version(Assembly.GetExecutingAssembly().GetName().Version.ToString(3)));
+            zenject.OnApp<AppInstaller>().WithParameters(log, config, pluginMetadata.Name ?? Assembly.GetExecutingAssembly().GetName().Name);
             zenject.OnMenu<Installers.MenuInstaller>();
         }
 
