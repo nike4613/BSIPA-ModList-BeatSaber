@@ -10,7 +10,7 @@ using Zenject;
 
 namespace IPA.ModList.BeatSaber.UI
 {
-    public class ModListFlowCoordinator : FlowCoordinator
+    internal class ModListFlowCoordinator : FlowCoordinator
     {
         private SiraLog siraLog = null!;
         private string modName = string.Empty;

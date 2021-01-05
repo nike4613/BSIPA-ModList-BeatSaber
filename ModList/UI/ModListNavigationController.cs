@@ -2,7 +2,7 @@
 
 namespace IPA.ModList.BeatSaber.UI
 {
-    public class ModListNavigationController : NavigationController
+    internal class ModListNavigationController : NavigationController
     {
     }
 }
