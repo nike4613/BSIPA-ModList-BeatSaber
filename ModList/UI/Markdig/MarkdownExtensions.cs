@@ -29,34 +29,34 @@ namespace IPA.ModList.BeatSaber.UI.Markdig
 
             public override Encoding Encoding => Encoding.Default;
 
-            private readonly StringBuilder _builder = new StringBuilder();
+            private readonly StringBuilder builder = new StringBuilder();
 
             public override void Write(char value)
             {
-                if ((value == '\n' || value == '\r') && _builder.Length > 0)
+                if ((value == '\n' || value == '\r') && builder.Length > 0)
                 {
                     Flush();
                 }
                 else
                 {
-                    _builder.Append(value);
+                    builder.Append(value);
                 }
             }
 
-            public override void Write(string value) => _builder.Append(value);
+            public override void Write(string value) => builder.Append(value);
 
             public override void WriteLine() => Flush();
 
             public override void WriteLine(string value)
             {
-                _builder.Append(value);
+                builder.Append(value);
                 Flush();
             }
 
             public override void Flush()
             {
-                logger.Log(level, _builder.ToString());
-                _builder.Clear();
+                logger.Log(level, builder.ToString());
+                builder.Clear();
             }
         }
     }

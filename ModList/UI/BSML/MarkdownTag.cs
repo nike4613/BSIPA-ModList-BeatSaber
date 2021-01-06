@@ -30,11 +30,7 @@ namespace IPA.ModList.BeatSaber.UI.BSML
             // Logger.md.Warn("Cannot correctly unregister because BSML does not yet support it!");
         }
 
-        public override string[] Aliases { get; } =
-        {
-            "markdown",
-            "md"
-        };
+        public override string[] Aliases { get; } = { "markdown", "md" };
 
         public override bool AddChildren => false;
 

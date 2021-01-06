@@ -15,19 +15,19 @@ namespace IPA.ModList.BeatSaber.UI.BSML
     {
         public override Dictionary<string, string[]> Props { get; } = new Dictionary<string, string[]>
         {
-            {"text", new[] {"text", "value"}},
-            {"childText", new[] {"_children"}},
-            {"linkPressed", new[] {"link-pressed"}},
-            {"linkColor", new[] {"link-color"}},
-            {"autolinkColor", new[] {"autolink-color"}}
+            { "text", new[] { "text", "value" } },
+            { "childText", new[] { "_children" } },
+            { "linkPressed", new[] { "link-pressed" } },
+            { "linkColor", new[] { "link-color" } },
+            { "autolinkColor", new[] { "autolink-color" } }
         };
 
         public override Dictionary<string, Action<MarkdownText, string>> Setters { get; } = new Dictionary<string, Action<MarkdownText, string>>
         {
-            {"text", (md, text) => md.Text = text},
-            {"childText", HandleTextAsChildren},
-            {"linkColor", (md, col) => md.LinkColor = GetColor(col, md.LinkColor)},
-            {"autolinkColor", (md, col) => md.AutolinkColor = GetColor(col, md.AutolinkColor)}
+            { "text", (md, text) => md.Text = text },
+            { "childText", HandleTextAsChildren },
+            { "linkColor", (md, col) => md.LinkColor = GetColor(col, md.LinkColor) },
+            { "autolinkColor", (md, col) => md.AutolinkColor = GetColor(col, md.AutolinkColor) }
         };
 
         private static void HandleTextAsChildren(MarkdownText obj, string content)

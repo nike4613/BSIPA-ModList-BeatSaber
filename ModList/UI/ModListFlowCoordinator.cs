@@ -88,6 +88,7 @@ namespace IPA.ModList.BeatSaber.UI
         {
             // Check whether there's a transaction going on and commit :eyes:
             // TODO: Guess it's a good idea to add a confirmation here as well...
+            // TODO: Should also show an additional warning when the user tries to disable ModList itself.
             if (modControlsViewController.CurrentTransaction != null && modControlsViewController.ChangedCount > 0)
             {
                 modControlsViewController.CurrentTransaction

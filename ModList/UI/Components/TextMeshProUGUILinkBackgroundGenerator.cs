@@ -28,7 +28,7 @@ namespace IPA.ModList.BeatSaber.UI.Components
             set
             {
                 useLineHeight = value;
-                _needsRerender = true;
+                needsRerender = true;
             }
         }
 
@@ -40,7 +40,7 @@ namespace IPA.ModList.BeatSaber.UI.Components
             set
             {
                 createSingleObjectForLinks = value;
-                _needsRerender = true;
+                needsRerender = true;
             }
         }
 
@@ -102,8 +102,8 @@ namespace IPA.ModList.BeatSaber.UI.Components
 
         public bool IsDirty { get; set; } = false;
 
-        private bool _needsRerender = false;
-        private readonly List<GameObject> _createdObjects = new List<GameObject>();
+        private bool needsRerender = false;
+        private readonly List<GameObject> createdObjects = new List<GameObject>();
 
         private readonly struct LinkInfo
         {
@@ -133,7 +133,7 @@ namespace IPA.ModList.BeatSaber.UI.Components
         {
             if (IsDirty)
             {
-                _needsRerender = true;
+                needsRerender = true;
 
                 var tmp = TextMeshPro;
                 var allLinks = tmp.textInfo.linkInfo.Take(tmp.textInfo.linkCount);
@@ -143,11 +143,11 @@ namespace IPA.ModList.BeatSaber.UI.Components
                 IsDirty = false;
             }
 
-            if (_needsRerender && renderedLinks != null)
+            if (needsRerender && renderedLinks != null)
             {
                 Clear();
                 Render(renderedLinks);
-                _needsRerender = false;
+                needsRerender = false;
             }
         }
 
@@ -293,7 +293,7 @@ namespace IPA.ModList.BeatSaber.UI.Components
                 img.type = type.BackgroundImageType;
             }
 
-            _createdObjects.Add(go);
+            createdObjects.Add(go);
 
             return go;
         }
@@ -372,14 +372,14 @@ namespace IPA.ModList.BeatSaber.UI.Components
         private void Clear(bool destroying = false)
         {
             if (!destroying) gameObject.SetActive(false);
-            foreach (var go in _createdObjects)
+            foreach (var go in createdObjects)
             {
                 if (go == null) continue;
                 ClearObject(go.transform);
                 Destroy(go);
             }
 
-            _createdObjects.Clear();
+            createdObjects.Clear();
             if (!destroying) gameObject.SetActive(true);
         }
     }

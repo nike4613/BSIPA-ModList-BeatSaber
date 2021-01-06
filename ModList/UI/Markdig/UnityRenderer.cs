@@ -73,12 +73,13 @@ namespace IPA.ModList.BeatSaber.UI.Markdig
 
         public event Action<MarkdownObject, GameObject> AfterObjectRendered;
 
-        object IMarkdownRenderer.Render(MarkdownObject obj) => obj switch
-        {
-            Block block => RenderBlock(block).First(),
-            Inline inline => RenderInline(inline, ParagraphFontSize),
-            _ => throw new NotImplementedException("Unknown markdown object type")
-        };
+        object IMarkdownRenderer.Render(MarkdownObject obj)
+            => obj switch
+            {
+                Block block => RenderBlock(block).First(),
+                Inline inline => RenderInline(inline, ParagraphFontSize),
+                _ => throw new NotImplementedException("Unknown markdown object type")
+            };
 
         private const float ParagraphFontSize = 3.5f;
         private const float CodeFontSize = ParagraphFontSize - .5f;
@@ -366,7 +367,7 @@ namespace IPA.ModList.BeatSaber.UI.Markdig
                 }
                 else
                 {
-                    children = block is ParagraphBlock {Inline: { }} para ? RenderInline(para.Inline, ParagraphFontSize) : RenderBlock(block);
+                    children = block is ParagraphBlock { Inline: { } } para ? RenderInline(para.Inline, ParagraphFontSize) : RenderBlock(block);
                 }
 
                 foreach (var child in children)
@@ -398,8 +399,8 @@ namespace IPA.ModList.BeatSaber.UI.Markdig
 
         private IEnumerable<RectTransform> RenderInline(Inline inline, float fontSize, bool center = false)
         {
-            _codeRegionLinkPostfix = 0;
-            _linkDict = new Dictionary<string, LinkInfo>();
+            codeRegionLinkPostfix = 0;
+            linkDict = new Dictionary<string, LinkInfo>();
 
             var text = RenderInlineToText(inline, new StringBuilder(inline.Span.Length * 2)).ToString();
 #if DEBUG
@@ -426,13 +427,13 @@ namespace IPA.ModList.BeatSaber.UI.Markdig
             SetCodeBackgroundLinkType(codeLinkType);
             highlight.AddLinkType(codeLinkType);
 
-            var linkLinkType = highlight.CreateLinkType(link => link.GetLinkID().StartsWith(LinkIDStart), _linkDict);
+            var linkLinkType = highlight.CreateLinkType(link => link.GetLinkID().StartsWith(LinkIDStart), linkDict);
             highlight.AddLinkType(linkLinkType);
 
             highlight.OnLinkBackgroundRendered += Highlight_OnLinkBackgroundRendered;
             highlight.OnLinkSingleObjectRendered += Highlight_OnLinkSingleObjectRendered;
 
-            _linkDict = null;
+            linkDict = null;
 
             AfterObjectRendered?.Invoke(inline, tmp.gameObject);
 
@@ -465,12 +466,12 @@ namespace IPA.ModList.BeatSaber.UI.Markdig
             => builder.Append(lb.IsHard ? "\n" : " ");
 
         private const string CodeRegionLinkIDStart = "__CodeInline__";
-        private int _codeRegionLinkPostfix = 0;
+        private int codeRegionLinkPostfix = 0;
 
         private StringBuilder RenderCodeInlineToText(CodeInline code, StringBuilder builder)
             => builder.Append(CodeFont == null ? "" : $"<font=\"{CodeFont.name}\">")
                 .Append("<size=80%>")
-                .Append($"<link=\"{CodeRegionLinkIDStart}{_codeRegionLinkPostfix++}\">")
+                .Append($"<link=\"{CodeRegionLinkIDStart}{codeRegionLinkPostfix++}\">")
                 .Append(InlineCodePaddingText)
                 .Append("<noparse>")
                 .Append(code.Content)
@@ -496,7 +497,7 @@ namespace IPA.ModList.BeatSaber.UI.Markdig
         #region Links
 
         private const string LinkIDStart = "__Link__";
-        private Dictionary<string, LinkInfo> _linkDict;
+        private Dictionary<string, LinkInfo> linkDict;
 
         private StringBuilder RenderLinkInlineToText(LinkInline link, StringBuilder builder)
         {
@@ -538,8 +539,8 @@ namespace IPA.ModList.BeatSaber.UI.Markdig
         {
             // TODO: Inject logger for this
             // Logger.md.Debug($"Rendering inline link to {linkInfo.Url} ({linkInfo.Title})");
-            var linkName = LinkIDStart + _linkDict.Count;
-            _linkDict.Add(linkName, linkInfo);
+            var linkName = LinkIDStart + linkDict.Count;
+            linkDict.Add(linkName, linkInfo);
             return linkName;
         }
 

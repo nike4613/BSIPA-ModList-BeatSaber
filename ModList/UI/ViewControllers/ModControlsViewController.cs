@@ -268,9 +268,9 @@ namespace IPA.ModList.BeatSaber.UI.ViewControllers
         {
             /*ChangedCount++;
 
-            if (!_changedStates.ContainsKey(plugin))
+            if (!changedStates.ContainsKey(plugin))
             {
-                _changedStates.Add(plugin, plugin.State);
+                changedStates.Add(plugin, plugin.State);
             }*/
 
             if (changedStates.TryGetValue(plugin, out var originalState))

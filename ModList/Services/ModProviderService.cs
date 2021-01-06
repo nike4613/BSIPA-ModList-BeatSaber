@@ -29,7 +29,7 @@ namespace IPA.ModList.BeatSaber.Services
                 return;
             }
 
-            // It's now safe to call the private _pluginList field
+            // It's now safe to call the private pluginList field
             var ignoredPlugins = PluginManager.IgnoredPlugins.Keys.ToList();
             var disabledPlugins = PluginManager.DisabledPlugins.ToList();
             pluginList!.AddRange(
