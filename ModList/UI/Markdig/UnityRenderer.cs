@@ -96,7 +96,7 @@ namespace IPA.ModList.BeatSaber.UI.Markdig
         private IEnumerable<RectTransform> RenderBlock(Block obj)
             => obj switch
             {
-                MarkdownDocument doc => RenderDocument(doc).SingleEnumerable(),
+                MarkdownDocument doc => Helpers.SingleEnumerable(RenderDocument(doc)),
                 ParagraphBlock para => RenderParagraph(para),
                 HeadingBlock heading => RenderHeading(heading),
                 ThematicBreakBlock block => RenderThematicBreak(block),
@@ -178,7 +178,7 @@ namespace IPA.ModList.BeatSaber.UI.Markdig
 
             AfterObjectRendered?.Invoke(para, transform.gameObject);
 
-            return transform.SingleEnumerable().Append(Spacer(1.5f));
+            return Helpers.SingleEnumerable(transform).Append(Spacer(1.5f));
         }
 
         private IEnumerable<RectTransform> RenderHeading(HeadingBlock heading)
@@ -203,9 +203,12 @@ namespace IPA.ModList.BeatSaber.UI.Markdig
 
             AfterObjectRendered?.Invoke(heading, transform.gameObject);
 
-            var result = transform.SingleEnumerable();
+            var result = Helpers.SingleEnumerable(transform);
             if (heading.Level <= 2)
+            {
                 result = result.Concat(RenderThematicBreak(null, spacing: 2f));
+            }
+
             return result;
         }
 
@@ -232,7 +235,7 @@ namespace IPA.ModList.BeatSaber.UI.Markdig
                 AfterObjectRendered?.Invoke(block, transform.gameObject);
             }
 
-            return transform.SingleEnumerable().Append(Spacer(spacing));
+            return Helpers.SingleEnumerable(transform).Append(Spacer(spacing));
         }
 
         private IEnumerable<RectTransform> RenderQuote(QuoteBlock quote)
@@ -257,7 +260,7 @@ namespace IPA.ModList.BeatSaber.UI.Markdig
 
             AfterObjectRendered?.Invoke(quote, go);
 
-            return transform.SingleEnumerable().Append(Spacer(1.5f));
+            return Helpers.SingleEnumerable(transform).Append(Spacer(1.5f));
         }
 
         private IEnumerable<RectTransform> RenderHtmlBlock(HtmlBlock html)
@@ -299,7 +302,7 @@ namespace IPA.ModList.BeatSaber.UI.Markdig
 
             AfterObjectRendered?.Invoke(code, go);
 
-            return transform.SingleEnumerable().Append(Spacer(1.5f));
+            return Helpers.SingleEnumerable(transform).Append(Spacer(1.5f));
         }
 
         private const float ListBulletRegionSize = 5f;
@@ -327,7 +330,7 @@ namespace IPA.ModList.BeatSaber.UI.Markdig
 
             AfterObjectRendered?.Invoke(list, transform.gameObject);
 
-            return transform.SingleEnumerable().Append(Spacer(1.5f));
+            return Helpers.SingleEnumerable(transform).Append(Spacer(1.5f));
         }
 
         private IEnumerable<RectTransform> RenderListItem(ListItemBlock item, bool isLoose, bool ordered, char orderedDelim, char bulletType)
@@ -374,7 +377,7 @@ namespace IPA.ModList.BeatSaber.UI.Markdig
 
             AfterObjectRendered?.Invoke(item, transform.gameObject);
 
-            return transform.SingleEnumerable();
+            return Helpers.SingleEnumerable(transform);
         }
 
         private IEnumerable<RectTransform> RenderLinkReferenceGroup(LinkReferenceDefinitionGroup _)
@@ -433,7 +436,7 @@ namespace IPA.ModList.BeatSaber.UI.Markdig
 
             AfterObjectRendered?.Invoke(inline, tmp.gameObject);
 
-            return highlightTransform.SingleEnumerable().Append(tmp.rectTransform);
+            return Helpers.SingleEnumerable(highlightTransform).Append(tmp.rectTransform);
         }
 
         private StringBuilder RenderInlineToText(Inline inline, StringBuilder builder) => inline switch

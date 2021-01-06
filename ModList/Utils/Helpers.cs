@@ -152,7 +152,7 @@ namespace IPA.ModList.BeatSaber.Utils
             return asset;
         }
 
-        public static IEnumerable<T> SingleEnumerable<T>(this T item) => Enumerable.Empty<T>().Append(item);
+        public static IEnumerable<T> SingleEnumerable<T>(T item) => Enumerable.Empty<T>().Append(item);
 
         public static IEnumerable<T?> AsNullable<T>(this IEnumerable<T> items) where T : struct => items.Select(i => new T?(i));
 
