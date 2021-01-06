@@ -93,16 +93,31 @@
     </ItemGroup>
 
     <ItemGroup>
-        <None Include="Directory.Build.props" Condition="Exists('Directory.Build.props')"/>
-        <None Include="Directory.Build.targets" Condition="Exists('Directory.Build.targets')"/>
-        <None Include="ModList.csproj.user" Condition="Exists('ModList.csproj.user')"/>
+        <None Include="Directory.Build.props" Condition="Exists('Directory.Build.props')" />
+        <None Include="Directory.Build.targets" Condition="Exists('Directory.Build.targets')" />
+        <None Include="ModList.csproj.user" Condition="Exists('ModList.csproj.user')" />
     </ItemGroup>
 
     <ItemGroup>
-        <EmbeddedResource Include="manifest.json"/>
-        <EmbeddedResource Include="description.md"/>
-        <EmbeddedResource Include="UI\Views\*.bsml"/>
-        <EmbeddedResource Include="Resources\*.png"/>
+        <EmbeddedResource Include="manifest.json" />
+        <EmbeddedResource Include="description.md" />
+        <EmbeddedResource Include="Resources\*.png" />
+        <EmbeddedResource Include="UI\ViewControllers\ModalPopupView.bsml">
+            <LogicalName>$(RootNamespace).UI.ViewControllers.ModalPopupViewController.bsml</LogicalName>
+            <DependentUpon>ModalPopupViewController.cs</DependentUpon>
+        </EmbeddedResource>
+        <EmbeddedResource Include="UI\ViewControllers\ModControlsView.bsml">
+            <LogicalName>$(RootNamespace).UI.ViewControllers.ModControlsViewController.bsml</LogicalName>
+            <DependentUpon>ModControlsViewController.cs</DependentUpon>
+        </EmbeddedResource>
+        <EmbeddedResource Include="UI\ViewControllers\ModInfoView.bsml">
+            <LogicalName>$(RootNamespace).UI.ViewControllers.ModInfoViewController.bsml</LogicalName>
+            <DependentUpon>ModInfoViewController.cs</DependentUpon>
+        </EmbeddedResource>
+        <EmbeddedResource Include="UI\ViewControllers\ModListView.bsml">
+            <LogicalName>$(RootNamespace).UI.ViewControllers.ModListViewController.bsml</LogicalName>
+            <DependentUpon>ModListViewController.cs</DependentUpon>
+        </EmbeddedResource>
     </ItemGroup>
 
     <ItemGroup>

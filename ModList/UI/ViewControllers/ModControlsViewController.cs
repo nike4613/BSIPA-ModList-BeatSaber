@@ -14,8 +14,7 @@ using Zenject;
 
 namespace IPA.ModList.BeatSaber.UI.ViewControllers
 {
-    [HotReload(RelativePathToLayout = @"..\Views\ModControlsView.bsml")]
-    [ViewDefinition("IPA.ModList.BeatSaber.UI.Views.ModControlsView.bsml")]
+    [HotReload(RelativePathToLayout = @".\ModControlsView.bsml")]
     internal class ModControlsViewController : BSMLAutomaticViewController
     {
         private PluginInformation? plugin;

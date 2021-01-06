@@ -10,8 +10,7 @@ using Zenject;
 
 namespace IPA.ModList.BeatSaber.UI.ViewControllers
 {
-    [HotReload(RelativePathToLayout = @"..\Views\ModInfoView.bsml")]
-    [ViewDefinition("IPA.ModList.BeatSaber.UI.Views.ModInfoView.bsml")]
+    [HotReload(RelativePathToLayout = @".\ModInfoView.bsml")]
     internal class ModInfoViewController : BSMLAutomaticViewController
     {
         private SiraLog siraLog = null!;
