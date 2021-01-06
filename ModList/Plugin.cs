@@ -1,4 +1,5 @@
 ﻿using System.Reflection;
+using IPA.Config.Stores;
 using IPA.Loader;
 using IPA.Logging;
 using IPA.ModList.BeatSaber.Installers;
@@ -12,11 +13,12 @@ namespace IPA.ModList.BeatSaber
         internal static Logger? Logger { get; private set; }
 
         [Init]
-        public void Init(Logger log, IPA.Config.Config config, PluginMetadata pluginMetadata, Zenjector zenject)
+        public void Init(Logger log, Config.Config config, PluginMetadata pluginMetadata, Zenjector zenject)
         {
             Logger = log;
+            ModListConfig.Instance ??= config.Generated<ModListConfig>();
 
-            zenject.OnApp<AppInstaller>().WithParameters(log, config, pluginMetadata.Name ?? Assembly.GetExecutingAssembly().GetName().Name);
+            zenject.OnApp<AppInstaller>().WithParameters(log, ModListConfig.Instance, pluginMetadata.Name ?? Assembly.GetExecutingAssembly().GetName().Name);
             zenject.OnMenu<Installers.MenuInstaller>();
         }
 

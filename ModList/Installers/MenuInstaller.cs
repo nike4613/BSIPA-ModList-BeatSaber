@@ -6,7 +6,7 @@ using Zenject;
 
 namespace IPA.ModList.BeatSaber.Installers
 {
-    public class MenuInstaller : Installer<MenuInstaller>
+    internal class MenuInstaller : Installer<MenuInstaller>
     {
         private readonly SiraLog siraLog;
 
