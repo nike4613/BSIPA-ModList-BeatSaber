@@ -15,37 +15,11 @@ namespace IPA.ModList.BeatSaber.UI.BSML
     {
         public override Dictionary<string, string[]> Props { get; } = new Dictionary<string, string[]>
         {
-            {
-                "text", new[]
-                {
-                    "text",
-                    "value"
-                }
-            },
-            {
-                "childText", new[]
-                {
-                    "_children"
-                }
-            },
-            {
-                "linkPressed", new[]
-                {
-                    "link-pressed"
-                }
-            },
-            {
-                "linkColor", new[]
-                {
-                    "link-color"
-                }
-            },
-            {
-                "autolinkColor", new[]
-                {
-                    "autolink-color"
-                }
-            }
+            {"text", new[] {"text", "value"}},
+            {"childText", new[] {"_children"}},
+            {"linkPressed", new[] {"link-pressed"}},
+            {"linkColor", new[] {"link-color"}},
+            {"autolinkColor", new[] {"autolink-color"}}
         };
 
         public override Dictionary<string, Action<MarkdownText, string>> Setters { get; } = new Dictionary<string, Action<MarkdownText, string>>
