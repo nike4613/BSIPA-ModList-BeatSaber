@@ -545,13 +545,13 @@ namespace IPA.ModList.BeatSaber.UI.Markdig
 
         private struct LinkInfo
         {
-            public string URL;
+            public string Url;
             public string Title;
             public List<GameObject> SelectableObjects;
 
             public LinkInfo(string url, string title)
             {
-                this.URL = url;
+                this.Url = url;
                 this.Title = title;
                 SelectableObjects = new List<GameObject>();
             }
@@ -574,7 +574,7 @@ namespace IPA.ModList.BeatSaber.UI.Markdig
             if (!(linkData is Dictionary<string, LinkInfo> linkDict)) return;
             if (!linkDict.TryGetValue(link.GetLinkID(), out var linkInfo)) return;
 
-            OnLinkRendered?.Invoke(linkInfo.SelectableObjects, gameObject, linkInfo.URL, linkInfo.Title);
+            OnLinkRendered?.Invoke(linkInfo.SelectableObjects, gameObject, linkInfo.Url, linkInfo.Title);
         }
 
         #endregion

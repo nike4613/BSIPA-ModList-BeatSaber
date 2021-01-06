@@ -12,7 +12,7 @@ namespace IPA.ModList.BeatSaber.UI.Markdig
         UnityRendererBuilder.IQuoteRendererBuilder,
         UnityRendererBuilder.ICodeRendererBuilder,
         UnityRendererBuilder.IInlineCodeRendererBuilder,
-        UnityRendererBuilder.IuiRendererBuidler
+        UnityRendererBuilder.IUIRendererBuilder
     {
         private Material uiMat = null;
         private TMP_FontAsset uiFont = null;
@@ -66,7 +66,7 @@ namespace IPA.ModList.BeatSaber.UI.Markdig
             UnityRendererBuilder Builder { get; }
         }
 
-        public interface IuiRendererBuidler
+        public interface IUIRendererBuilder
         {
             UnityRendererBuilder Material(Material mat);
             UnityRendererBuilder Color(Color col);
@@ -79,7 +79,7 @@ namespace IPA.ModList.BeatSaber.UI.Markdig
             get => this;
         }
 
-        public IuiRendererBuidler UI
+        public IUIRendererBuilder UI
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => this;
@@ -138,11 +138,11 @@ namespace IPA.ModList.BeatSaber.UI.Markdig
         UnityRendererBuilder ILinkRendererBuilder.UseColor(Color col) => Do(linkColor = col);
         UnityRendererBuilder ILinkRendererBuilder.UseAutoColor(Color col) => Do(autolinkColor = col);
 
-        UnityRendererBuilder IuiRendererBuidler.Color(Color col) => Do(uiColor = col);
+        UnityRendererBuilder IUIRendererBuilder.Color(Color col) => Do(uiColor = col);
 
-        UnityRendererBuilder IuiRendererBuidler.Material(Material mat) => Do(uiMat = mat);
+        UnityRendererBuilder IUIRendererBuilder.Material(Material mat) => Do(uiMat = mat);
 
-        UnityRendererBuilder IuiRendererBuidler.Font(TMP_FontAsset font) => Do(uiFont = font);
+        UnityRendererBuilder IUIRendererBuilder.Font(TMP_FontAsset font) => Do(uiFont = font);
 
         UnityRendererBuilder IQuoteRendererBuilder.UseColor(Color col) => Do(quoteColor = col);
 
