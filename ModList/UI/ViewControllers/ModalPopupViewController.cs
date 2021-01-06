@@ -85,7 +85,8 @@ namespace IPA.ModList.BeatSaber.UI.ViewControllers
         internal bool HasCurrentChangeLines => CurrentChange?.LineEntries.Any() ?? false;
 
         [UIValue("current-change-lines")]
-        internal string CurrentChangeLines => CurrentChange?.LineEntries.Aggregate("<color=\"yellow\">", (accumulator, modName) => $"{accumulator}{modName}\n") ?? string.Empty;
+        internal string CurrentChangeLines
+            => CurrentChange?.LineEntries.Aggregate("<color=\"yellow\">", (accumulator, modName) => $"{accumulator}{modName}\n") ?? string.Empty;
 
         [UIComponent("change-modal")]
         internal ModalView ChangeModal = null!;

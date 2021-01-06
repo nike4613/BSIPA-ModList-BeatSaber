@@ -292,10 +292,7 @@ namespace IPA.ModList.BeatSaber.UI.ViewControllers
             RefreshList();
         }
 
-        private IEnumerable<string> BuildMetadataLines(IEnumerable<PluginMetadata> plugins)
-        {
-            return plugins.Select(plugin => plugin.Name);
-        }
+        private IEnumerable<string> BuildMetadataLines(IEnumerable<PluginMetadata> plugins) => plugins.Select(plugin => plugin.Name);
 
         private Action<bool> CreateConfirmationStateMachineExecutor(IEnumerator<(PluginInformation plugin, string type, IEnumerable<string> lines, Action<bool> completion)> stateMachine,
             Action? finished = null)
