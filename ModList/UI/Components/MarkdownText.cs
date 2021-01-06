@@ -84,12 +84,12 @@ namespace IPA.ModList.BeatSaber.UI.Components
 
         public static MarkdownPipeline Pipeline
             => pipeline ??= new MarkdownPipelineBuilder()
-                .UseAutoLinks().UseListExtras().UsePreciseSourceLocation()
-                // the renderer treats the Subscript `~` as underline
-                .UseEmphasisExtras(EmphasisExtraOptions.Strikethrough | EmphasisExtraOptions.Subscript)
-                // TODO: Inject logger for this
-                // .WithLogger(Logger.md)
-                .Build();
+                            .UseAutoLinks().UseListExtras().UsePreciseSourceLocation()
+                            // the renderer treats the Subscript `~` as underline
+                            .UseEmphasisExtras(EmphasisExtraOptions.Strikethrough | EmphasisExtraOptions.Subscript)
+                            // TODO: Inject logger for this
+                            // .WithLogger(Logger.md)
+                            .Build();
 
         private UnityRenderer? renderer = null;
         public UnityRenderer Renderer => renderer ??= CreateRenderer();
@@ -171,26 +171,26 @@ namespace IPA.ModList.BeatSaber.UI.Components
         {
             var (font, padding) = LoadConfigFont(ModListConfig.Instance);
             return new UnityRendererBuilder()
-                .UI.Material(BSMLUtils.ImageResources.NoGlowMat)
-                .UI.Font(BeatSaberUI.MainTextFont)
-                .Link.UseColor(LinkColor)
-                .Link.UseAutoColor(AutolinkColor)
-                .Quote.UseBackground(Helpers.SmallRoundedRectSprite, Image.Type.Sliced)
-                .Quote.UseColor(new Color(30f / 255, 109f / 255, 178f / 255, .25f))
-                .Code.UseBackground(Helpers.SmallRoundedRectSprite, Image.Type.Sliced)
-                .Code.UseColor(new Color(135f / 255, 135f / 255, 135f / 255, .25f))
-                .Code.UseFont(font)
-                .Code.Inline.UseBackground(Helpers.TinyRoundedRectSprite, Image.Type.Sliced)
-                .Code.Inline.UseColor(new Color(135f / 255, 135f / 255, 135f / 255, .1f))
-                .Code.Inline.UsePadding(padding)
-                .UseObjectRenderedCallback((obj, go) =>
-                {
-                    var tmp = go?.GetComponent<CurvedTextMeshPro>();
-                    if (tmp != null) // explicitly disable TMP raycasting on TMP objects
-                        tmp.raycastTarget = false;
-                })
-                .UseLinkRenderedCallback(OnLinkRendered)
-                .Build();
+                   .UI.Material(BSMLUtils.ImageResources.NoGlowMat)
+                   .UI.Font(BeatSaberUI.MainTextFont)
+                   .Link.UseColor(LinkColor)
+                   .Link.UseAutoColor(AutolinkColor)
+                   .Quote.UseBackground(Helpers.SmallRoundedRectSprite, Image.Type.Sliced)
+                   .Quote.UseColor(new Color(30f / 255, 109f / 255, 178f / 255, .25f))
+                   .Code.UseBackground(Helpers.SmallRoundedRectSprite, Image.Type.Sliced)
+                   .Code.UseColor(new Color(135f / 255, 135f / 255, 135f / 255, .25f))
+                   .Code.UseFont(font)
+                   .Code.Inline.UseBackground(Helpers.TinyRoundedRectSprite, Image.Type.Sliced)
+                   .Code.Inline.UseColor(new Color(135f / 255, 135f / 255, 135f / 255, .1f))
+                   .Code.Inline.UsePadding(padding)
+                   .UseObjectRenderedCallback((obj, go) =>
+                   {
+                       var tmp = go?.GetComponent<CurvedTextMeshPro>();
+                       if (tmp != null) // explicitly disable TMP raycasting on TMP objects
+                           tmp.raycastTarget = false;
+                   })
+                   .UseLinkRenderedCallback(OnLinkRendered)
+                   .Build();
         }
 
         private void Render()

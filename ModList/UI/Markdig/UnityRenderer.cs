@@ -470,15 +470,15 @@ namespace IPA.ModList.BeatSaber.UI.Markdig
 
         private StringBuilder RenderCodeInlineToText(CodeInline code, StringBuilder builder)
             => builder.Append(CodeFont == null ? "" : $"<font=\"{CodeFont.name}\">")
-                .Append("<size=80%>")
-                .Append($"<link=\"{CodeRegionLinkIDStart}{codeRegionLinkPostfix++}\">")
-                .Append(InlineCodePaddingText)
-                .Append("<noparse>")
-                .Append(code.Content)
-                .Append("</noparse>")
-                .Append(InlineCodePaddingText)
-                .Append("</link></size>")
-                .Append(CodeFont == null ? "" : "</font>");
+                      .Append("<size=80%>")
+                      .Append($"<link=\"{CodeRegionLinkIDStart}{codeRegionLinkPostfix++}\">")
+                      .Append(InlineCodePaddingText)
+                      .Append("<noparse>")
+                      .Append(code.Content)
+                      .Append("</noparse>")
+                      .Append(InlineCodePaddingText)
+                      .Append("</link></size>")
+                      .Append(CodeFont == null ? "" : "</font>");
 
         private StringBuilder RenderHtmlInlineToText(HtmlInline tag, StringBuilder builder) => builder.Append(tag.Tag);
 
@@ -506,8 +506,8 @@ namespace IPA.ModList.BeatSaber.UI.Markdig
             {
                 // TODO: implement images
                 builder.Append("[<noparse>")
-                    .Append(link.Title)
-                    .Append("</noparse>]");
+                       .Append(link.Title)
+                       .Append("</noparse>]");
 
                 return builder;
             }
@@ -516,10 +516,10 @@ namespace IPA.ModList.BeatSaber.UI.Markdig
             var linkName = AddLinkToDict(linkInfo);
 
             builder.Append($"<link=\"{linkName}\">")
-                .Append("<color=#").AppendColorHex(LinkColor).Append(">");
+                   .Append("<color=#").AppendColorHex(LinkColor).Append(">");
             return RenderContainerInlineToText(link, builder)
-                .Append("</color>")
-                .Append("</link>");
+                   .Append("</color>")
+                   .Append("</link>");
         }
 
         private StringBuilder RenderAutolinkInlineToText(AutolinkInline link, StringBuilder builder)
@@ -528,11 +528,11 @@ namespace IPA.ModList.BeatSaber.UI.Markdig
             var linkName = AddLinkToDict(linkInfo);
 
             return builder
-                .Append($"<link=\"{linkName}\">")
-                .Append("<color=#").AppendColorHex(AutolinkColor).Append(">")
-                .Append(link.Url)
-                .Append("</color>")
-                .Append("</link>");
+                   .Append($"<link=\"{linkName}\">")
+                   .Append("<color=#").AppendColorHex(AutolinkColor).Append(">")
+                   .Append(link.Url)
+                   .Append("</color>")
+                   .Append("</link>");
         }
 
         private string AddLinkToDict(LinkInfo linkInfo)

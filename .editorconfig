@@ -231,3 +231,4 @@ csharp_preserve_single_line_statements = true
 csharp_preserve_single_line_blocks = true
 resharper_space_within_single_line_array_initializer_braces = true
 resharper_wrap_array_initializer_style = chop_if_long
+resharper_align_multiline_calls_chain = true

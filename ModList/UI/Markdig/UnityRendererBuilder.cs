@@ -129,7 +129,7 @@ namespace IPA.ModList.BeatSaber.UI.Markdig
                 linkColor, autolinkColor ?? linkColor,
                 quoteBg, quoteBgType, quoteColor.Value,
                 codeBg, codeBgType, codeColor,
-                inlineCodeBg, inlineCodeBgType, inlineCodeColor) {UIColor = uiColor, CodeFont = codeFont, InlineCodePaddingText = codeInlinePadding,};
+                inlineCodeBg, inlineCodeBgType, inlineCodeColor) { UIColor = uiColor, CodeFont = codeFont, InlineCodePaddingText = codeInlinePadding };
             render.AfterObjectRendered += ObjRenderCallback;
             render.OnLinkRendered += LinkRenderCallback;
             return render;

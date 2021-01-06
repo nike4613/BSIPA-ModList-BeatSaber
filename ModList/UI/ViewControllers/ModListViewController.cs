@@ -80,10 +80,10 @@ namespace IPA.ModList.BeatSaber.UI.ViewControllers
                     $"{p.Plugin.Author} <size=80%>{p.Plugin.Version}</size>",
                     p.Icon,
                     Enumerable.Empty<Sprite>()
-                        .AppendIf(p.Plugin.IsBare, Helpers.LibrarySprite)
-                        .AppendIf(p.State == PluginState.Disabled, Helpers.XSprite)
-                        .AppendIf(p.State == PluginState.Enabled && p.Plugin.RuntimeOptions == RuntimeOptions.DynamicInit, Helpers.OSprite)
-                        .AppendIf(p.State == PluginState.Ignored, Helpers.WarnSprite))));
+                              .AppendIf(p.Plugin.IsBare, Helpers.LibrarySprite)
+                              .AppendIf(p.State == PluginState.Disabled, Helpers.XSprite)
+                              .AppendIf(p.State == PluginState.Enabled && p.Plugin.RuntimeOptions == RuntimeOptions.DynamicInit, Helpers.OSprite)
+                              .AppendIf(p.State == PluginState.Ignored, Helpers.WarnSprite))));
 
             if (CustomListTableData != null && CustomListTableData.tableView != null)
             {

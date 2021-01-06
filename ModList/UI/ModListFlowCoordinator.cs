@@ -92,24 +92,24 @@ namespace IPA.ModList.BeatSaber.UI
             if (modControlsViewController.CurrentTransaction != null && modControlsViewController.ChangedCount > 0)
             {
                 modControlsViewController.CurrentTransaction
-                    .Commit()
-                    .ContinueWith(t =>
-                    {
-                        if (t.IsFaulted)
-                        {
-                            siraLog.Error(t.Exception);
-                        }
+                                         .Commit()
+                                         .ContinueWith(t =>
+                                         {
+                                             if (t.IsFaulted)
+                                             {
+                                                 siraLog.Error(t.Exception);
+                                             }
 
-                        modControlsViewController.CurrentTransaction = null;
+                                             modControlsViewController.CurrentTransaction = null;
 
-                        // No need to dismiss ourselves as the scene will be restarted "automagically".
-                        // That is if BS_Utils is installed and enabled... however... some people might wanna disable it for one reason or another.
-                        // So in that case, we'll restart the scene ourselves... less "automagically" though...
-                        if (PluginManager.EnabledPlugins.All(x => x.Id != "BS Utils"))
-                        {
-                            menuTransitionsHelper.RestartGame();
-                        }
-                    });
+                                             // No need to dismiss ourselves as the scene will be restarted "automagically".
+                                             // That is if BS_Utils is installed and enabled... however... some people might wanna disable it for one reason or another.
+                                             // So in that case, we'll restart the scene ourselves... less "automagically" though...
+                                             if (PluginManager.EnabledPlugins.All(x => x.Id != "BS Utils"))
+                                             {
+                                                 menuTransitionsHelper.RestartGame();
+                                             }
+                                         });
             }
             else
             {

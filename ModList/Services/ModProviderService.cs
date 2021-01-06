@@ -34,8 +34,8 @@ namespace IPA.ModList.BeatSaber.Services
             var disabledPlugins = PluginManager.DisabledPlugins.ToList();
             pluginList!.AddRange(
                 PluginManager.EnabledPlugins.Except(disabledPlugins.Concat(ignoredPlugins)).AsInfos(PluginState.Enabled)
-                    .Concat(disabledPlugins.AsInfos(PluginState.Disabled))
-                    .Concat(ignoredPlugins.AsInfos(PluginState.Ignored)));
+                             .Concat(disabledPlugins.AsInfos(PluginState.Disabled))
+                             .Concat(ignoredPlugins.AsInfos(PluginState.Ignored)));
             pluginList.Sort((a, b) => string.Compare(a.Plugin.Name, b.Plugin.Name, StringComparison.OrdinalIgnoreCase)); // nah, we're sorting them by name so they can more easily be found
         }
     }
