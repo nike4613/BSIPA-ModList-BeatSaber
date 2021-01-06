@@ -1,13 +1,13 @@
-﻿using IPA.ModList.BeatSaber.UI.Components;
-using Markdig.Renderers;
-using Markdig.Syntax;
-using Markdig.Syntax.Inlines;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using HMUI;
-using IPA.ModList.BeatSaber.Helpers;
+using IPA.ModList.BeatSaber.UI.Components;
+using IPA.ModList.BeatSaber.Utils;
+using Markdig.Renderers;
+using Markdig.Syntax;
+using Markdig.Syntax.Inlines;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -115,7 +115,7 @@ namespace IPA.ModList.BeatSaber.UI.Markdig
         {
             var go = new GameObject(name);
             var transform = go.AddComponent<RectTransform>();
-            Helpers.Helpers.Zero(transform);
+            Helpers.Zero(transform);
 
             var layout = vertical
                 ? go.AddComponent<VerticalLayoutGroup>() as HorizontalOrVerticalLayoutGroup
@@ -213,7 +213,7 @@ namespace IPA.ModList.BeatSaber.UI.Markdig
         {
             var go = new GameObject("ThematicBreak");
             var transform = go.AddComponent<RectTransform>();
-            Helpers.Helpers.Zero(transform);
+            Helpers.Zero(transform);
 
             var img = go.AddComponent<ImageView>();
             img.color = UIColor;
@@ -410,7 +410,7 @@ namespace IPA.ModList.BeatSaber.UI.Markdig
 
             var highlights = new GameObject("CodeBackgrounds");
             var highlightTransform = highlights.AddComponent<RectTransform>();
-            Helpers.Helpers.Zero(highlightTransform);
+            Helpers.Zero(highlightTransform);
             var highlightCopier = highlights.AddComponent<PositionSizeCopier>();
             highlightCopier.CopyFrom = tmp.rectTransform;
             var highlightLayout = highlights.AddComponent<LayoutElement>();
@@ -578,7 +578,7 @@ namespace IPA.ModList.BeatSaber.UI.Markdig
 
         private TextMeshProUGUI CreateText(string text, float fontSize, bool center)
         {
-            var tmp = Helpers.Helpers.CreateText(text, Vector2.zero, new Vector2(60f, 10f));
+            var tmp = Helpers.CreateText(text, Vector2.zero, new Vector2(60f, 10f));
             tmp.enableWordWrapping = true;
             tmp.font = UIFont;
             tmp.fontSize = fontSize;

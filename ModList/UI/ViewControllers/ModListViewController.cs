@@ -6,9 +6,9 @@ using BeatSaberMarkupLanguage.Attributes;
 using BeatSaberMarkupLanguage.Components;
 using BeatSaberMarkupLanguage.ViewControllers;
 using HMUI;
-using IPA.ModList.BeatSaber.Helpers;
 using IPA.ModList.BeatSaber.Models;
 using IPA.ModList.BeatSaber.Services;
+using IPA.ModList.BeatSaber.Utils;
 using SiraUtil.Tools;
 using UnityEngine;
 using Zenject;
@@ -81,10 +81,10 @@ namespace IPA.ModList.BeatSaber.UI.ViewControllers
                     $"{p.Plugin.Author} <size=80%>{p.Plugin.Version}</size>",
                     p.Icon,
                     Enumerable.Empty<Sprite>()
-                        .AppendIf(p.Plugin.IsBare, Helpers.Helpers.LibrarySprite)
-                        .AppendIf(p.State == PluginState.Disabled, Helpers.Helpers.XSprite)
-                        .AppendIf(p.State == PluginState.Enabled && p.Plugin.RuntimeOptions == RuntimeOptions.DynamicInit, Helpers.Helpers.OSprite)
-                        .AppendIf(p.State == PluginState.Ignored, Helpers.Helpers.WarnSprite))));
+                        .AppendIf(p.Plugin.IsBare, Helpers.LibrarySprite)
+                        .AppendIf(p.State == PluginState.Disabled, Helpers.XSprite)
+                        .AppendIf(p.State == PluginState.Enabled && p.Plugin.RuntimeOptions == RuntimeOptions.DynamicInit, Helpers.OSprite)
+                        .AppendIf(p.State == PluginState.Ignored, Helpers.WarnSprite))));
 
             if (CustomListTableData != null && CustomListTableData.tableView != null)
             {

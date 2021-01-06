@@ -1,5 +1,5 @@
 ﻿using IPA.Loader;
-using IPA.ModList.BeatSaber.Helpers;
+using IPA.ModList.BeatSaber.Utils;
 using UnityEngine;
 
 namespace IPA.ModList.BeatSaber.Models

@@ -13,6 +13,7 @@ using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using BeatSaberMarkupLanguage;
 using System.IO;
+using IPA.ModList.BeatSaber.Utils;
 
 namespace IPA.ModList.BeatSaber.UI.Components
 {
@@ -112,7 +113,7 @@ namespace IPA.ModList.BeatSaber.UI.Components
                 else
                 {
                     var uFont = new Font(config.MonospaceFontPath);
-                    asset = Helpers.Helpers.TMPFontFromUnityFont(uFont);
+                    asset = Helpers.TMPFontFromUnityFont(uFont);
                 }
             }
 
@@ -174,12 +175,12 @@ namespace IPA.ModList.BeatSaber.UI.Components
                 .UI.Font(BeatSaberUI.MainTextFont)
                 .Link.UseColor(LinkColor)
                 .Link.UseAutoColor(AutolinkColor)
-                .Quote.UseBackground(Helpers.Helpers.SmallRoundedRectSprite, Image.Type.Sliced)
+                .Quote.UseBackground(Helpers.SmallRoundedRectSprite, Image.Type.Sliced)
                 .Quote.UseColor(new Color(30f / 255, 109f / 255, 178f / 255, .25f))
-                .Code.UseBackground(Helpers.Helpers.SmallRoundedRectSprite, Image.Type.Sliced)
+                .Code.UseBackground(Helpers.SmallRoundedRectSprite, Image.Type.Sliced)
                 .Code.UseColor(new Color(135f / 255, 135f / 255, 135f / 255, .25f))
                 .Code.UseFont(font)
-                .Code.Inline.UseBackground(Helpers.Helpers.TinyRoundedRectSprite, Image.Type.Sliced)
+                .Code.Inline.UseBackground(Helpers.TinyRoundedRectSprite, Image.Type.Sliced)
                 .Code.Inline.UseColor(new Color(135f / 255, 135f / 255, 135f / 255, .1f))
                 .Code.Inline.UsePadding(padding)
                 .UseObjectRenderedCallback((obj, go) =>
