@@ -119,8 +119,8 @@ namespace IPA.ModList.BeatSaber.UI.Components
 
             if (asset == null)
             {
-                if (!FontManager.TryGetTMPFontByFullName(config.MonospaceFontName, out asset, setupOsFallbacks: false) &&
-                    !FontManager.TryGetTMPFontByFamily(config.MonospaceFontName, out asset, setupOsFallbacks: false))
+                if (!FontManager.TryGetTMPFontByFullName(config.MonospaceFontName, out asset, setupOsFallbacks: false)
+                    && !FontManager.TryGetTMPFontByFamily(config.MonospaceFontName, out asset, setupOsFallbacks: false))
                 {
                     // TODO: Inject logger for this
                     // Logger.md.Warn($"Could not locate font '{config.MonospaceFontName}'");
@@ -137,9 +137,9 @@ namespace IPA.ModList.BeatSaber.UI.Components
             asset.ReadFontAssetDefinition(); // this likely won't be necessary if/when BSML stops caching TMP fonts
 
             var paddingChar = UnicodePrivateUseStart;
-            var TryAddCharacterInternal = MethodAccessor<TMP_FontAsset, TryAddCharacterInternalDelegate>.GetDelegate("TryAddCharacterInternal");
+            var tryAddCharacterInternal = MethodAccessor<TMP_FontAsset, TryAddCharacterInternalDelegate>.GetDelegate("TryAddCharacterInternal");
 
-            while (TryAddCharacterInternal(asset, paddingChar, out _) && paddingChar <= UnicodePrivateUseEnd)
+            while (tryAddCharacterInternal(asset, paddingChar, out _) && paddingChar <= UnicodePrivateUseEnd)
             {
                 paddingChar++;
             }

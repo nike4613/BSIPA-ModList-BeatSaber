@@ -38,7 +38,7 @@ namespace IPA.ModList.BeatSaber.UI.ViewControllers
         [UIParams]
         internal BSMLParserParams ParserParams = null!;
 
-        private readonly Queue<ChangeQueueItem> _changeQueue = new Queue<ChangeQueueItem>();
+        private readonly Queue<ChangeQueueItem> changeQueue = new Queue<ChangeQueueItem>();
 
         internal class ChangeQueueItem
         {
@@ -68,7 +68,7 @@ namespace IPA.ModList.BeatSaber.UI.ViewControllers
         public void QueueChange(PluginInformation plugin, string type, IEnumerable<string> lines, Action<bool> completion)
         {
             siraLog.Debug($"Change queued: {plugin.Plugin.Name} {type} {string.Join(",", lines)}");
-            _changeQueue.Enqueue(new ChangeQueueItem(plugin, type, lines, completion));
+            changeQueue.Enqueue(new ChangeQueueItem(plugin, type, lines, completion));
             TryProcessNextChange();
         }
 
@@ -132,14 +132,14 @@ namespace IPA.ModList.BeatSaber.UI.ViewControllers
 
         private void TryProcessNextChange()
         {
-            if (CurrentChange != null || _changeQueue.Count == 0 || _changeQueue.Peek() == null)
+            if (CurrentChange != null || changeQueue.Count == 0 || changeQueue.Peek() == null)
             {
                 return;
             }
 
             siraLog.Debug("Presenting change");
 
-            CurrentChange = _changeQueue.Dequeue();
+            CurrentChange = changeQueue.Dequeue();
             RefreshChangeItem();
 
             // Why are Unity and/or modals like this D:
