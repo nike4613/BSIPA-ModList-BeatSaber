@@ -30,7 +30,7 @@ namespace IPA.ModList.BeatSaber.UI.ViewControllers
             ParserParams = BSMLParser.instance.Parse(
                 BeatSaberMarkupLanguage.Utilities.GetResourceContent(
                     Assembly.GetExecutingAssembly(),
-                    "IPA.ModList.BeatSaber.UI.ViewControllers.ModalPopupView.bsml"),
+                    "IPA.ModList.BeatSaber.UI.ViewControllers.ModalPopupViewController.bsml"),
                 parentGo,
                 this);
         }
