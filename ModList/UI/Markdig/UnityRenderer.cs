@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using HMUI;
 using IPA.ModList.BeatSaber.UI.Components;
-using IPA.ModList.BeatSaber.Utils;
+using IPA.ModList.BeatSaber.Utilities;
 using Markdig.Renderers;
 using Markdig.Syntax;
 using Markdig.Syntax.Inlines;

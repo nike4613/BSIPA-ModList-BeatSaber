@@ -10,7 +10,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using BSMLUtils = BeatSaberMarkupLanguage.Utilities;
 
-namespace IPA.ModList.BeatSaber.Utils
+namespace IPA.ModList.BeatSaber.Utilities
 {
     internal static class Helpers
     {

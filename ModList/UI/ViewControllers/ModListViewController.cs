@@ -8,7 +8,7 @@ using BeatSaberMarkupLanguage.ViewControllers;
 using HMUI;
 using IPA.ModList.BeatSaber.Models;
 using IPA.ModList.BeatSaber.Services;
-using IPA.ModList.BeatSaber.Utils;
+using IPA.ModList.BeatSaber.Utilities;
 using SiraUtil.Tools;
 using UnityEngine;
 using Zenject;

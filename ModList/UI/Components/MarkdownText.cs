@@ -13,7 +13,7 @@ using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using BeatSaberMarkupLanguage;
 using System.IO;
-using IPA.ModList.BeatSaber.Utils;
+using IPA.ModList.BeatSaber.Utilities;
 
 namespace IPA.ModList.BeatSaber.UI.Components
 {
