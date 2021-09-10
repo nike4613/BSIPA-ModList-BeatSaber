@@ -10,15 +10,8 @@ namespace IPA.ModList.BeatSaber.Services
 {
     public class ModProviderService : IInitializable
     {
-        /// <remark>
-        /// I really didn't want to make it static...
-        /// but due to BSIPA' behaviour regarding how it handles enabling/disabling singleStartInit mods... this really is necessary...
-        ///
-        /// Please give me suggestions on how to handle this gracefully D:
-        /// </remark>
-        private static List<PluginInformation>? pluginList;
+        private List<PluginInformation>? pluginList;
 
-        // ReSharper disable once MemberCanBeMadeStatic.Global
         internal List<PluginInformation> PluginList => pluginList ??= new List<PluginInformation>();
 
         public void Initialize()
