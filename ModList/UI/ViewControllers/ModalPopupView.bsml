@@ -38,7 +38,7 @@
         </vertical>
 
         <horizontal child-control-height="true" child-expand-height='false'>
-            <button text='Yes' interactable='true' on-click='ConfirmChange'/>
+            <action-button text='Yes' interactable='true' on-click='ConfirmChange'/>
             <button text='No' interactable='true' on-click='DenyChange'/>
         </horizontal>
     </vertical>

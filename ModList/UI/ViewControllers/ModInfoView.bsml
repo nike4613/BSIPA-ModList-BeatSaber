@@ -1,4 +1,4 @@
-﻿<bg xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
+<bg xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
     xsi:noNamespaceSchemaLocation='https://raw.githubusercontent.com/monkeymanboy/BSML-Docs/gh-pages/BSMLSchema.xsd'>
 
     <stack anchor-max-x="0.5">
@@ -76,8 +76,8 @@
                 <text text='~link_url' rich-text='false' font-align='Center'
                       word-wrapping='false' overflow-mode='Ellipsis' color='red'/>
 
-                <horizontal vertical-fit='MinSize' child-expand-height='false' child-control-height='true'>
-                    <button text='Open Link' interactable='true'
+                <horizontal child-control-height='true' child-expand-height='false'>
+                    <action-button text='Open Link' interactable='true'
                             click-event='HideLinkModal' on-click='ConfirmOpenLink'/>
                     <button text='Cancel' interactable='true'
                             click-event='HideLinkModal'/>

@@ -143,9 +143,7 @@ namespace IPA.ModList.BeatSaber.UI.ViewControllers
             CurrentChange = changeQueue.Dequeue();
             RefreshChangeItem();
 
-            // Why are Unity and/or modals like this D:
-            // Setting the animated parameter to true, prevents it from appearing a second time...
-            ChangeModal.Show(false, true, () => siraLog.Debug("Change is being presented"));
+            ChangeModal.Show(true, true, () => siraLog.Debug("Change is being presented"));
         }
 
         public event PropertyChangedEventHandler? PropertyChanged;
