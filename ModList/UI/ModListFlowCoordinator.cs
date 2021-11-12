@@ -86,6 +86,10 @@ namespace IPA.ModList.BeatSaber.UI
 
         protected override void BackButtonWasPressed(ViewController _)
         {
+            // If there is a change pending (and modal open) we have to deny it
+            // If we don't, the change will remain pending when dismissing the view and coming back
+            modalPopupViewController.DenyChange();
+
             // Check whether there's a transaction going on and commit :eyes:
             // TODO: Guess it's a good idea to add a confirmation here as well...
             // TODO: Should also show an additional warning when the user tries to disable ModList itself.

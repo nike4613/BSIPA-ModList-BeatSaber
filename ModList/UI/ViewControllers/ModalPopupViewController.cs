@@ -111,8 +111,7 @@ namespace IPA.ModList.BeatSaber.UI.ViewControllers
         }
 
         [UIAction(nameof(DenyChange))]
-        [SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "BSML calls this")]
-        private void DenyChange()
+        internal void DenyChange()
         {
             siraLog.Debug("Declined");
             CurrentChange?.OnCompletion?.Invoke(false);
