@@ -17,7 +17,9 @@ namespace IPA.ModList.BeatSaber
             Logger = log;
             ModListConfig.Instance ??= config.Generated<ModListConfig>();
 
-            zenject.Install<MLAppInstaller>(Location.App, log, ModListConfig.Instance, pluginMetadata.Name);
+            zenject.UseLogger(log);
+
+            zenject.Install<MLAppInstaller>(Location.App, ModListConfig.Instance, pluginMetadata.Name);
             zenject.Install<MLMenuInstaller>(Location.Menu);
         }
 

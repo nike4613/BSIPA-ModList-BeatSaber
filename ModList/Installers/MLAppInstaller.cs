@@ -1,19 +1,15 @@
-using IPA.Logging;
 using IPA.ModList.BeatSaber.Services;
-using SiraUtil;
 using Zenject;
 
 namespace IPA.ModList.BeatSaber.Installers
 {
-    internal class MLAppInstaller : Installer<Logger, ModListConfig, string, MLAppInstaller>
+    internal class MLAppInstaller : Installer<ModListConfig, string, MLAppInstaller>
     {
-        private readonly Logger logger;
         private readonly ModListConfig config;
         private readonly string name;
 
-        public MLAppInstaller(Logger logger, ModListConfig config, string name)
+        public MLAppInstaller(ModListConfig config, string name)
         {
-            this.logger = logger;
             this.config = config;
             this.name = name;
         }
@@ -21,8 +17,6 @@ namespace IPA.ModList.BeatSaber.Installers
         public override void InstallBindings()
         {
             Container.BindInstance(name).WithId("modListName");
-
-            Container.BindInstance(logger).AsSingle();
 
             Container.BindInstance(config).AsSingle();
 
