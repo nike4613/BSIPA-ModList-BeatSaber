@@ -1,10 +1,10 @@
-﻿using System.Diagnostics.CodeAnalysis;
+using System.Diagnostics.CodeAnalysis;
 using BeatSaberMarkupLanguage.Attributes;
 using BeatSaberMarkupLanguage.Parser;
 using BeatSaberMarkupLanguage.ViewControllers;
 using HMUI;
 using IPA.ModList.BeatSaber.Models;
-using SiraUtil.Tools;
+using SiraUtil.Logging;
 using UnityEngine;
 using Zenject;
 

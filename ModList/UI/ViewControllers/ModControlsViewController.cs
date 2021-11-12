@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +9,7 @@ using IPA.Loader;
 using IPA.ModList.BeatSaber.Models;
 using IPA.ModList.BeatSaber.Services;
 using ModestTree;
-using SiraUtil.Tools;
+using SiraUtil.Logging;
 using Zenject;
 
 namespace IPA.ModList.BeatSaber.UI.ViewControllers
@@ -169,7 +169,7 @@ namespace IPA.ModList.BeatSaber.UI.ViewControllers
                     {
                         if (depDeps == null)
                         {
-                            siraLog.Warning($"{dep.Name} is already enabled; how did we get here?");
+                            siraLog.Warn($"{dep.Name} is already enabled; how did we get here?");
                         }
                         else
                         {
@@ -240,7 +240,7 @@ namespace IPA.ModList.BeatSaber.UI.ViewControllers
                     {
                         if (depDeps == null)
                         {
-                            siraLog.Warning($"{dep.Name} is already enabled; how did we get here?");
+                            siraLog.Warn($"{dep.Name} is already enabled; how did we get here?");
                         }
                         else
                         {

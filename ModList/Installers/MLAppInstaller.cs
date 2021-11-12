@@ -1,4 +1,4 @@
-﻿using IPA.Logging;
+using IPA.Logging;
 using IPA.ModList.BeatSaber.Services;
 using SiraUtil;
 using Zenject;
@@ -22,7 +22,7 @@ namespace IPA.ModList.BeatSaber.Installers
         {
             Container.BindInstance(name).WithId("modListName");
 
-            Container.BindLoggerAsSiraLogger(logger);
+            Container.BindInstance(logger).AsSingle();
 
             Container.BindInstance(config).AsSingle();
 

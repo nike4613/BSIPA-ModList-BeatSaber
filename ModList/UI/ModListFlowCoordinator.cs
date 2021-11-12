@@ -1,11 +1,11 @@
-﻿using System;
+using System;
 using System.Linq;
 using BeatSaberMarkupLanguage;
 using HMUI;
 using IPA.Loader;
 using IPA.ModList.BeatSaber.Models;
 using IPA.ModList.BeatSaber.UI.ViewControllers;
-using SiraUtil.Tools;
+using SiraUtil.Logging;
 using Zenject;
 
 namespace IPA.ModList.BeatSaber.UI

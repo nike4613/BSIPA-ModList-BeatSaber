@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
@@ -11,7 +11,7 @@ using BeatSaberMarkupLanguage.Parser;
 using HMUI;
 using IPA.ModList.BeatSaber.Models;
 using JetBrains.Annotations;
-using SiraUtil.Tools;
+using SiraUtil.Logging;
 using UnityEngine;
 
 namespace IPA.ModList.BeatSaber.UI.ViewControllers

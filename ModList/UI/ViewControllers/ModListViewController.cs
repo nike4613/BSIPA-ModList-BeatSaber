@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
@@ -9,7 +9,7 @@ using HMUI;
 using IPA.ModList.BeatSaber.Models;
 using IPA.ModList.BeatSaber.Services;
 using IPA.ModList.BeatSaber.Utilities;
-using SiraUtil.Tools;
+using SiraUtil.Logging;
 using UnityEngine;
 using Zenject;
 
@@ -58,7 +58,7 @@ namespace IPA.ModList.BeatSaber.UI.ViewControllers
             }
 
             stoppyWatch.Stop();
-            siraLog.Warning($"ModListViewController post-parse setup took {stoppyWatch.Elapsed:c}");
+            siraLog.Warn($"ModListViewController post-parse setup took {stoppyWatch.Elapsed:c}");
         }
 
         protected override void DidActivate(bool firstActivation, bool addedToHierarchy, bool screenSystemEnabling)
