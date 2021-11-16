@@ -1,6 +1,8 @@
 ﻿using System;
 using BeatSaberMarkupLanguage;
 using BeatSaberMarkupLanguage.MenuButtons;
+using IPA.Loader;
+using SiraUtil.Zenject;
 using Zenject;
 
 namespace IPA.ModList.BeatSaber.UI
@@ -11,10 +13,10 @@ namespace IPA.ModList.BeatSaber.UI
         private MenuButton? modListButton;
 
         [Inject]
-        public ModListButtonManager(ModListFlowCoordinator flowCoordinator, [Inject(Id = "modListName")] string name)
+        public ModListButtonManager(ModListFlowCoordinator flowCoordinator, UBinder<Plugin, PluginMetadata> pluginMetadata)
         {
             modListFlowCoordinator = flowCoordinator;
-            modListButton = new MenuButton(name, "Select the config you want.", OnClick);
+            modListButton = new MenuButton(pluginMetadata.Value.Name, "Select the config you want.", OnClick);
         }
 
         public void Initialize()

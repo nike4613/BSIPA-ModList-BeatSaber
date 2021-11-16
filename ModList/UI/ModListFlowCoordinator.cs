@@ -6,6 +6,7 @@ using IPA.Loader;
 using IPA.ModList.BeatSaber.Models;
 using IPA.ModList.BeatSaber.UI.ViewControllers;
 using SiraUtil.Logging;
+using SiraUtil.Zenject;
 using Zenject;
 
 namespace IPA.ModList.BeatSaber.UI
@@ -24,19 +25,20 @@ namespace IPA.ModList.BeatSaber.UI
         private ModalPopupViewController modalPopupViewController = null!;
 
         [Inject]
-        internal void Construct(SiraLog siraLog, [Inject(Id = "modListName")] string modName, ModListNavigationController navigationController, ModListViewController modListViewController,
+        internal void Construct(SiraLog siraLog, UBinder<Plugin, PluginMetadata> pluginMetadata, ModListNavigationController navigationController, ModListViewController modListViewController,
             ModInfoViewController modInfoViewController, ModControlsViewController modControlsViewController, ModalPopupViewController modalPopupViewController,
             MenuTransitionsHelper menuTransitionsHelper)
         {
-            this.menuTransitionsHelper = menuTransitionsHelper;
-            this.modControlsViewController = modControlsViewController;
             this.siraLog = siraLog;
-            this.modName = modName;
+            modName = pluginMetadata.Value.Name;
 
             this.navigationController = navigationController;
             this.modListViewController = modListViewController;
             this.modInfoViewController = modInfoViewController;
+            this.modControlsViewController = modControlsViewController;
             this.modalPopupViewController = modalPopupViewController;
+
+            this.menuTransitionsHelper = menuTransitionsHelper;
         }
 
         protected override void DidActivate(bool firstActivation, bool addedToHierarchy, bool screenSystemEnabling)
