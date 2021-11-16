@@ -40,7 +40,7 @@ namespace IPA.ModList.BeatSaber.UI.ViewControllers
         public string PluginName => pluginInfo?.Plugin.Name ?? string.Empty;
 
         [UIValue("version")]
-        public string PluginVersion => pluginInfo?.Plugin.Version.ToString() ?? string.Empty;
+        public string PluginVersion => pluginInfo?.Plugin.HVersion.ToString() ?? string.Empty;
 
         [UIValue("author")]
         public string PluginAuthor => pluginInfo?.Plugin.Author ?? string.Empty;

@@ -77,7 +77,7 @@ namespace IPA.ModList.BeatSaber.UI.ViewControllers
             ListValues.AddRange(modProviderService.PluginList.Select(p =>
                 new PluginCellViewController(
                     p.Plugin.Name,
-                    $"{p.Plugin.Author} <size=80%>{p.Plugin.Version}</size>",
+                    $"{p.Plugin.Author} <size=80%>{p.Plugin.HVersion}</size>",
                     p.Icon,
                     Enumerable.Empty<Sprite>()
                               .AppendIf(p.Plugin.IsBare, Helpers.LibrarySprite)
