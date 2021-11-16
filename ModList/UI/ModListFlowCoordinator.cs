@@ -88,7 +88,10 @@ namespace IPA.ModList.BeatSaber.UI
         {
             // If there is a change pending (and modal open) we have to deny it
             // If we don't, the change will remain pending when dismissing the view and coming back
-            modalPopupViewController.DenyChange();
+            if (modalPopupViewController.CurrentChange != null)
+            {
+                modalPopupViewController.DenyChange();
+            }
 
             // Check whether there's a transaction going on and commit :eyes:
             // TODO: Guess it's a good idea to add a confirmation here as well...
