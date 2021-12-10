@@ -1,7 +1,10 @@
 using System;
+using System.Collections;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Threading;
 using BeatSaberMarkupLanguage;
 using HMUI;
 using IPA.Loader;
@@ -106,9 +109,9 @@ namespace IPA.ModList.BeatSaber.Utilities
                 meshType: SpriteMeshType.FullRect);
         }
 
-        private static readonly Queue<Action> IconQueue = new Queue<Action>();
-        private static readonly object _loaderLock = new object();
-        private static bool CoroutineRunning = false;
+        private static readonly ConcurrentQueue<Action> iconQueue = new();
+        private static int coroutineShouldBeRunning = 0;
+        private static int coroutineRunning = 0;
 
         public static void QueueReadPluginIcon(this PluginMetadata plugin, Action<Sprite> OnCompletion)
         {
@@ -118,7 +121,7 @@ namespace IPA.ModList.BeatSaber.Utilities
                 return;
             }
 
-            IconQueue.Enqueue(() =>
+            iconQueue.Enqueue(() =>
             {
                 Sprite? icon = null;
                 if (plugin.IconName != null)
@@ -126,37 +129,34 @@ namespace IPA.ModList.BeatSaber.Utilities
                     icon = ReadImageFromAssembly(plugin.Assembly, plugin.IconName).AsSprite();
                 }
 
-                OnCompletion?.Invoke(icon != null ? icon : DefaultPluginIcon);
+                OnCompletion?.Invoke(icon is not null ? icon : DefaultPluginIcon);
             });
 
-            if (!CoroutineRunning)
+            if (coroutineRunning == 0)
             {
-                IPA.Utilities.Async.Coroutines.AsTask(IconLoadCoroutine());
+                _ = Interlocked.Exchange(ref coroutineShouldBeRunning, 1);
+                _ = IPA.Utilities.Async.Coroutines.AsTask(IconLoadCoroutine());
             }
         }
 
-        private static YieldInstruction LoadWait = new WaitForEndOfFrame();
-        private static IEnumerator<YieldInstruction> IconLoadCoroutine()
+        private static readonly YieldInstruction loadWait = new WaitForEndOfFrame();
+        private static IEnumerator IconLoadCoroutine()
         {
-            lock (_loaderLock)
+            do
             {
-                if (CoroutineRunning)
+                if (Interlocked.Exchange(ref coroutineRunning, 1) != 0)
                     yield break;
-                CoroutineRunning = true;
-            }
+                _ = Interlocked.Exchange(ref coroutineShouldBeRunning, 0);
 
-            while (IconQueue.Count > 0)
-            {
-                yield return LoadWait;
-                var loader = IconQueue.Dequeue();
-                loader?.Invoke();
-            }
+                while (iconQueue.TryDequeue(out var loader))
+                {
+                    loader?.Invoke();
+                    yield return loadWait;
+                }
 
-            CoroutineRunning = false;
-            if (IconQueue.Count > 0)
-            {
-                SharedCoroutineStarter.instance.StartCoroutine(IconLoadCoroutine());
+                _ = Interlocked.Exchange(ref coroutineRunning, 0);
             }
+            while (Interlocked.Exchange(ref coroutineShouldBeRunning, 0) == 1);
         }
 
         public static CurvedTextMeshPro CreateText(string text, Vector2 anchoredPosition, Vector2 sizeDelta)
