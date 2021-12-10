@@ -115,6 +115,7 @@ namespace IPA.ModList.BeatSaber.UI.Markdig
         private (RectTransform, HorizontalOrVerticalLayoutGroup) Block(string name, float spacing, bool vertical)
         {
             var go = new GameObject(name);
+            go.SetActive(false);
             var transform = go.AddComponent<RectTransform>();
             Helpers.Zero(transform);
 
@@ -132,6 +133,7 @@ namespace IPA.ModList.BeatSaber.UI.Markdig
         private RectTransform Spacer(float size = 1.5f)
         {
             var go = new GameObject("Spacer");
+            go.SetActive(false);
             var transform = go.AddComponent<RectTransform>();
             transform.anchorMin = new Vector2(.5f, .5f);
             transform.anchorMax = new Vector2(.5f, .5f);
@@ -155,6 +157,7 @@ namespace IPA.ModList.BeatSaber.UI.Markdig
                 foreach (var child in children)
                 {
                     child.SetParent(transform, false);
+                    child.gameObject.SetActive(true);
                 }
             }
 
@@ -174,6 +177,7 @@ namespace IPA.ModList.BeatSaber.UI.Markdig
                 foreach (var child in inline)
                 {
                     child.SetParent(transform, false);
+                    child.gameObject.SetActive(true);
                 }
             }
 
@@ -199,6 +203,7 @@ namespace IPA.ModList.BeatSaber.UI.Markdig
                 foreach (var child in inline)
                 {
                     child.SetParent(transform, false);
+                    child.gameObject.SetActive(true);
                 }
             }
 
@@ -348,6 +353,7 @@ namespace IPA.ModList.BeatSaber.UI.Markdig
             bulletLayoutElement.flexibleWidth = 0;
 
             bulletTmp.transform.SetParent(transform, false);
+            bulletTmp.gameObject.SetActive(true);
 
             var (content, contentLayout) = Block("Content", .5f, true);
             contentLayout.childForceExpandWidth = isLoose;
@@ -356,6 +362,7 @@ namespace IPA.ModList.BeatSaber.UI.Markdig
             contentLayoutElement.flexibleWidth = 1;
 
             content.SetParent(transform, false);
+            content.gameObject.SetActive(true);
 
             foreach (var block in item)
             {
@@ -373,6 +380,7 @@ namespace IPA.ModList.BeatSaber.UI.Markdig
                 foreach (var child in children)
                 {
                     child.SetParent(content, false);
+                    child.gameObject.SetActive(true);
                 }
             }
 

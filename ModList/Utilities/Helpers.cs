@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using BeatSaberMarkupLanguage;
@@ -140,7 +140,7 @@ namespace IPA.ModList.BeatSaber.Utilities
             textMesh.rectTransform.sizeDelta = sizeDelta;
             textMesh.rectTransform.anchoredPosition = anchoredPosition;
 
-            gameObj.SetActive(true);
+            //gameObj.SetActive(true);
             return textMesh;
         }
 

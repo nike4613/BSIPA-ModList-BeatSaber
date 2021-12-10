@@ -204,6 +204,8 @@ namespace IPA.ModList.BeatSaber.UI.Components
             root.anchorMin = new Vector2(0, 1);
             root.anchorMax = Vector2.one;
             root.anchoredPosition = Vector2.zero;
+
+            root.gameObject.SetActive(true);
         }
 
         private static void ClearObject(Transform target)
