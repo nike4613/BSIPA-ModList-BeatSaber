@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -30,7 +30,7 @@ namespace IPA.ModList.BeatSaber.UI.Markdig
         public Color InlineCodeBackgroundColor { get; }
         public Sprite InlineCodeBackground { get; }
         public Image.Type InlineCodeBackgroundType { get; }
-        public TMP_FontAsset CodeFont { get; set; }
+        public TMP_FontAsset? CodeFont { get; set; }
         public string InlineCodePaddingText { get; set; } = "";
 
         public UnityRenderer(Material uiMat, TMP_FontAsset uiFont,
@@ -71,7 +71,7 @@ namespace IPA.ModList.BeatSaber.UI.Markdig
             remove { }
         }
 
-        public event Action<MarkdownObject, GameObject> AfterObjectRendered;
+        public event Action<MarkdownObject, GameObject?>? AfterObjectRendered;
 
         object IMarkdownRenderer.Render(MarkdownObject obj)
             => obj switch
@@ -316,7 +316,7 @@ namespace IPA.ModList.BeatSaber.UI.Markdig
 
             foreach (var block in list)
             {
-                if (!(block is ListItemBlock item))
+                if (block is not ListItemBlock item)
                 {
                     // TODO: Inject logger for this
                     // Logger.md.Warn("Block in list not a list item");
@@ -487,7 +487,7 @@ namespace IPA.ModList.BeatSaber.UI.Markdig
         private StringBuilder RenderEmphasisToText(EmphasisInline em, StringBuilder builder)
         {
             var flags = RenderHelpers.GetEmphasisFlags(em);
-            builder.AppendEmOpenTags(flags);
+            _ = builder.AppendEmOpenTags(flags);
             return RenderContainerInlineToText(em, builder)
                 .AppendEmCloseTags(flags);
         }
@@ -497,7 +497,7 @@ namespace IPA.ModList.BeatSaber.UI.Markdig
         #region Links
 
         private const string LinkIDStart = "__Link__";
-        private Dictionary<string, LinkInfo> linkDict;
+        private Dictionary<string, LinkInfo>? linkDict;
 
         private StringBuilder RenderLinkInlineToText(LinkInline link, StringBuilder builder)
         {
@@ -505,9 +505,10 @@ namespace IPA.ModList.BeatSaber.UI.Markdig
             if (link.IsImage)
             {
                 // TODO: implement images
-                builder.Append("[<noparse>")
-                       .Append(link.Title)
-                       .Append("</noparse>]");
+                _ = builder
+                    .Append("[<noparse>")
+                    .Append(link.Title)
+                    .Append("</noparse>]");
 
                 return builder;
             }
@@ -515,11 +516,12 @@ namespace IPA.ModList.BeatSaber.UI.Markdig
             var linkInfo = new LinkInfo(link.GetDynamicUrl?.Invoke() ?? link.Url, link.Title);
             var linkName = AddLinkToDict(linkInfo);
 
-            builder.Append($"<link=\"{linkName}\">")
-                   .Append("<color=#").AppendColorHex(LinkColor).Append(">");
+            _ = builder
+                .Append($"<link=\"{linkName}\">")
+                .Append("<color=#").AppendColorHex(LinkColor).Append(">");
             return RenderContainerInlineToText(link, builder)
-                   .Append("</color>")
-                   .Append("</link>");
+                .Append("</color>")
+                .Append("</link>");
         }
 
         private StringBuilder RenderAutolinkInlineToText(AutolinkInline link, StringBuilder builder)
@@ -537,6 +539,7 @@ namespace IPA.ModList.BeatSaber.UI.Markdig
 
         private string AddLinkToDict(LinkInfo linkInfo)
         {
+            if (linkDict is null) return "";
             // TODO: Inject logger for this
             // Logger.md.Debug($"Rendering inline link to {linkInfo.Url} ({linkInfo.Title})");
             var linkName = LinkIDStart + linkDict.Count;
@@ -547,32 +550,32 @@ namespace IPA.ModList.BeatSaber.UI.Markdig
         private struct LinkInfo
         {
             public string Url;
-            public string Title;
+            public string? Title;
             public List<GameObject> SelectableObjects;
 
-            public LinkInfo(string url, string title)
+            public LinkInfo(string url, string? title)
             {
-                this.Url = url;
-                this.Title = title;
+                Url = url;
+                Title = title;
                 SelectableObjects = new List<GameObject>();
             }
         }
 
-        private void Highlight_OnLinkBackgroundRendered(TMP_LinkInfo link, GameObject gameObject, object linkData)
+        private void Highlight_OnLinkBackgroundRendered(TMP_LinkInfo link, GameObject gameObject, object? linkData)
         {
-            if (!(linkData is Dictionary<string, LinkInfo> linkDict)) return;
+            if (linkData is not Dictionary<string, LinkInfo> linkDict) return;
             if (!linkDict.TryGetValue(link.GetLinkID(), out var linkInfo)) return;
 
             linkInfo.SelectableObjects.Add(gameObject);
         }
 
-        public delegate void LinkRendered(IEnumerable<GameObject> textRegions, GameObject fullExtent, string url, string title);
+        public delegate void LinkRendered(IEnumerable<GameObject> textRegions, GameObject fullExtent, string url, string? title);
 
-        public event LinkRendered OnLinkRendered;
+        public event LinkRendered? OnLinkRendered;
 
-        private void Highlight_OnLinkSingleObjectRendered(TMP_LinkInfo link, GameObject gameObject, object linkData)
+        private void Highlight_OnLinkSingleObjectRendered(TMP_LinkInfo link, GameObject gameObject, object? linkData)
         {
-            if (!(linkData is Dictionary<string, LinkInfo> linkDict)) return;
+            if (linkData is not Dictionary<string, LinkInfo> linkDict) return;
             if (!linkDict.TryGetValue(link.GetLinkID(), out var linkInfo)) return;
 
             OnLinkRendered?.Invoke(linkInfo.SelectableObjects, gameObject, linkInfo.Url, linkInfo.Title);

@@ -1,4 +1,4 @@
-﻿using BeatSaberMarkupLanguage;
+using BeatSaberMarkupLanguage;
 using BeatSaberMarkupLanguage.Parser;
 using BeatSaberMarkupLanguage.TypeHandlers;
 using IPA.ModList.BeatSaber.UI.Components;
@@ -56,15 +56,15 @@ namespace IPA.ModList.BeatSaber.UI.BSML
         {
             base.HandleType(componentType, parserParams);
 
-            var markdownText = componentType.component as MarkdownText;
+            var markdownText = (MarkdownText)componentType.component;
 
             // run this manually once to ensure it overwrites the children
-            if (componentType.data.TryGetValue("text", out string text))
+            if (componentType.data.TryGetValue("text", out var text))
             {
                 markdownText.Text = text;
             }
 
-            if (componentType.data.TryGetValue("linkPressed", out string selectCell))
+            if (componentType.data.TryGetValue("linkPressed", out var selectCell))
             {
                 markdownText.OnLinkPressed += (url, title) =>
                 {
@@ -73,7 +73,7 @@ namespace IPA.ModList.BeatSaber.UI.BSML
                         throw new Exception("link-pressed action '" + componentType.data["onClick"] + "' not found");
                     }
 
-                    action.Invoke(url, title);
+                    _ = action.Invoke(url, title);
                 };
             }
         }

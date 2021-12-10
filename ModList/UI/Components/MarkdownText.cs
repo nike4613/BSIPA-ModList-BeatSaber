@@ -1,19 +1,19 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using UnityEngine;
-using Markdig;
-using IPA.ModList.BeatSaber.UI.Markdig;
-using Markdig.Extensions.EmphasisExtras;
-using BSMLUtils = BeatSaberMarkupLanguage.Utilities;
-using HMUI;
-using TMPro;
-using UnityEngine.TextCore;
-using IPA.Utilities;
-using UnityEngine.UI;
-using UnityEngine.EventSystems;
-using BeatSaberMarkupLanguage;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using BeatSaberMarkupLanguage;
+using HMUI;
+using IPA.ModList.BeatSaber.UI.Markdig;
 using IPA.ModList.BeatSaber.Utilities;
+using IPA.Utilities;
+using Markdig;
+using Markdig.Extensions.EmphasisExtras;
+using TMPro;
+using UnityEngine;
+using UnityEngine.EventSystems;
+using UnityEngine.TextCore;
+using UnityEngine.UI;
+using BSMLUtils = BeatSaberMarkupLanguage.Utilities;
 
 namespace IPA.ModList.BeatSaber.UI.Components
 {
@@ -25,7 +25,7 @@ namespace IPA.ModList.BeatSaber.UI.Components
         private bool resetRenderer = true;
         public bool IsDirty { get; private set; }
 
-        private string text = null;
+        private string text = "";
 
         public string Text
         {
@@ -133,7 +133,7 @@ namespace IPA.ModList.BeatSaber.UI.Components
 
             var assetName = asset.name;
             asset = BeatSaberUI.CreateFixedUIFontClone(asset);
-            asset.SetName($"__markdown__{assetName}");
+            _ = asset.SetName($"__markdown__{assetName}");
             asset.ReadFontAssetDefinition(); // this likely won't be necessary if/when BSML stops caching TMP fonts
 
             var paddingChar = UnicodePrivateUseStart;
@@ -169,7 +169,7 @@ namespace IPA.ModList.BeatSaber.UI.Components
 
         private UnityRenderer CreateRenderer()
         {
-            var (font, padding) = LoadConfigFont(ModListConfig.Instance);
+            var (font, padding) = LoadConfigFont(ModListConfig.Instance!);
             return new UnityRendererBuilder()
                    .UI.Material(BSMLUtils.ImageResources.NoGlowMat)
                    .UI.Font(BeatSaberUI.MainTextFont)
@@ -187,7 +187,9 @@ namespace IPA.ModList.BeatSaber.UI.Components
                    {
                        var tmp = go?.GetComponent<CurvedTextMeshPro>();
                        if (tmp != null) // explicitly disable TMP raycasting on TMP objects
+                       {
                            tmp.raycastTarget = false;
+                       }
                    })
                    .UseLinkRenderedCallback(OnLinkRendered)
                    .Build();
@@ -197,7 +199,7 @@ namespace IPA.ModList.BeatSaber.UI.Components
         {
             // TODO: Inject logger for this
             // Logger.md.Debug($"Rendering markdown:\n{string.Join("\n", Text.Split('\n').Select(s => "| " + s))}");
-            var root = Markdown.Convert(Text, Renderer, Pipeline) as RectTransform;
+            var root = (RectTransform)Markdown.Convert(Text, Renderer, Pipeline);
             root.SetParent(RectTransform, false);
             root.anchorMin = new Vector2(0, 1);
             root.anchorMax = Vector2.one;
@@ -223,13 +225,13 @@ namespace IPA.ModList.BeatSaber.UI.Components
 
         #region Links
 
-        public delegate void LinkPressed(string url, string title);
+        public delegate void LinkPressed(string url, string? title);
 
-        public event LinkPressed OnLinkPressed;
+        public event LinkPressed? OnLinkPressed;
 
-        private void OnLinkRendered(IEnumerable<GameObject> hoverableGOs, GameObject fullBgGO, string url, string title)
+        private void OnLinkRendered(IEnumerable<GameObject> hoverableGOs, GameObject fullBgGO, string url, string? title)
         {
-            fullBgGO.AddComponent<LinkHoverHint>();
+            _ = fullBgGO.AddComponent<LinkHoverHint>();
             var hoverManager = fullBgGO.AddComponent<LinkHoverManager>();
             hoverManager.HoverHint.Controller = Resources.FindObjectsOfTypeAll<HoverHintController>().First();
             hoverManager.MarkdownText = this;
@@ -240,11 +242,11 @@ namespace IPA.ModList.BeatSaber.UI.Components
             {
                 var hover = go.AddComponent<LinkPartHover>();
                 hover.Manager = hoverManager;
-                go.AddComponent<Interactable>(); // gives you a little buzz when hovering
+                _ = go.AddComponent<Interactable>(); // gives you a little buzz when hovering
             }
         }
 
-        private void InvokeLinkPressed(string url, string title)
+        private void InvokeLinkPressed(string url, string? title)
             => OnLinkPressed?.Invoke(url, title);
 
         [RequireComponent(typeof(LinkHoverHint))]
@@ -254,9 +256,9 @@ namespace IPA.ModList.BeatSaber.UI.Components
 
             public HoverHintController HintController => HoverHint.Controller;
 
-            public string TitleText { get; set; }
-            public string Url { get; set; }
-            public MarkdownText MarkdownText { get; set; }
+            public string? TitleText { get; set; }
+            public string Url { get; set; } = "";
+            public MarkdownText MarkdownText { get; set; } = null!; // fucking monobehaviour
 
             public void BeginHover()
             {
@@ -285,7 +287,7 @@ namespace IPA.ModList.BeatSaber.UI.Components
             IPointerClickHandler,
             IEventSystemHandler
         {
-            public LinkHoverManager Manager { get; set; }
+            public LinkHoverManager Manager { get; set; } = null!; // fucking monobehaviour
 
             protected override void Awake()
                 => raycastTarget = true;

@@ -1,10 +1,11 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
         <TargetFramework>net472</TargetFramework>
         <OutputType>Library</OutputType>
-        <LangVersion>8</LangVersion>
+        <LangVersion>9</LangVersion>
         <Nullable>enable</Nullable>
+        <WarningsAsErrors>$(WarningsAsErrors);nullable</WarningsAsErrors>
         <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
         <RootNamespace>IPA.ModList.BeatSaber</RootNamespace>
         <LocalRefsDir Condition="Exists('..\Refs')">..\Refs</LocalRefsDir>

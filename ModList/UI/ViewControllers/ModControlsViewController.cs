@@ -147,7 +147,7 @@ namespace IPA.ModList.BeatSaber.UI.ViewControllers
             }
 
             UpdatePluginTo(plugin, PluginState.Enabled);
-            StartCoroutine(RefreshOnModStateChange());
+            _ = StartCoroutine(RefreshOnModStateChange());
         }
 
         private Action<bool> GetEnableConfirmCallback(PluginInformation plugin, IEnumerable<PluginMetadata> deps, StateTransitionTransaction transaction, Action? afterConfirm = null)
@@ -179,7 +179,7 @@ namespace IPA.ModList.BeatSaber.UI.ViewControllers
                 }
 
                 // once we've processed everything, we're done, we can enable our thing now
-                transaction.Enable(plugin.Plugin, true);
+                _ = transaction.Enable(plugin.Plugin, true);
                 UpdatePluginTo(plugin, PluginState.Enabled);
 
                 afterConfirm?.Invoke();
@@ -214,11 +214,11 @@ namespace IPA.ModList.BeatSaber.UI.ViewControllers
                     return;
                 }
 
-                siraLog.Logger.Notice($"{plugin.Plugin.Name} already disabled");
+                siraLog.Logger?.Notice($"{plugin.Plugin.Name} already disabled");
             }
 
             UpdatePluginTo(plugin, PluginState.Disabled);
-            StartCoroutine(RefreshOnModStateChange());
+            _ = StartCoroutine(RefreshOnModStateChange());
         }
 
         private Action<bool> GetDisableConfirmCallback(PluginInformation plugin, IEnumerable<PluginMetadata> deps, StateTransitionTransaction transaction, Action? afterConfirm = null)
@@ -250,7 +250,7 @@ namespace IPA.ModList.BeatSaber.UI.ViewControllers
                 }
 
                 // once we've processed everything, we're done, we can enable our thing now
-                transaction.Disable(plugin.Plugin, true);
+                _ = transaction.Disable(plugin.Plugin, true);
                 UpdatePluginTo(plugin, PluginState.Disabled);
 
                 afterConfirm?.Invoke();
@@ -277,7 +277,7 @@ namespace IPA.ModList.BeatSaber.UI.ViewControllers
             {
                 if (originalState == newState)
                 {
-                    changedStates.Remove(plugin);
+                    _ = changedStates.Remove(plugin);
                 }
             }
             else

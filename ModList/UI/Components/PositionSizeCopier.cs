@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 
 namespace IPA.ModList.BeatSaber.UI.Components
 {
@@ -7,7 +7,7 @@ namespace IPA.ModList.BeatSaber.UI.Components
     {
         public RectTransform RectTransform => GetComponent<RectTransform>();
 
-        public RectTransform CopyFrom { get; set; }
+        public RectTransform CopyFrom { get; set; } = null!; // fucking monobehaviour
 
         public void Update()
         {

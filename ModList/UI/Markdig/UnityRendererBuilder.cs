@@ -1,4 +1,4 @@
-﻿using Markdig.Syntax;
+using Markdig.Syntax;
 using System;
 using System.Runtime.CompilerServices;
 using TMPro;
@@ -14,27 +14,27 @@ namespace IPA.ModList.BeatSaber.UI.Markdig
         UnityRendererBuilder.IInlineCodeRendererBuilder,
         UnityRendererBuilder.IUIRendererBuilder
     {
-        private Material uiMat = null;
-        private TMP_FontAsset uiFont = null;
+        private Material? uiMat = null;
+        private TMP_FontAsset? uiFont = null;
         private Color uiColor = Color.white;
         private Color linkColor = Color.cyan;
         private Color? autolinkColor = null;
 
         private Color? quoteColor = null;
-        private Sprite quoteBg = null;
+        private Sprite? quoteBg = null;
         private Image.Type quoteBgType;
 
         private Color? codeColor = null;
-        private Sprite codeBg = null;
+        private Sprite? codeBg = null;
         private Image.Type? codeBgType = null;
         private Color? codeInlineColor = null;
-        private Sprite codeInlineBg = null;
+        private Sprite? codeInlineBg = null;
         private Image.Type? codeInlineBgType = null;
-        private TMP_FontAsset codeFont = null;
+        private TMP_FontAsset? codeFont = null;
         private string codeInlinePadding = "";
 
-        private event Action<MarkdownObject, GameObject> ObjRenderCallback;
-        private event UnityRenderer.LinkRendered LinkRenderCallback;
+        private event Action<MarkdownObject, GameObject>? ObjRenderCallback;
+        private event UnityRenderer.LinkRendered? LinkRenderCallback;
 
         public interface ILinkRendererBuilder
         {

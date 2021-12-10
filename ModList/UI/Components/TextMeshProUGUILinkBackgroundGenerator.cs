@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -18,7 +18,7 @@ namespace IPA.ModList.BeatSaber.UI.Components
         /// <summary>
         /// The object pointed to by this property should have the same position and size as the object this is on
         /// </summary>
-        public Transform BackgroundParent { get; set; }
+        public Transform BackgroundParent { get; set; } = null!; // fucking monobehaviour
 
         private bool useLineHeight = false;
 
@@ -44,7 +44,7 @@ namespace IPA.ModList.BeatSaber.UI.Components
             }
         }
 
-        private readonly List<LinkType> linkTypes = new List<LinkType>();
+        private readonly List<LinkType> linkTypes = new();
         public IReadOnlyList<LinkType> LinkTypes => linkTypes;
 
         public void AddLinkType(LinkType type)
@@ -55,18 +55,18 @@ namespace IPA.ModList.BeatSaber.UI.Components
 
         public void RemoveLinkType(LinkType type)
         {
-            linkTypes.Remove(type);
+            _ = linkTypes.Remove(type);
             IsDirty = true;
         }
 
         public class LinkType : IEquatable<LinkType>
         {
-            public object Data { get; }
+            public object? Data { get; }
             public Func<TMP_LinkInfo, bool> Selector { get; }
 
             public bool ShowBackground { get; set; } = false;
-            public Material BackgroundMaterial { get; set; }
-            public Sprite BackgroundSprite { get; set; }
+            public Material? BackgroundMaterial { get; set; }
+            public Sprite? BackgroundSprite { get; set; }
             public Image.Type BackgroundImageType { get; set; }
             public Color BackgroundImageColor { get; set; }
 
@@ -77,7 +77,7 @@ namespace IPA.ModList.BeatSaber.UI.Components
 
             public float LineBreakPadding { get; set; } = 0f;
 
-            public LinkType(Func<TMP_LinkInfo, bool> selector, object data)
+            public LinkType(Func<TMP_LinkInfo, bool> selector, object? data)
             {
                 Selector = selector;
                 Data = data;
@@ -93,9 +93,9 @@ namespace IPA.ModList.BeatSaber.UI.Components
                 => -649874820 + EqualityComparer<Func<TMP_LinkInfo, bool>>.Default.GetHashCode(Selector);
         }
 
-        public LinkType CreateLinkType(Func<TMP_LinkInfo, bool> selector, object data) => new LinkType(selector, data);
+        public LinkType CreateLinkType(Func<TMP_LinkInfo, bool> selector, object? data) => new(selector, data);
 
-        public delegate void BackgroundObjectRendered(TMP_LinkInfo link, GameObject gameObject, object linkData);
+        public delegate void BackgroundObjectRendered(TMP_LinkInfo link, GameObject gameObject, object? linkData);
 
         public event BackgroundObjectRendered? OnLinkSingleObjectRendered;
         public event BackgroundObjectRendered? OnLinkBackgroundRendered;
@@ -103,7 +103,7 @@ namespace IPA.ModList.BeatSaber.UI.Components
         public bool IsDirty { get; set; } = false;
 
         private bool needsRerender = false;
-        private readonly List<GameObject> createdObjects = new List<GameObject>();
+        private readonly List<GameObject> createdObjects = new();
 
         private readonly struct LinkInfo
         {
@@ -127,7 +127,7 @@ namespace IPA.ModList.BeatSaber.UI.Components
             }
         }
 
-        private IEnumerable<LinkInfo> renderedLinks;
+        private IEnumerable<LinkInfo>? renderedLinks;
 
         internal void Update()
         {
@@ -155,7 +155,7 @@ namespace IPA.ModList.BeatSaber.UI.Components
 
         private struct LinkRenderInfo
         {
-            public Extents[] HighlightRegions;
+            public Extents[]? HighlightRegions;
             public LinkType Type;
             public TMP_LinkInfo Link;
             public Extents FullExtents;
@@ -211,14 +211,14 @@ namespace IPA.ModList.BeatSaber.UI.Components
                     : new Extents(new Vector2(0, float.MaxValue), new Vector2(0, float.MinValue));
 
             static Extents PadExtents(Extents extent, Vector4 padding)
-                => new Extents( // x = left, y = right, z = top, w = bottom
+                => new( // x = left, y = right, z = top, w = bottom
                     new Vector2(extent.min.x - padding.x, extent.min.y - padding.w),
                     new Vector2(extent.max.x + padding.y, extent.max.y + padding.z)
                 );
 
             var currentExtent = GetZeroedExtents(lineExtent);
 
-            bool hitLineBreak = false;
+            var hitLineBreak = false;
 
             for (var charIdx = start; charIdx < end && charIdx < tmp.textInfo.characterCount; charIdx++)
             {
@@ -269,8 +269,12 @@ namespace IPA.ModList.BeatSaber.UI.Components
             else
             {
                 foreach (var link in links)
-                foreach (var ext in FindExtentsForLink(tmp, link.Type, link.Link))
-                    yield return new LinkRenderInfo(link.Link, ext, link.Type);
+                {
+                    foreach (var ext in FindExtentsForLink(tmp, link.Type, link.Link))
+                    {
+                        yield return new LinkRenderInfo(link.Link, ext, link.Type);
+                    }
+                }
             }
         }
 
@@ -305,10 +309,13 @@ namespace IPA.ModList.BeatSaber.UI.Components
                 foreach (var link in links)
                 {
                     var bigGo = CreateObjectForExtent(link.FullExtents, link.Type, false);
-                    foreach (var ext in link.HighlightRegions)
+                    if (link.HighlightRegions is not null)
                     {
-                        var go = CreateObjectForExtent(ext, link.Type, true);
-                        OnLinkBackgroundRendered?.Invoke(link.Link, go, link.Type.Data);
+                        foreach (var ext in link.HighlightRegions)
+                        {
+                            var go = CreateObjectForExtent(ext, link.Type, true);
+                            OnLinkBackgroundRendered?.Invoke(link.Link, go, link.Type.Data);
+                        }
                     }
 
                     OnLinkSingleObjectRendered?.Invoke(link.Link, bigGo, link.Type.Data);
@@ -338,7 +345,7 @@ namespace IPA.ModList.BeatSaber.UI.Components
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static Extents CharInfoExtent(TMP_CharacterInfo chr)
-            => new Extents(chr.bottomLeft, chr.topRight);
+            => new(chr.bottomLeft, chr.topRight);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private bool IsCharInLine(int charIdx, TMP_LineInfo line)
@@ -349,7 +356,7 @@ namespace IPA.ModList.BeatSaber.UI.Components
             var tmp = TextMeshPro;
             if (charIdx < 0 || charIdx > tmp.textInfo.characterCount)
                 return -1;
-            for (int i = startAt; i < tmp.textInfo.lineCount && i < tmp.textInfo.lineInfo.Length; i++)
+            for (var i = startAt; i < tmp.textInfo.lineCount && i < tmp.textInfo.lineInfo.Length; i++)
             {
                 var info = tmp.textInfo.lineInfo[i];
                 if (info.firstCharacterIndex <= charIdx && info.lastCharacterIndex >= charIdx)
