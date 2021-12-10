@@ -55,10 +55,10 @@ namespace IPA.ModList.BeatSaber.UI.ViewControllers
             floatingScreen?.gameObject.SetActive(false);
         }
 
-        internal void SetPlugin(PluginInformation info)
+        internal void SetPlugin(PluginInformation? info)
         {
             plugin = info;
-            PanelActive = info.State != PluginState.Ignored;
+            PanelActive = info != null && info.State != PluginState.Ignored;
 
             RefreshModInfo();
         }

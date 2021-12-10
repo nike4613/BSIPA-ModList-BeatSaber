@@ -51,7 +51,7 @@ namespace IPA.ModList.BeatSaber.UI.ViewControllers
         [UIComponent("IconImage")]
         internal ImageView IconImage = null!;
 
-        public void SetPlugin(PluginInformation plugin)
+        public void SetPlugin(PluginInformation? plugin)
         {
             pluginInfo = plugin;
             NotifyPluginChanged();

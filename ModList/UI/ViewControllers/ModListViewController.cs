@@ -48,7 +48,7 @@ namespace IPA.ModList.BeatSaber.UI.ViewControllers
             this.modProviderService = modProviderService;
         }
 
-        internal event Action<PluginInformation>? DidSelectPlugin;
+        internal event Action<PluginInformation?>? DidSelectPlugin;
 
         [UIComponent("list")]
         internal CustomCellListTableData CustomListTableData = null!;
@@ -82,6 +82,13 @@ namespace IPA.ModList.BeatSaber.UI.ViewControllers
         {
             base.DidActivate(firstActivation, addedToHierarchy, screenSystemEnabling);
             Loaded = false;
+        }
+
+        protected override void DidDeactivate(bool removedFromHierarchy, bool screenSystemDisabling)
+        {
+            base.DidDeactivate(removedFromHierarchy, screenSystemDisabling);
+            CustomListTableData.tableView.ClearSelection();
+            DidSelectPlugin?.Invoke(null);
         }
 
         internal async void OnAnimationFinish()

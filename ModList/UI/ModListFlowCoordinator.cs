@@ -82,9 +82,12 @@ namespace IPA.ModList.BeatSaber.UI
             modListViewController.OnAnimationFinish();
         }
 
-        private void HandleSelectPlugin(PluginInformation plugin)
+        private void HandleSelectPlugin(PluginInformation? plugin)
         {
-            siraLog.Info($"Mod list selected plugin {plugin.Plugin} ({plugin.State})");
+            if (plugin != null)
+            {
+                siraLog.Info($"Mod list selected plugin {plugin.Plugin} ({plugin.State})");
+            }
             modInfoViewController.SetPlugin(plugin);
             modControlsViewController.SetPlugin(plugin);
         }
