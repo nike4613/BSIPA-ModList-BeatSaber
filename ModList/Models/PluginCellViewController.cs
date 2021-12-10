@@ -38,7 +38,7 @@ namespace IPA.ModList.BeatSaber.Models
 
             IconSprite = pluginInformation.Icon;
             Name = pluginInformation.Plugin.Name;
-            AuthorAndVersion = $"{pluginInformation.Plugin.Author} <size=80%>{pluginInformation.Plugin.Version}</size>";
+            AuthorAndVersion = $"{pluginInformation.Plugin.Author} <size=80%>{pluginInformation.Plugin.HVersion}</size>";
             StatusSprites = Enumerable.Empty<Sprite>()
                         .AppendIf(pluginInformation.Plugin.IsBare, Helpers.LibrarySprite)
                         .AppendIf(pluginInformation.State == PluginState.Disabled, Helpers.XSprite)
