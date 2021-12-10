@@ -16,7 +16,7 @@ namespace IPA.ModList.BeatSaber.UI
         public ModListButtonManager(ModListFlowCoordinator flowCoordinator, UBinder<Plugin, PluginMetadata> pluginMetadata)
         {
             modListFlowCoordinator = flowCoordinator;
-            modListButton = new MenuButton(pluginMetadata.Value.Name, "Select the config you want.", OnClick);
+            modListButton = new MenuButton(pluginMetadata.Value.Name, "Show list of installed mods", OnClick);
         }
 
         public void Initialize()
