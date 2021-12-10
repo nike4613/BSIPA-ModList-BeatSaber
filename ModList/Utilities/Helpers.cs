@@ -111,12 +111,11 @@ namespace IPA.ModList.BeatSaber.Utilities
 
         private static readonly ConcurrentQueue<Action> iconQueue = new();
 
-        public static void QueueReadPluginIcon(this PluginMetadata plugin, Action<Sprite> OnCompletion)
+        public static Sprite QueueReadPluginIcon(this PluginMetadata plugin, Action<Sprite> OnCompletion)
         {
             if (plugin.IsBare)
             {
-                OnCompletion?.Invoke(BareManifestIcon);
-                return;
+                return BareManifestIcon;
             }
 
             iconQueue.Enqueue(() =>
@@ -131,6 +130,7 @@ namespace IPA.ModList.BeatSaber.Utilities
             });
 
             _ = SharedCoroutineStarter.instance.StartCoroutine(IconLoadCoroutine());
+            return BSMLUtils.ImageResources.BlankSprite;
         }
 
         private static readonly YieldInstruction loadWait = new WaitForEndOfFrame();

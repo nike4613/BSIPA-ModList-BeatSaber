@@ -21,13 +21,13 @@ namespace IPA.ModList.BeatSaber.Models
                 {
                     return icon;
                 }
-                Plugin.QueueReadPluginIcon((Sprite icon) =>
+
+                return Plugin.QueueReadPluginIcon((Sprite icon) =>
                 {
                     this.icon = icon;
                     SpriteWasLoaded = true;
                     SpriteLoadedEvent?.Invoke(icon);
                 });
-                return BeatSaberMarkupLanguage.Utilities.ImageResources.BlankSprite;
             }
         }
 
