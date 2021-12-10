@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using BeatSaberMarkupLanguage;
 using BeatSaberMarkupLanguage.MenuButtons;
 using IPA.Loader;
@@ -31,7 +31,7 @@ namespace IPA.ModList.BeatSaber.UI
                 return;
             }
 
-            BeatSaberUI.MainFlowCoordinator.PresentFlowCoordinator(modListFlowCoordinator);
+            BeatSaberUI.MainFlowCoordinator.PresentFlowCoordinator(modListFlowCoordinator, modListFlowCoordinator.OnAnimationFinish);
         }
 
         public void Dispose()

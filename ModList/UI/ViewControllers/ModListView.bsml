@@ -1,7 +1,8 @@
 <bg xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
     xsi:noNamespaceSchemaLocation='https://raw.githubusercontent.com/monkeymanboy/BSML-Docs/gh-pages/BSMLSchema.xsd' anchor-min-x='0.5'>
     <vertical vertical-fit='PreferredSize' preferred-width='75' pad-right='4'>
-        <custom-list id='list' show-scrollbar='true' stick-scrolling='true' select-cell='list-select' cell-size='8'>
+        <loading-indicator active='~is-loading' preserve-aspect='true' pref-width='20' pref-height='20' />
+        <custom-list id='list' active='~loaded' show-scrollbar='true' stick-scrolling='true' select-cell='list-select' cell-size='8'>
             <stack>
                 <bg bg='round-rect-panel' bg-color='#BD288199' tags='hovered' horizontal-fit='Unconstrained' />
                 <bg bg='round-rect-panel' bg-color='#FF69B4' tags='selected' horizontal-fit='Unconstrained' />

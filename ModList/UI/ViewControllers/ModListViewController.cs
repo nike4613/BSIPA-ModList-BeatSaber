@@ -4,6 +4,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using BeatSaberMarkupLanguage.Attributes;
 using BeatSaberMarkupLanguage.Components;
+using BeatSaberMarkupLanguage.Parser;
 using BeatSaberMarkupLanguage.ViewControllers;
 using HMUI;
 using IPA.ModList.BeatSaber.Models;
@@ -23,6 +24,22 @@ namespace IPA.ModList.BeatSaber.UI.ViewControllers
 
         private List<object> ListValues { get; } = new List<object>();
 
+        private bool _loaded;
+
+        [UIValue("is-loading")]
+        public bool IsLoading => !Loaded;
+
+        [UIValue("loaded")]
+        public bool Loaded
+        {
+            get => _loaded;
+            set
+            {
+                _loaded = value;
+                NotifyPropertyChanged();
+                NotifyPropertyChanged(nameof(IsLoading));
+            }
+        }
 
         [Inject]
         internal void Construct(SiraLog siraLog, ModProviderService modProviderService)
@@ -64,11 +81,17 @@ namespace IPA.ModList.BeatSaber.UI.ViewControllers
         protected override void DidActivate(bool firstActivation, bool addedToHierarchy, bool screenSystemEnabling)
         {
             base.DidActivate(firstActivation, addedToHierarchy, screenSystemEnabling);
+            Loaded = false;
+        }
 
+        internal async void OnAnimationFinish()
+        {
             if (CustomListTableData != null && CustomListTableData.data?.Count != modProviderService.PluginList.Count)
             {
+                await SiraUtil.Extras.Utilities.PauseChamp;
                 ReloadViewList();
             }
+            Loaded = true;
         }
 
         internal void ReloadViewList()

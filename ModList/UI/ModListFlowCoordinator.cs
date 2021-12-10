@@ -74,6 +74,11 @@ namespace IPA.ModList.BeatSaber.UI
             base.DidDeactivate(removedFromHierarchy, screenSystemDisabling);
         }
 
+        internal void OnAnimationFinish()
+        {
+            modListViewController.OnAnimationFinish();
+        }
+
         private void HandleSelectPlugin(PluginInformation plugin)
         {
             siraLog.Info($"Mod list selected plugin {plugin.Plugin} ({plugin.State})");
