@@ -50,7 +50,7 @@ namespace IPA.ModList.BeatSaber.UI
                     SetTitle(modName);
                     showBackButton = true;
                     SetViewControllersToNavigationController(navigationController, modListViewController, modInfoViewController);
-                    ProvideInitialViewControllers(navigationController, bottomScreenViewController: modControlsViewController);
+                    ProvideInitialViewControllers(navigationController);
 
                     modalPopupViewController.SetData(navigationController.gameObject);
                 }
@@ -63,6 +63,7 @@ namespace IPA.ModList.BeatSaber.UI
             {
                 siraLog.Error(ex);
             }
+            modControlsViewController.PresentFloatingScreen();
         }
 
         protected override void DidDeactivate(bool removedFromHierarchy, bool screenSystemDisabling)
@@ -70,6 +71,8 @@ namespace IPA.ModList.BeatSaber.UI
             modControlsViewController.OnChangeNeedsConfirmation -= modalPopupViewController.QueueChange;
             modControlsViewController.OnListNeedsRefresh -= HandleListNeedsRefresh;
             modListViewController.DidSelectPlugin -= HandleSelectPlugin;
+
+            modControlsViewController.HideFloatingScreen();
 
             base.DidDeactivate(removedFromHierarchy, screenSystemDisabling);
         }

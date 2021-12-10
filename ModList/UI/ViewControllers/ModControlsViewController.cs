@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using BeatSaberMarkupLanguage.Attributes;
+using BeatSaberMarkupLanguage.FloatingScreen;
 using BeatSaberMarkupLanguage.Parser;
 using BeatSaberMarkupLanguage.ViewControllers;
 using IPA.Loader;
@@ -10,6 +11,7 @@ using IPA.ModList.BeatSaber.Models;
 using IPA.ModList.BeatSaber.Services;
 using ModestTree;
 using SiraUtil.Logging;
+using UnityEngine;
 using Zenject;
 
 namespace IPA.ModList.BeatSaber.UI.ViewControllers
@@ -17,6 +19,8 @@ namespace IPA.ModList.BeatSaber.UI.ViewControllers
     [HotReload(RelativePathToLayout = @".\ModControlsView.bsml")]
     internal class ModControlsViewController : BSMLAutomaticViewController
     {
+        private FloatingScreen? floatingScreen;
+
         private PluginInformation? plugin;
         private readonly Dictionary<PluginInformation, PluginState> changedStates = new Dictionary<PluginInformation, PluginState>();
 
@@ -31,6 +35,24 @@ namespace IPA.ModList.BeatSaber.UI.ViewControllers
         {
             this.modProviderService = modProviderService;
             this.siraLog = siraLog;
+        }
+
+        internal void PresentFloatingScreen()
+        {
+            if (floatingScreen != null)
+            {
+                floatingScreen = FloatingScreen.CreateFloatingScreen(new Vector2(300, 50), false, new Vector3(0f, 0, 2.5f), new Quaternion(0, 0, 0, 0));
+                floatingScreen.transform.eulerAngles = new Vector3(60, 0, 0);
+                floatingScreen.transform.localScale = new Vector3(0.03f, 0.03f, 0.03f);
+                floatingScreen!.SetRootViewController(this, AnimationType.None);
+                floatingScreen!.gameObject.name = "ModControlsFloatingScreen";
+            }
+            floatingScreen?.gameObject.SetActive(true);
+        }
+
+        internal void HideFloatingScreen()
+        {
+            floatingScreen?.gameObject.SetActive(false);
         }
 
         internal void SetPlugin(PluginInformation info)
