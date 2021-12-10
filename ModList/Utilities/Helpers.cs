@@ -110,8 +110,6 @@ namespace IPA.ModList.BeatSaber.Utilities
         }
 
         private static readonly ConcurrentQueue<Action> iconQueue = new();
-        private static int coroutineShouldBeRunning = 0;
-        private static int coroutineRunning = 0;
 
         public static void QueueReadPluginIcon(this PluginMetadata plugin, Action<Sprite> OnCompletion)
         {
@@ -129,34 +127,20 @@ namespace IPA.ModList.BeatSaber.Utilities
                     icon = ReadImageFromAssembly(plugin.Assembly, plugin.IconName).AsSprite();
                 }
 
-                OnCompletion?.Invoke(icon is not null ? icon : DefaultPluginIcon);
+                OnCompletion?.Invoke(icon != null ? icon : DefaultPluginIcon);
             });
 
-            if (coroutineRunning == 0)
-            {
-                _ = Interlocked.Exchange(ref coroutineShouldBeRunning, 1);
-                _ = IPA.Utilities.Async.Coroutines.AsTask(IconLoadCoroutine());
-            }
+            _ = SharedCoroutineStarter.instance.StartCoroutine(IconLoadCoroutine());
         }
 
         private static readonly YieldInstruction loadWait = new WaitForEndOfFrame();
         private static IEnumerator IconLoadCoroutine()
         {
-            do
+            while (iconQueue.TryDequeue(out var loader))
             {
-                if (Interlocked.Exchange(ref coroutineRunning, 1) != 0)
-                    yield break;
-                _ = Interlocked.Exchange(ref coroutineShouldBeRunning, 0);
-
-                while (iconQueue.TryDequeue(out var loader))
-                {
-                    loader?.Invoke();
-                    yield return loadWait;
-                }
-
-                _ = Interlocked.Exchange(ref coroutineRunning, 0);
+                yield return loadWait;
+                loader?.Invoke();
             }
-            while (Interlocked.Exchange(ref coroutineShouldBeRunning, 0) == 1);
         }
 
         public static CurvedTextMeshPro CreateText(string text, Vector2 anchoredPosition, Vector2 sizeDelta)
