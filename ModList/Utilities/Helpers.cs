@@ -1,10 +1,10 @@
-﻿using System.Collections.Generic;
+using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using BeatSaberMarkupLanguage;
 using HMUI;
 using IPA.Loader;
-using IPA.ModList.BeatSaber.Models;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -106,22 +106,57 @@ namespace IPA.ModList.BeatSaber.Utilities
                 meshType: SpriteMeshType.FullRect);
         }
 
-        public static Sprite ReadPluginIcon(this PluginInformation plugin) => ReadPluginIcon(plugin.Plugin);
+        private static readonly Queue<Action> IconQueue = new Queue<Action>();
+        private static readonly object _loaderLock = new object();
+        private static bool CoroutineRunning = false;
 
-        public static Sprite ReadPluginIcon(this PluginMetadata plugin)
+        public static void QueueReadPluginIcon(this PluginMetadata plugin, Action<Sprite> OnCompletion)
         {
             if (plugin.IsBare)
             {
-                return BareManifestIcon;
+                OnCompletion?.Invoke(BareManifestIcon);
+                return;
             }
 
-            Sprite? icon = null;
-            if (plugin.IconName != null)
+            IconQueue.Enqueue(() =>
             {
-                icon = ReadImageFromAssembly(plugin.Assembly, plugin.IconName).AsSprite();
+                Sprite? icon = null;
+                if (plugin.IconName != null)
+                {
+                    icon = ReadImageFromAssembly(plugin.Assembly, plugin.IconName).AsSprite();
+                }
+
+                OnCompletion?.Invoke(icon != null ? icon : DefaultPluginIcon);
+            });
+
+            if (!CoroutineRunning)
+            {
+                IPA.Utilities.Async.Coroutines.AsTask(IconLoadCoroutine());
+            }
+        }
+
+        private static YieldInstruction LoadWait = new WaitForEndOfFrame();
+        private static IEnumerator<YieldInstruction> IconLoadCoroutine()
+        {
+            lock (_loaderLock)
+            {
+                if (CoroutineRunning)
+                    yield break;
+                CoroutineRunning = true;
             }
 
-            return icon != null ? icon : DefaultPluginIcon;
+            while (IconQueue.Count > 0)
+            {
+                yield return LoadWait;
+                var loader = IconQueue.Dequeue();
+                loader?.Invoke();
+            }
+
+            CoroutineRunning = false;
+            if (IconQueue.Count > 0)
+            {
+                SharedCoroutineStarter.instance.StartCoroutine(IconLoadCoroutine());
+            }
         }
 
         public static CurvedTextMeshPro CreateText(string text, Vector2 anchoredPosition, Vector2 sizeDelta)
