@@ -31,7 +31,7 @@ namespace IPA.ModList.BeatSaber.Models
         {
             this.pluginInformation = pluginInformation;
 
-            if (!pluginInformation.spriteWasLoaded)
+            if (!pluginInformation.SpriteWasLoaded)
             {
                 pluginInformation.SpriteLoadedEvent += OnSpriteLoaded;
             }

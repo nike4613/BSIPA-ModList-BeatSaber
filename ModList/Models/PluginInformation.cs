@@ -8,7 +8,7 @@ namespace IPA.ModList.BeatSaber.Models
     internal class PluginInformation
     {
         private Sprite? icon;
-        public bool spriteWasLoaded;
+        public bool SpriteWasLoaded { get; private set; }
         public event Action<Sprite>? SpriteLoadedEvent;
         public PluginMetadata Plugin { get; }
         public PluginState State { get; set; }
@@ -24,7 +24,7 @@ namespace IPA.ModList.BeatSaber.Models
                 Plugin.QueueReadPluginIcon((Sprite icon) =>
                 {
                     this.icon = icon;
-                    spriteWasLoaded = true;
+                    SpriteWasLoaded = true;
                     SpriteLoadedEvent?.Invoke(icon);
                 });
                 return BeatSaberMarkupLanguage.Utilities.ImageResources.BlankSprite;
