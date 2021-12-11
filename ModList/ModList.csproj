@@ -32,7 +32,7 @@
 
     <ItemGroup>
         <PackageReference Include="Markdig">
-            <Version>0.18.3</Version>
+            <Version>0.26.0</Version>
         </PackageReference>
 
         <Reference Include="UnityEngine.CoreModule">
