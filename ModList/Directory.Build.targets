@@ -70,8 +70,6 @@
             <OldZips Include="$(DestinationDirectory)$(AssemblyName)*.zip"/>
         </ItemGroup>
         <Copy SourceFiles="$(OutputAssemblyName).dll" DestinationFiles="$(ArtifactDestination)\Plugins\$(AssemblyName).dll"/>
-        <!-- Important!!! Also copy the markdig lib -->
-        <Copy SourceFiles="$(OutputPath)Markdig.dll" DestinationFiles="$(ArtifactDestination)\Libs\Markdig.dll"/>
         <Message Text="PluginVersion: $(PluginVersion), AssemblyVersion: $(AssemblyVersion), GameVersion: $(GameVersion)" Importance="high"/>
         <Delete Files="@(OldZips)" TreatErrorsAsWarnings="true" ContinueOnError="true"/>
         <ZipDir SourceDirectory="$(ArtifactDestination)" DestinationFile="$(DestinationDirectory)$(ArtifactName).zip"/>
@@ -98,8 +96,6 @@
             <PluginDir Condition="'$(IsRunning)' == 'True'">$(BeatSaberDir)\IPA\Pending\Plugins</PluginDir>
         </PropertyGroup>
         <Warning Text="$(CopyToPluginsError)" Condition="'$(CopyToPluginsError)' != ''"/>
-        <Message Text="Copying 'Markdig.dll' to '$(LibsDir)'." Importance="high" Condition="$(CanCopyToPlugins)"/>
-        <Copy SourceFiles="$(OutputPath)Markdig.dll" DestinationFiles="$(LibsDir)\Markdig.dll" Condition="$(CanCopyToPlugins)"/>
         <Message Text="Copying '$(OutputAssemblyName).dll' to '$(PluginDir)'." Importance="high" Condition="$(CanCopyToPlugins)"/>
         <Copy SourceFiles="$(OutputAssemblyName).dll" DestinationFiles="$(PluginDir)\$(AssemblyName).dll" Condition="$(CanCopyToPlugins)"/>
         <Copy SourceFiles="$(OutputAssemblyName).pdb" DestinationFiles="$(PluginDir)\$(AssemblyName).pdb" Condition="'$(CanCopyToPlugins)' == 'True' AND Exists('$(OutputAssemblyName).pdb')"/>

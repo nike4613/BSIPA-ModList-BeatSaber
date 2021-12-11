@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFramework>net472</TargetFramework>
+        <TargetFrameworks>net472</TargetFrameworks>
         <OutputType>Library</OutputType>
         <LangVersion>9</LangVersion>
         <Nullable>enable</Nullable>
@@ -10,7 +10,7 @@
         <RootNamespace>IPA.ModList.BeatSaber</RootNamespace>
         <LocalRefsDir Condition="Exists('..\Refs')">..\Refs</LocalRefsDir>
         <BeatSaberDir>$(LocalRefsDir)</BeatSaberDir>
-        <AppOutputBase>$(MSBuildProjectDirectory)\</AppOutputBase>
+        <!--<AppOutputBase>$(MSBuildProjectDirectory)\</AppOutputBase>-->
     </PropertyGroup>
 
     <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
@@ -127,4 +127,18 @@
             <IncludeAssets>build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
     </ItemGroup>
+
+    <PropertyGroup>
+        <CopyLockLocalAssemblies>true</CopyLockLocalAssemblies>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <AllowRepackDuplicateType Include="Microsoft.CodeAnalysis.EmbeddedAttribute" />
+        <AllowRepackDuplicateType Include="System.Runtime.CompilerServices.NullableAttribute" />
+        <AllowRepackDuplicateType Include="System.Runtime.CompilerServices.NullableContextAttribute" />
+        <AllowRepackDuplicateType Include="System.Runtime.CompilerServices.IsByRefLikeAttribute" />
+        <AllowRepackDuplicateType Include="System.Runtime.CompilerServices.IsReadOnlyAttribute" />
+    </ItemGroup>
+
+    <Import Project="$(MSBuildThisFileDirectory)..\tools\Packaging.targets" />
 </Project>

@@ -8,6 +8,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{BF8BDC36-F383-4138-8205-9427C19C6FD7}"
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
+		tools\Packaging.targets = tools\Packaging.targets
 	EndProjectSection
 EndProject
 Global
