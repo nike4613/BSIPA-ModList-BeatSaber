@@ -97,7 +97,7 @@ namespace IPA.ModList.BeatSaber.UI
             modListViewController.ReloadViewList();
         }
 
-        protected override void BackButtonWasPressed(ViewController _)
+        protected override void BackButtonWasPressed(ViewController viewController)
         {
             // If there is a change pending (and modal open) we have to deny it
             // If we don't, the change will remain pending when dismissing the view and coming back
@@ -111,25 +111,26 @@ namespace IPA.ModList.BeatSaber.UI
             // TODO: Should also show an additional warning when the user tries to disable ModList itself.
             if (modControlsViewController.CurrentTransaction != null && modControlsViewController.ChangedCount > 0)
             {
-                modControlsViewController.CurrentTransaction
-                                         .Commit()
-                                         .ContinueWith(t =>
-                                         {
-                                             if (t.IsFaulted)
-                                             {
-                                                 siraLog.Error(t.Exception);
-                                             }
+                _ = modControlsViewController
+                    .CurrentTransaction
+                    .Commit()
+                    .ContinueWith(t =>
+                    {
+                        if (t.IsFaulted)
+                        {
+                            siraLog.Error(t.Exception);
+                        }
 
-                                             modControlsViewController.CurrentTransaction = null;
+                        modControlsViewController.CurrentTransaction = null;
 
-                                             // No need to dismiss ourselves as the scene will be restarted "automagically".
-                                             // That is if BS_Utils is installed and enabled... however... some people might wanna disable it for one reason or another.
-                                             // So in that case, we'll restart the scene ourselves... less "automagically" though...
-                                             if (PluginManager.EnabledPlugins.All(x => x.Id != "BS Utils"))
-                                             {
-                                                 menuTransitionsHelper.RestartGame();
-                                             }
-                                         });
+                        // No need to dismiss ourselves as the scene will be restarted "automagically".
+                        // That is if BS_Utils is installed and enabled... however... some people might wanna disable it for one reason or another.
+                        // So in that case, we'll restart the scene ourselves... less "automagically" though...
+                        if (PluginManager.EnabledPlugins.All(x => x.Id != "BS Utils"))
+                        {
+                            menuTransitionsHelper.RestartGame();
+                        }
+                    });
             }
             else
             {

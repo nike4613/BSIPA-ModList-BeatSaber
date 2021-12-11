@@ -101,7 +101,6 @@ namespace IPA.ModList.BeatSaber.UI.ViewControllers
         }
 
         [UIAction(nameof(ConfirmChange))]
-        [SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "BSML calls this")]
         private void ConfirmChange()
         {
             siraLog.Debug("Confirmed");

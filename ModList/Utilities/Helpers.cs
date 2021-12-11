@@ -46,7 +46,8 @@ namespace IPA.ModList.BeatSaber.Utilities
 
         private static Sprite? roundedBackgroundSprite;
 
-        public static Sprite RoundedBackgroundSprite => roundedBackgroundSprite ??=
+        // see commeent below about MainScreen
+        public static Sprite RoundedBackgroundSprite => roundedBackgroundSprite != null ? roundedBackgroundSprite : roundedBackgroundSprite =
             Resources.FindObjectsOfTypeAll<Image>().Last(x => x.gameObject.name == "MinScoreInfo" && x.sprite != null && x.sprite.name == "RoundRectPanel").sprite;
 
         private static Sprite? smallRoundedRectSprite;
@@ -59,7 +60,8 @@ namespace IPA.ModList.BeatSaber.Utilities
         public static Sprite TinyRoundedRectSprite => tinyRoundedRectSprite ??= LoadTinyRoundedRectSprite();
 
         private static HMUI.Screen? mainScreen;
-        public static HMUI.Screen MainScreen => mainScreen ??= Resources.FindObjectsOfTypeAll<HMUI.Screen>().First(s => s.gameObject.name == "MainScreen");
+        // this MUST use != because Unity
+        public static HMUI.Screen MainScreen => mainScreen != null ? mainScreen : mainScreen = Resources.FindObjectsOfTypeAll<HMUI.Screen>().First(s => s.gameObject.name == "MainScreen");
 
         private static TextTag? textTag;
         public static TextTag TextTag => textTag ??= new TextTag();

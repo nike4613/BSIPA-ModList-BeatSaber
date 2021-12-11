@@ -262,6 +262,7 @@ namespace IPA.ModList.BeatSaber.UI.Markdig
             foreach (var child in quote.Select(block => RenderBlock(block)).SelectMany(children => children))
             {
                 child.SetParent(transform, false);
+                child.gameObject.SetActive(true);
             }
 
             AfterObjectRendered?.Invoke(quote, go);
@@ -305,6 +306,7 @@ namespace IPA.ModList.BeatSaber.UI.Markdig
             }
 
             tmp.transform.SetParent(transform, false);
+            tmp.gameObject.SetActive(true);
 
             AfterObjectRendered?.Invoke(code, go);
 
@@ -330,7 +332,10 @@ namespace IPA.ModList.BeatSaber.UI.Markdig
                 {
                     var children = RenderListItem(item, list.IsLoose, list.IsOrdered, list.OrderedDelimiter, list.BulletType);
                     foreach (var child in children)
+                    {
                         child.SetParent(transform, false);
+                        child.gameObject.SetActive(true);
+                    }
                 }
             }
 

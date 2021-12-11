@@ -58,7 +58,6 @@ namespace IPA.ModList.BeatSaber.UI.ViewControllers
         }
 
         [UIAction("OnDescLinkPressed")]
-        [SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "BSML calls this")]
         private void OnDescriptionLinkPressed(string url, string title)
         {
             siraLog.Debug($"Link to {url} ({title}) has been clicked");

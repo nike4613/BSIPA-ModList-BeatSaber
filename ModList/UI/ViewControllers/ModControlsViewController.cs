@@ -22,7 +22,7 @@ namespace IPA.ModList.BeatSaber.UI.ViewControllers
         private FloatingScreen? floatingScreen;
 
         private PluginInformation? plugin;
-        private readonly Dictionary<PluginInformation, PluginState> changedStates = new Dictionary<PluginInformation, PluginState>();
+        private readonly Dictionary<PluginInformation, PluginState> changedStates = new();
 
         private SiraLog siraLog = null!;
         private ModProviderService modProviderService = null!;
@@ -39,7 +39,7 @@ namespace IPA.ModList.BeatSaber.UI.ViewControllers
 
         internal void PresentFloatingScreen()
         {
-            if (floatingScreen != null)
+            if (floatingScreen == null)
             {
                 floatingScreen = FloatingScreen.CreateFloatingScreen(new Vector2(300, 50), false, new Vector3(0f, 0, 2.5f), new Quaternion(0, 0, 0, 0));
                 floatingScreen.transform.eulerAngles = new Vector3(60, 0, 0);
