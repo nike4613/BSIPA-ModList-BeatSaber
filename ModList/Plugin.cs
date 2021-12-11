@@ -5,7 +5,7 @@ using SiraUtil.Zenject;
 
 namespace IPA.ModList.BeatSaber
 {
-    [Plugin(RuntimeOptions.DynamicInit)]
+    [Plugin(RuntimeOptions.DynamicInit), NoEnableDisable]
     public class Plugin
     {
         internal static Logger? Logger { get; private set; }
@@ -21,12 +21,6 @@ namespace IPA.ModList.BeatSaber
 
             zenject.Install<MLAppInstaller>(Location.App, ModListConfig.Instance);
             zenject.Install<MLMenuInstaller>(Location.Menu);
-        }
-
-        [OnEnable, OnDisable]
-        public void OnStateChanged()
-        {
-            // Zenject is poggers
         }
     }
 }
