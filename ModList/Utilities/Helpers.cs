@@ -4,10 +4,12 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Threading;
 using BeatSaberMarkupLanguage;
+using BeatSaberMarkupLanguage.Components;
+using BeatSaberMarkupLanguage.Tags;
 using HMUI;
 using IPA.Loader;
+using IPA.ModList.BeatSaber.UI.ViewControllers;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -55,6 +57,12 @@ namespace IPA.ModList.BeatSaber.Utilities
 
         private static Sprite? tinyRoundedRectSprite;
         public static Sprite TinyRoundedRectSprite => tinyRoundedRectSprite ??= LoadTinyRoundedRectSprite();
+
+        private static HMUI.Screen? mainScreen;
+        public static HMUI.Screen MainScreen => mainScreen ??= Resources.FindObjectsOfTypeAll<HMUI.Screen>().First(s => s.gameObject.name == "MainScreen");
+
+        private static TextTag? textTag;
+        public static TextTag TextTag => textTag ??= new TextTag();
 
         public static Texture2D? ReadImageFromSelf(string name) => ReadImageFromAssembly(typeof(Helpers).Assembly, name);
 
@@ -145,22 +153,12 @@ namespace IPA.ModList.BeatSaber.Utilities
 
         public static CurvedTextMeshPro CreateText(string text, Vector2 anchoredPosition, Vector2 sizeDelta)
         {
-            var gameObj = new GameObject("TextElement");
-            gameObj.SetActive(false);
-
-            var textMesh = gameObj.AddComponent<CurvedTextMeshPro>();
-            textMesh.font = BeatSaberUI.MainTextFont;
-            textMesh.text = text;
-            textMesh.fontSize = 4;
-            textMesh.color = Color.white;
-
-            textMesh.rectTransform.anchorMin = new Vector2(0.5f, 0.5f);
-            textMesh.rectTransform.anchorMax = new Vector2(0.5f, 0.5f);
-            textMesh.rectTransform.sizeDelta = sizeDelta;
-            textMesh.rectTransform.anchoredPosition = anchoredPosition;
-
-            //gameObj.SetActive(true);
-            return textMesh;
+            var gameObj = TextTag.CreateObject(MainScreen.transform);
+            var tmp = gameObj.GetComponent<FormattableText>();
+            tmp.text = text;
+            tmp.rectTransform.sizeDelta = sizeDelta;
+            tmp.rectTransform.anchoredPosition = anchoredPosition;
+            return tmp;
         }
 
         public static TMP_FontAsset TMPFontFromUnityFont(Font font)
