@@ -14,7 +14,7 @@ namespace IPA.ModList.BeatSaber
         [NonNullable]
         public virtual string MonospaceFontName { get; set; } = "Consolas";
 
-        public virtual string MonospaceFontPath { get; set; } = null!;
+        public virtual string? MonospaceFontPath { get; set; } = null;
 
         [NonNullable]
         public virtual bool DummyProtection { get; set; } = true;
