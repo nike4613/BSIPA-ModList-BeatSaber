@@ -233,8 +233,11 @@ namespace IPA.ModList.BeatSaber.UI.Components
 
         public event LinkPressed? OnLinkPressed;
 
-        private void OnLinkRendered(IEnumerable<GameObject> hoverableGOs, GameObject fullBgGO, string url, string? title)
+        private void OnLinkRendered(IEnumerable<GameObject> hoverableGOs, GameObject fullBgGO, string? url, string? title)
         {
+            if (url is null)
+                return; // if there isn't a url, don't render anything
+
             _ = fullBgGO.AddComponent<LinkHoverHint>();
             var hoverManager = fullBgGO.AddComponent<LinkHoverManager>();
             hoverManager.HoverHint.Controller = Resources.FindObjectsOfTypeAll<HoverHintController>().First();

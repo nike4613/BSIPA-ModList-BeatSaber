@@ -562,11 +562,11 @@ namespace IPA.ModList.BeatSaber.UI.Markdig
 
         private struct LinkInfo
         {
-            public string Url;
+            public string? Url;
             public string? Title;
             public List<GameObject> SelectableObjects;
 
-            public LinkInfo(string url, string? title)
+            public LinkInfo(string? url, string? title)
             {
                 Url = url;
                 Title = title;
@@ -582,7 +582,7 @@ namespace IPA.ModList.BeatSaber.UI.Markdig
             linkInfo.SelectableObjects.Add(gameObject);
         }
 
-        public delegate void LinkRendered(IEnumerable<GameObject> textRegions, GameObject fullExtent, string url, string? title);
+        public delegate void LinkRendered(IEnumerable<GameObject> textRegions, GameObject fullExtent, string? url, string? title);
 
         public event LinkRendered? OnLinkRendered;
 
