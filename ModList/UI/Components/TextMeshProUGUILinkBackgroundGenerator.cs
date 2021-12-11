@@ -290,7 +290,7 @@ namespace IPA.ModList.BeatSaber.UI.Components
 
             if (addImage && type.ShowBackground)
             {
-                var img = go.AddComponent<Image>();
+                var img = go.AddComponent<ImageView>();
                 img.material = type.BackgroundMaterial;
                 img.color = type.BackgroundImageColor;
                 img.sprite = type.BackgroundSprite;

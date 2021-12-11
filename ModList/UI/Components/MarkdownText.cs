@@ -133,6 +133,8 @@ namespace IPA.ModList.BeatSaber.UI.Components
 
             var assetName = asset.name;
             asset = BeatSaberUI.CreateFixedUIFontClone(asset);
+            asset.material.EnableKeyword("CURVED");
+            asset.material.EnableKeyword("UNITY_UI_CLIP_RECT");
             _ = asset.SetName($"__markdown__{assetName}");
             asset.ReadFontAssetDefinition(); // this likely won't be necessary if/when BSML stops caching TMP fonts
 
@@ -147,13 +149,13 @@ namespace IPA.ModList.BeatSaber.UI.Components
             if (paddingChar > UnicodePrivateUseEnd)
             {
                 // TODO: Inject logger for this
-                // Logger.md.Error("Could not find open character in private use segment");
+                Plugin.Logger?.Error("Could not find open character in private use segment");
                 paddingChar = ' '; // fall back to a space
             }
             else
             {
                 // TODO: Inject logger for this
-                // Logger.md.Debug($"Using unicode codepoint {paddingChar:X}");
+                Plugin.Logger?.Trace($"Using unicode codepoint {paddingChar:X} for padding");
                 var glyph = new Glyph(paddingChar,
                     new GlyphMetrics(InlineCodePadding, 1f, 0, 0, InlineCodePadding),
                     new GlyphRect(Rect.zero)
@@ -181,7 +183,7 @@ namespace IPA.ModList.BeatSaber.UI.Components
                    .Code.UseColor(new Color(135f / 255, 135f / 255, 135f / 255, .25f))
                    .Code.UseFont(font)
                    .Code.Inline.UseBackground(Helpers.TinyRoundedRectSprite, Image.Type.Sliced)
-                   .Code.Inline.UseColor(new Color(135f / 255, 135f / 255, 135f / 255, .1f))
+                   .Code.Inline.UseColor(new Color(135f / 255, 135f / 255, 135f / 255, .25f))
                    .Code.Inline.UsePadding(padding)
                    .UseObjectRenderedCallback((obj, go) =>
                    {
