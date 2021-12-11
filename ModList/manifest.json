@@ -14,9 +14,6 @@
         "BeatSaberMarkupLanguage": "^1.5.5",
         "SiraUtil": "^3.0.0-rc1"
     },
-    "files": [
-        "Libs/Markdig.dll"
-    ],
     "icon": "IPA.ModList.BeatSaber.Resources.icon.png",
     "misc": {
         "plugin-hint": "IPA.ModList.BeatSaber.Plugin"
