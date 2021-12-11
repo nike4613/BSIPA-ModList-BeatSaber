@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
         <TargetFrameworks>net472</TargetFrameworks>
@@ -133,11 +133,11 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <AllowRepackDuplicateType Include="Microsoft.CodeAnalysis.EmbeddedAttribute" />
-        <AllowRepackDuplicateType Include="System.Runtime.CompilerServices.NullableAttribute" />
-        <AllowRepackDuplicateType Include="System.Runtime.CompilerServices.NullableContextAttribute" />
-        <AllowRepackDuplicateType Include="System.Runtime.CompilerServices.IsByRefLikeAttribute" />
-        <AllowRepackDuplicateType Include="System.Runtime.CompilerServices.IsReadOnlyAttribute" />
+        <AllowRepackDuplicateType Include="Microsoft.CodeAnalysis.EmbeddedAttribute" Visible="false" />
+        <AllowRepackDuplicateType Include="System.Runtime.CompilerServices.NullableAttributee" Visible="false" />
+        <AllowRepackDuplicateType Include="System.Runtime.CompilerServices.NullableContextAttribute" Visible="false" />
+        <AllowRepackDuplicateType Include="System.Runtime.CompilerServices.IsByRefLikeAttribute" Visible="false" />
+        <AllowRepackDuplicateType Include="System.Runtime.CompilerServices.IsReadOnlyAttribute" Visible="false" />
     </ItemGroup>
 
     <Import Project="$(MSBuildThisFileDirectory)..\tools\Packaging.targets" />
