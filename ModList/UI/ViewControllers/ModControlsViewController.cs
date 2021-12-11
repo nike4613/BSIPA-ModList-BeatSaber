@@ -11,6 +11,7 @@ using IPA.ModList.BeatSaber.Models;
 using IPA.ModList.BeatSaber.Services;
 using ModestTree;
 using SiraUtil.Logging;
+using SiraUtil.Zenject;
 using UnityEngine;
 using Zenject;
 
@@ -25,16 +26,18 @@ namespace IPA.ModList.BeatSaber.UI.ViewControllers
         private readonly Dictionary<PluginInformation, PluginState> changedStates = new();
 
         private SiraLog siraLog = null!;
+        private PluginMetadata modListMeta = null!;
         private ModProviderService modProviderService = null!;
 
         internal StateTransitionTransaction? CurrentTransaction { get; set; }
 
 
         [Inject]
-        internal void Construct(SiraLog siraLog, ModProviderService modProviderService)
+        internal void Construct(SiraLog siraLog, UBinder<Plugin, PluginMetadata> modListMeta, ModProviderService modProviderService)
         {
-            this.modProviderService = modProviderService;
             this.siraLog = siraLog;
+            this.modListMeta = modListMeta.Value;
+            this.modProviderService = modProviderService;
         }
 
         internal void PresentFloatingScreen()
@@ -58,7 +61,7 @@ namespace IPA.ModList.BeatSaber.UI.ViewControllers
         internal void SetPlugin(PluginInformation? info)
         {
             plugin = info;
-            PanelActive = info != null && info.State != PluginState.Ignored;
+            PanelActive = info != null && info.State != PluginState.Ignored && ShouldWeDummyProtect(info.Plugin);
 
             RefreshModInfo();
         }
@@ -367,6 +370,15 @@ namespace IPA.ModList.BeatSaber.UI.ViewControllers
             CurrentTransaction ??= PluginManager.PluginStateTransaction();
             RefreshChanges();
             return CurrentTransaction;
+        }
+
+        private bool ShouldWeDummyProtect(PluginMetadata selectedPlugin)
+        {
+            if (ModListConfig.Instance != null && ModListConfig.Instance.DummyProtection)
+            {
+                return selectedPlugin != modListMeta && selectedPlugin.Id != "BeatSaberMarkupLanguage";
+            }
+            return true;
         }
     }
 }

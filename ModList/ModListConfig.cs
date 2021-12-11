@@ -1,4 +1,4 @@
-﻿using IPA.Config.Stores;
+using IPA.Config.Stores;
 using IPA.Config.Stores.Attributes;
 using System.Runtime.CompilerServices;
 
@@ -15,6 +15,9 @@ namespace IPA.ModList.BeatSaber
         public virtual string MonospaceFontName { get; set; } = "Consolas";
 
         public virtual string MonospaceFontPath { get; set; } = null!;
+
+        [NonNullable]
+        public virtual bool DummyProtection { get; set; } = true;
 
         public virtual void CopyFrom(ModListConfig config)
         {
