@@ -1,0 +1,16 @@
+﻿<bg xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xsi:schemaLocation='https://monkeymanboy.github.io/BSML-Docs/ https://raw.githubusercontent.com/monkeymanboy/BSML-Docs/gh-pages/BSMLSchema.xsd'>
+	<stack>
+		<bg id='background' bg='round-rect-panel' bg-color='#BD288199' tags='hovered' horizontal-fit='Unconstrained' />
+		<horizontal child-align='MiddleLeft' horizontal-fit='Unconstrained' child-expand-width='false' child-control-width='true' child-expand-height='false' spacing='1' pad-left='1'>
+			<image id='IconImage' preferred-width='7' preferred-height='7' />
+			<vertical child-align='MiddleLeft' child-expand-width='true' child-expand-height='false' horizontal-fit='Unconstrained' spacing='-2'>
+				<text text='~Name' italics='true' align='CaplineLeft' font-align='Left' />
+				<text text='~AuthorAndVersion' rich-text='true' italics='true' align='CaplineLeft' font-align='Left' font-size='3' font-color='lightblue' />
+			</vertical>
+			<vertical preferred-width='3' pref-height="8" child-expand-width='false' child-expand-height='false' horizontal-fit='PreferredSize' vertical-fit="PreferredSize" child-align='UpperRight' spacing='0' pad-top='1' pad-right='1' pad-bottom='1' >
+				<image id='StatusIcon1' preferred-width='2' preferred-height='2' />
+				<image id='StatusIcon2' preferred-width='2' preferred-height='2' />
+			</vertical>
+		</horizontal>
+	</stack>
+</bg>

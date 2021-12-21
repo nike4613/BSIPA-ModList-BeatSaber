@@ -1,15 +1,14 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using System.Linq;
+using System.Reflection;
+using BeatSaberMarkupLanguage;
 using BeatSaberMarkupLanguage.Attributes;
 using BeatSaberMarkupLanguage.Components;
-using BeatSaberMarkupLanguage.Parser;
 using BeatSaberMarkupLanguage.ViewControllers;
 using HMUI;
 using IPA.ModList.BeatSaber.Models;
 using IPA.ModList.BeatSaber.Services;
-using IPA.ModList.BeatSaber.Utilities;
 using SiraUtil.Logging;
 using UnityEngine;
 using Zenject;
@@ -17,12 +16,12 @@ using Zenject;
 namespace IPA.ModList.BeatSaber.UI.ViewControllers
 {
     [HotReload(RelativePathToLayout = @".\ModListView.bsml")]
-    internal class ModListViewController : BSMLAutomaticViewController
+    internal class ModListViewController : BSMLAutomaticViewController, TableView.IDataSource
     {
         private SiraLog siraLog = null!;
         private ModProviderService modProviderService = null!;
 
-        private List<object> ListValues { get; } = new List<object>();
+        private List<PluginInformation> ListValues = new List<PluginInformation>();
 
         private bool _loaded;
 
@@ -51,15 +50,13 @@ namespace IPA.ModList.BeatSaber.UI.ViewControllers
         internal event Action<PluginInformation?>? DidSelectPlugin;
 
         [UIComponent("list")]
-        internal CustomCellListTableData CustomListTableData = null!;
+        internal CustomListTableData CustomListTableData = null!;
 
         [UIAction("list-select")]
         [SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "BSML calls this")]
-        private void OnListSelect(TableView _, object @object)
+        private void OnListSelect(TableView _, int index)
         {
-            var index = ListValues.IndexOf(@object);
-
-            DidSelectPlugin?.Invoke(modProviderService.PluginList[index]);
+            DidSelectPlugin?.Invoke(ListValues[index]);
         }
 
         [UIAction("#post-parse")]
@@ -71,7 +68,7 @@ namespace IPA.ModList.BeatSaber.UI.ViewControllers
 
             if (CustomListTableData != null)
             {
-                CustomListTableData.data = ListValues;
+                CustomListTableData.tableView.SetDataSource(this, false);
             }
 
             stoppyWatch.Stop();
@@ -103,13 +100,38 @@ namespace IPA.ModList.BeatSaber.UI.ViewControllers
 
         internal void ReloadViewList()
         {
-            ListValues.Clear();
-            ListValues.AddRange(modProviderService.PluginList.Select(p => new PluginCellViewController(p)));
-
-            if (CustomListTableData != null && CustomListTableData.tableView != null)
-            {
-                CustomListTableData.tableView.ReloadData();
-            }
+            ListValues = new List<PluginInformation>(modProviderService.PluginList);
+            CustomListTableData.tableView.ReloadData();
         }
+
+        #region TableData
+
+        public const string ReuseIdentifier = "ModListCell";
+        private PluginCellViewController GetCell()
+        {
+            var tableCell = CustomListTableData.tableView.DequeueReusableCellForIdentifier(ReuseIdentifier);
+
+            if (tableCell == null)
+            {
+                tableCell = new GameObject(nameof(PluginCellViewController), new[] { typeof(Touchable) }).AddComponent<PluginCellViewController>();
+                tableCell.interactable = true;
+
+                tableCell.reuseIdentifier = ReuseIdentifier;
+                BSMLParser.instance.Parse(
+                BeatSaberMarkupLanguage.Utilities.GetResourceContent(
+                    Assembly.GetExecutingAssembly(),
+                    "IPA.ModList.BeatSaber.UI.ViewControllers.PluginCellViewController.bsml"),
+                tableCell.gameObject,
+                tableCell);
+            }
+
+            return (PluginCellViewController) tableCell;
+        }
+
+        public float CellSize() => 8;
+        public int NumberOfCells() => ListValues.Count;
+        public TableCell CellForIdx(TableView tableView, int idx) => GetCell().PopulateCell(ListValues[idx]);
+
+        #endregion
     }
 }

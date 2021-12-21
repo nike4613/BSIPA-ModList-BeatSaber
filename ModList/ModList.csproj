@@ -103,6 +103,10 @@
         <EmbeddedResource Include="manifest.json" />
         <EmbeddedResource Include="description.md" />
         <EmbeddedResource Include="Resources\*.png" />
+		<EmbeddedResource Include="UI\ViewControllers\PluginCellView.bsml">
+			<LogicalName>$(RootNamespace).UI.ViewControllers.PluginCellViewController.bsml</LogicalName>
+			<DependentUpon>PluginCellViewController.cs</DependentUpon>
+		</EmbeddedResource>
         <EmbeddedResource Include="UI\ViewControllers\ModalPopupView.bsml">
             <LogicalName>$(RootNamespace).UI.ViewControllers.ModalPopupViewController.bsml</LogicalName>
             <DependentUpon>ModalPopupViewController.cs</DependentUpon>
