@@ -78,7 +78,10 @@ namespace IPA.ModList.BeatSaber.UI.ViewControllers
         protected override void DidActivate(bool firstActivation, bool addedToHierarchy, bool screenSystemEnabling)
         {
             base.DidActivate(firstActivation, addedToHierarchy, screenSystemEnabling);
-            Loaded = false;
+            if (ListValues.Count != modProviderService.PluginList.Count)
+            {
+                Loaded = false;
+            }
         }
 
         protected override void DidDeactivate(bool removedFromHierarchy, bool screenSystemDisabling)
@@ -90,12 +93,12 @@ namespace IPA.ModList.BeatSaber.UI.ViewControllers
 
         internal async void OnAnimationFinish()
         {
-            if (CustomListTableData != null && CustomListTableData.data?.Count != modProviderService.PluginList.Count)
+            if (ListValues.Count != modProviderService.PluginList.Count)
             {
                 await SiraUtil.Extras.Utilities.PauseChamp;
                 ReloadViewList();
+                Loaded = true;
             }
-            Loaded = true;
         }
 
         internal void ReloadViewList()
