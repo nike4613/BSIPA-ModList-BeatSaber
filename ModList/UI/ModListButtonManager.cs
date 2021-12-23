@@ -41,7 +41,7 @@ namespace IPA.ModList.BeatSaber.UI
                 return;
             }
 
-            if (MenuButtons.IsSingletonAvailable)
+            if (BSMLParser.IsSingletonAvailable && MenuButtons.IsSingletonAvailable)
             {
                 MenuButtons.instance.UnregisterButton(modListButton);
             }
