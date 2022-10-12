@@ -103,7 +103,8 @@ namespace IPA.ModList.BeatSaber.UI.ViewControllers
 
         internal void ReloadViewList()
         {
-            ListValues = new List<PluginInformation>(modProviderService.PluginList);
+            ListValues.Clear();
+            ListValues.AddRange(modProviderService.PluginList);
             CustomListTableData.tableView.ReloadData();
         }
 
