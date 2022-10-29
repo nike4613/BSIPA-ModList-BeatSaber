@@ -376,7 +376,8 @@ namespace IPA.ModList.BeatSaber.UI.ViewControllers
         {
             if (ModListConfig.Instance != null && ModListConfig.Instance.DummyProtection)
             {
-                return selectedPlugin != modListMeta && selectedPlugin.Id != "BeatSaberMarkupLanguage";
+                // Only allow enable/disable if it isn't ModList or its dependents
+                return selectedPlugin != modListMeta && selectedPlugin.Id != "BSIPA" && selectedPlugin.Id != "BeatSaberMarkupLanguage" && selectedPlugin.Id != "SiraUtil";
             }
             return true;
         }
