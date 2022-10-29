@@ -9,7 +9,7 @@ namespace IPA.ModList.BeatSaber.Models
     {
         private Sprite? icon;
         public bool SpriteWasLoaded { get; private set; }
-        public event Action<Sprite>? SpriteLoadedEvent;
+        public event Action<PluginInformation, Sprite>? SpriteLoadedEvent;
         public PluginMetadata Plugin { get; }
         public PluginState State { get; set; }
 
@@ -26,7 +26,7 @@ namespace IPA.ModList.BeatSaber.Models
                 {
                     this.icon = icon;
                     SpriteWasLoaded = true;
-                    SpriteLoadedEvent?.Invoke(icon);
+                    SpriteLoadedEvent?.Invoke(this, icon);
                 });
             }
         }
